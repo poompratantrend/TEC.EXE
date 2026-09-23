@@ -45,7 +45,22 @@
   document.addEventListener('touchend', e => { const now = Date.now(); if (now - lastTouch < 300 && !e.target.closest('a,button,input,select,textarea')) e.preventDefault(); lastTouch = now; }, { passive: false });
 
   const nav = document.getElementById('nav');
-  nav.querySelector('.burger').onclick = () => nav.classList.toggle('open');
+  // menu: opening locks the page behind it; any link, outside tap or Esc closes it
+  const setMenu = open => { nav.classList.toggle('open', open); document.documentElement.classList.toggle('menu-open', open); };
+  nav.querySelector('.burger').onclick = e => { e.stopPropagation(); setMenu(!nav.classList.contains('open')); };
+  nav.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
+  document.addEventListener('click', e => { if (nav.classList.contains('open') && !e.target.closest('.nav')) setMenu(false); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+  // same-page anchors (e.g. "ขอใบเสนอราคา" while already on the contact page): glide to the target below the nav
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href*="#"]'); if (!a) return;
+    const url = new URL(a.href, location.href);
+    if (url.pathname !== location.pathname || !url.hash) return;
+    const el = document.querySelector(url.hash); if (!el) return;
+    e.preventDefault(); setMenu(false);
+    history.replaceState(null, '', url.hash);
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   const onScroll = () => nav.classList.toggle('scrolled', scrollY > 40);
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
