@@ -184,8 +184,8 @@ export function makeBin(labelTex, color = 0xd61f2c, opts = {}) {
   if (labelTex) {
     const label = new THREE.Mesh(new THREE.PlaneGeometry(0.74, 1.0), new THREE.MeshStandardMaterial({ map: labelTex, roughness: 0.6, color: 0xbbbbbb }));
     if (opts.face) { label.scale.setScalar(0.62); label.position.set(0, 0.78, 0.69); }
-    else label.position.set(0, 1.2, 0.715);
-    label.rotation.x = -0.07; g.add(label);
+    else label.position.set(0, 1.2, 0.72);
+    label.rotation.x = 0.0525; g.add(label);   // match the body's taper so no edge sinks into it
   }
   g.userData.lid = lidPivot;
   if (opts.face) g.userData.face = addCheekyFace(g);
@@ -682,12 +682,48 @@ function canvasTex(w, h, draw) {
   draw(c.getContext('2d'), w, h);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
+let _bagTex;
+function bagTexture() {
+  if (_bagTex) return _bagTex;
+  return (_bagTex = canvasTex(512, 256, (x, w, h) => {
+    x.fillStyle = '#d8232f'; x.fillRect(0, 0, w, h);
+    // black biohazard mark + text printed on the front (u = 0.5 faces +z)
+    x.save(); x.translate(w / 2, h * 0.5); x.fillStyle = '#141414'; x.strokeStyle = '#141414';
+    for (let i = 0; i < 3; i++) {
+      x.save(); x.rotate(i * Math.PI * 2 / 3);
+      x.beginPath(); x.arc(0, -26, 26, 0, Math.PI * 2); x.fill();
+      x.globalCompositeOperation = 'destination-out'; x.beginPath(); x.arc(0, -33, 19, 0, Math.PI * 2); x.fill();
+      x.restore();
+    }
+    x.globalCompositeOperation = 'source-over';
+    x.lineWidth = 6; x.beginPath(); x.arc(0, 0, 21, 0, Math.PI * 2); x.stroke();
+    x.fillStyle = '#d8232f'; x.beginPath(); x.arc(0, 0, 8, 0, Math.PI * 2); x.fill();
+    x.restore();
+    x.fillStyle = '#141414'; x.font = 'bold 22px Prompt, sans-serif'; x.textAlign = 'center';
+    x.fillText('ขยะติดเชื้อ', w / 2, h * 0.5 + 62);
+  }));
+}
 function redBag(s = 1) {
-  const m = plastic(0xd8232f, { roughness: 0.5, clearcoat: 0.5 });
   const g = new THREE.Group();
-  const b = new THREE.Mesh(new THREE.SphereGeometry(0.5, 28, 18), m); b.scale.set(1, 0.95, 0.85); b.position.y = 0.45; g.add(b);
-  const k = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.34, 14), m); k.position.y = 1.0; g.add(k);
-  const tie = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.03, 8, 16), plastic(0xf5c518)); tie.rotation.x = Math.PI / 2; tie.position.y = 0.9; g.add(tie);
+  const prof = [[0, 0], [0.34, 0.02], [0.5, 0.12], [0.57, 0.3], [0.56, 0.52], [0.48, 0.7], [0.32, 0.84], [0.15, 0.94], [0.08, 1.0], [0.07, 1.04]]
+    .map(([r, y]) => new THREE.Vector2(r, y));
+  const geo = new THREE.LatheGeometry(prof, 48, -Math.PI, Math.PI * 2);
+  const pos = geo.attributes.position;
+  for (let i = 0; i < pos.count; i++) {                   // plastic wrinkles: pleats that gather toward the neck
+    const x = pos.getX(i), y = pos.getY(i), z = pos.getZ(i), a = Math.atan2(x, z);
+    const k = 1 + 0.045 * Math.sin(a * 9 + y * 4) * Math.min(1, y * 1.6) + 0.02 * Math.sin(a * 23 + y * 11);
+    pos.setX(i, x * k); pos.setZ(i, z * k * 0.9);
+  }
+  geo.computeVertexNormals();
+  const m = new THREE.MeshPhysicalMaterial({ map: bagTexture(), roughness: 0.42, clearcoat: 0.7, clearcoatRoughness: 0.35, sheen: 0.3 });
+  g.add(new THREE.Mesh(geo, m));
+  const neckM = plastic(0xc81f2a, { roughness: 0.5 });
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.075, 0.16, 12), neckM); neck.position.y = 1.08; neck.rotation.y = 0.6; g.add(neck);
+  for (const sx of [-1, 1]) {                             // the two flaps left after tying the bag
+    const flap = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.3, 10, 1, true), neckM);
+    flap.position.set(sx * 0.1, 1.24, 0); flap.rotation.z = sx * -0.9; flap.rotation.x = Math.PI; flap.scale.z = 0.35; g.add(flap);
+  }
+  const tie = new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.022, 8, 20), plastic(0xf5c518)); tie.rotation.x = Math.PI / 2; tie.position.y = 1.11; g.add(tie);
   g.scale.setScalar(s); return shadow(g);
 }
 

@@ -7,14 +7,60 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=11">
+<link rel="stylesheet" href="css/style.css?v=13">
 <style>
-.g-hero{position:relative;background:radial-gradient(900px 500px at 75% 30%,#0f3a26,var(--deep) 70%);color:#fff;padding:150px 0 70px;overflow:hidden}
+.g-hero{position:relative;background:radial-gradient(900px 500px at 75% 30%,#0f3a26,var(--deep) 70%);color:#fff;padding:140px 0 56px;overflow:hidden}
 .g-hero h1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.2;margin:16px 0 12px}
-.g-hero p{color:#b9cfc2;max-width:520px}
-.g-hero img{position:absolute;right:6%;bottom:-30px;height:300px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.5));animation:bob 5s ease-in-out infinite}
+.g-hero p{color:#b9cfc2;max-width:540px}
+.g-hero .g-stats{display:flex;gap:28px;margin-top:26px;flex-wrap:wrap}
+.g-hero .g-stats b{display:block;font-family:Prompt;font-size:1.8rem;color:var(--lime);line-height:1}
+.g-hero .g-stats span{font-size:.85rem;color:#9db6a8}
+.g-hero img.mascot{position:absolute;right:6%;bottom:-30px;height:290px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.5));animation:bob 5s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-12px)}}
-@media (max-width:980px){.g-hero img{display:none}}
+
+/* editorial feature row */
+.feature{display:grid;grid-template-columns:1.6fr 1fr;grid-template-rows:1fr 1fr;gap:16px;height:520px;margin-top:-30px;position:relative;z-index:2}
+.feature figure{position:relative;border-radius:22px;overflow:hidden;cursor:zoom-in;box-shadow:var(--shadow);background:#dfe9e3}
+.feature figure:first-child{grid-row:span 2}
+.feature img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.feature figure:hover img{transform:scale(1.05)}
+.feature figcaption,.ph figcaption{position:absolute;inset:auto 0 0;padding:22px 22px 18px;color:#fff;background:linear-gradient(transparent,rgba(4,19,13,.88))}
+.feature figcaption small,.ph figcaption small{display:inline-block;font-family:Prompt;font-size:.72rem;letter-spacing:1px;color:var(--deep);background:var(--lime);padding:2px 10px;border-radius:999px;margin-bottom:8px}
+.feature figcaption b{display:block;font-family:Prompt;font-size:1.15rem;font-weight:600;line-height:1.35}
+.feature figure:first-child figcaption b{font-size:1.5rem}
+
+/* filter bar */
+.filters{position:sticky;top:84px;z-index:20;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:12px;margin:56px auto 30px;width:fit-content;max-width:100%;border-radius:999px;background:rgba(244,248,245,.85);backdrop-filter:blur(12px);border:1px solid var(--line);box-shadow:0 10px 30px -18px rgba(6,40,24,.4)}
+.filters button{font:inherit;font-family:Prompt;font-size:.9rem;padding:8px 16px;border-radius:999px;border:0;background:transparent;color:var(--ink-2);cursor:pointer;transition:.2s;display:flex;gap:8px;align-items:center}
+.filters button i{font-style:normal;font-size:.72rem;background:var(--line);color:var(--ink-2);border-radius:999px;padding:1px 7px}
+.filters button:hover{color:var(--ink)}
+.filters button.on{background:var(--ink);color:#fff}
+.filters button.on i{background:var(--lime);color:var(--deep)}
+
+/* chapters */
+.chapter{margin-bottom:64px}
+.chapter-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px;flex-wrap:wrap}
+.chapter-head h2{font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.2}
+.chapter-head p{color:var(--ink-2);max-width:460px;font-size:.95rem}
+.chapter-head .n{font-family:Prompt;font-weight:700;color:var(--brand);font-size:.85rem;letter-spacing:2px}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ph{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;cursor:zoom-in;background:#dfe9e3;opacity:0;transform:translateY(18px) scale(.98);transition:opacity .6s,transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.ph.in{opacity:1;transform:none}
+.ph:hover{box-shadow:var(--shadow)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.ph:hover img{transform:scale(1.07)}
+.ph figcaption{opacity:0;transform:translateY(8px);transition:.35s;padding:16px}
+.ph:hover figcaption,.ph:focus-visible figcaption{opacity:1;transform:none}
+.ph figcaption b{display:block;font-family:Prompt;font-weight:500;font-size:.92rem}
+.ph .zoom{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(4,19,13,.55);color:#fff;display:grid;place-items:center;opacity:0;transition:.3s;backdrop-filter:blur(6px)}
+.ph:hover .zoom{opacity:1}
+
+/* lightbox caption */
+.lb .cap{color:#fff;font-family:Prompt;text-align:center}
+.lb .cap small{display:block;color:var(--lime);font-size:.75rem;letter-spacing:1px}
+
+@media (max-width:980px){.g-hero img.mascot{display:none}.feature{grid-template-columns:1fr 1fr;grid-template-rows:260px 180px;height:auto}.feature figure:first-child{grid-column:span 2;grid-row:auto}.filters{top:78px;border-radius:18px}}
+@media (max-width:620px){.feature{grid-template-rows:220px 150px}.photos{grid-template-columns:1fr 1fr;gap:10px}.ph figcaption{display:none}.filters button{padding:7px 12px;font-size:.82rem}}
 </style>
 </head>
 <body>
@@ -23,13 +69,18 @@
   <div class="wrap">
     <span class="eyebrow"><span class="dot"></span>ผลงาน</span>
     <h1>ภาพการทำงาน<span class="hl">จริง</span>ของทีม I-TEC</h1>
-    <p>การเก็บขน การทำความสะอาดถัง การขนส่ง และการเยี่ยมชมศูนย์กำจัด รวม <b id="count">30</b> ภาพ — แตะที่ภาพเพื่อดูขนาดใหญ่</p>
+    <p>ตั้งแต่การเก็บขนที่ต้นทาง การดูแลความสะอาดถังบรรจุ จนถึงการอบรมและเยี่ยมชมศูนย์กำจัด</p>
+    <div class="g-stats" id="stats"></div>
   </div>
-  <img src="assets/mascot.png" alt="">
+  <img class="mascot" src="assets/mascot.png" alt="">
 </header>
 
-<section>
-  <div class="wrap"><div class="gal" id="gal"></div></div>
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="feature rv" id="feature"></div>
+    <div class="filters" id="filters" role="tablist" aria-label="หมวดภาพ"></div>
+    <div id="chapters"></div>
+  </div>
 </section>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="ดูภาพ">
@@ -37,44 +88,86 @@
   <button class="ctl p" aria-label="ก่อนหน้า">‹</button>
   <img class="main" alt="">
   <button class="ctl n" aria-label="ถัดไป">›</button>
+  <div class="cap"></div>
   <span class="cnt"></span>
   <div class="strip"></div>
 </div>
 
-<script src="js/common.js?v=11"></script>
+<script src="js/common.js?v=13"></script>
 <script>
 (() => {
-  const nums = [1, 3, 4, 8, 9, 10, 11, 13, 14, 16, 19, 21, 25, 26, 28, 30, 31, 32, 33, 35, 38, 41, 42, 46, 47, 50, 52, 56, 59, 60];
-  const G = nums.map(n => `assets/gallery-${n}.jpg`);
-  document.getElementById('count').textContent = G.length;
-  const gal = document.getElementById('gal');
-  // fixed rhythm of big / wide / tall tiles so the grid looks designed, not random
-  const shape = i => ['w h', '', '', 'h', '', 'w', '', '', 'h', '', '', 'w'][i % 12];
-  gal.innerHTML = G.map((src, i) => `<button class="${shape(i)}" data-i="${i}" aria-label="ดูภาพที่ ${i + 1}"><img src="${src}" alt="ภาพการทำงาน I-TEC ${i + 1}" loading="lazy"></button>`).join('');
+  // photos grouped into chapters (numbers = assets/gallery-N.jpg)
+  const CH = [
+    { id: 'collect', t: 'การเก็บขน', d: 'ทีมงานสวมชุดป้องกัน ขนถังบรรจุขึ้นรถควบคุมอุณหภูมิจากต้นทาง', n: [1, 13, 14, 16, 19, 21, 25, 26, 28, 30] },
+    { id: 'clean', t: 'ถังบรรจุ & การทำความสะอาด', d: 'การดูแลและทำความสะอาดถังบรรจุมูลฝอยติดเชื้อ', n: [11, 31, 32, 33, 38, 41, 42, 46, 47, 50, 52, 59, 60] },
+    { id: 'team', t: 'ทีมงาน', d: 'พนักงานผ่านการฝึกอบรมการป้องกันและระงับการแพร่เชื้อ', n: [10, 35, 56] },
+    { id: 'plant', t: 'ศูนย์กำจัด & การอบรม', d: 'เยี่ยมชมระบบเตาเผาอุณหภูมิสูง และจัดอบรมการจัดการขยะติดเชื้อ', n: [4, 8, 3, 9] }
+  ];
+  const ALL = CH.flatMap(c => c.n.map(n => ({ src: `assets/gallery-${n}.jpg`, ch: c })));
 
-  const lb = document.getElementById('lb'), main = lb.querySelector('.main'), cnt = lb.querySelector('.cnt'), strip = lb.querySelector('.strip');
-  strip.innerHTML = G.map((s, i) => `<img src="${s}" data-i="${i}" alt="" loading="lazy">`).join('');
-  let cur = 0;
+  document.getElementById('stats').innerHTML =
+    `<div><b>${ALL.length}</b><span>ภาพจากหน้างาน</span></div>` + CH.map(c => `<div><b>${c.n.length}</b><span>${c.t}</span></div>`).slice(0, 3).join('');
+
+  const feat = [[4, 'plant', 'เยี่ยมชมศูนย์กำจัดด้วยเตาเผาอุณหภูมิสูง'], [14, 'collect', 'เก็บขนขึ้นรถควบคุมอุณหภูมิ'], [33, 'clean', 'ทำความสะอาดถังบรรจุ']];
+  document.getElementById('feature').innerHTML = feat.map(([n, id, cap]) => {
+    const c = CH.find(x => x.id === id);
+    return `<figure data-src="assets/gallery-${n}.jpg" tabindex="0"><img src="assets/gallery-${n}.jpg" alt="${cap}"><figcaption><small>${c.t}</small><b>${cap}</b></figcaption></figure>`;
+  }).join('');
+
+  const chapters = document.getElementById('chapters');
+  chapters.innerHTML = CH.map((c, k) => `
+    <div class="chapter" data-ch="${c.id}">
+      <div class="chapter-head"><div><span class="n">0${k + 1}</span><h2>${c.t}</h2></div><p>${c.d}</p></div>
+      <div class="photos">${c.n.map(n => `<figure class="ph" data-src="assets/gallery-${n}.jpg" tabindex="0"><img src="assets/gallery-${n}.jpg" alt="${c.t}" loading="lazy"><span class="zoom">⤢</span><figcaption><small>${c.t}</small></figcaption></figure>`).join('')}</div>
+    </div>`).join('');
+
+  // staggered entrance
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+  const observe = () => chapters.querySelectorAll('.chapter:not([hidden]) .ph').forEach((el, i) => { el.classList.remove('in'); el.style.transitionDelay = (i % 8) * 50 + 'ms'; io.observe(el); });
+  observe();
+
+  // filters
+  const filters = document.getElementById('filters');
+  filters.innerHTML = `<button class="on" data-f="all">ทั้งหมด <i>${ALL.length}</i></button>` + CH.map(c => `<button data-f="${c.id}">${c.t} <i>${c.n.length}</i></button>`).join('');
+  filters.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    filters.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    chapters.querySelectorAll('.chapter').forEach(ch => { ch.hidden = b.dataset.f !== 'all' && ch.dataset.ch !== b.dataset.f; });
+    observe();
+    const top = chapters.getBoundingClientRect().top + scrollY - 170;
+    if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+  });
+
+  // lightbox (browses only the photos currently shown)
+  const lb = document.getElementById('lb'), main = lb.querySelector('.main'), cnt = lb.querySelector('.cnt'), cap = lb.querySelector('.cap'), strip = lb.querySelector('.strip');
+  let list = ALL, cur = 0;
   const show = i => {
-    cur = (i + G.length) % G.length;
-    main.src = G[cur]; cnt.textContent = `${cur + 1} / ${G.length}`;
+    cur = (i + list.length) % list.length; const p = list[cur];
+    main.src = p.src; cap.innerHTML = `<small>${p.ch.t}</small>`; cnt.textContent = `${cur + 1} / ${list.length}`;
     strip.querySelectorAll('img').forEach((im, k) => im.classList.toggle('on', k === cur));
-    strip.children[cur].scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    strip.children[cur]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
     lb.classList.add('open'); document.body.style.overflow = 'hidden';
   };
+  const open = src => {
+    const f = filters.querySelector('.on').dataset.f;
+    list = f === 'all' ? ALL : ALL.filter(p => p.ch.id === f);
+    if (!list.some(p => p.src === src)) list = ALL;
+    strip.innerHTML = list.map((p, k) => `<img src="${p.src}" data-i="${k}" alt="" loading="lazy">`).join('');
+    show(list.findIndex(p => p.src === src));
+  };
   const close = () => { lb.classList.remove('open'); document.body.style.overflow = ''; };
-  gal.addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(+b.dataset.i); });
+  document.addEventListener('click', e => { const f = e.target.closest('figure[data-src]'); if (f) open(f.dataset.src); });
+  document.addEventListener('keydown', e => {
+    const f = e.target.closest?.('figure[data-src]');
+    if (f && e.key === 'Enter') open(f.dataset.src);
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1);
+  });
   strip.addEventListener('click', e => { const im = e.target.closest('img'); if (im) show(+im.dataset.i); });
   lb.querySelector('.x').onclick = close;
   lb.querySelector('.p').onclick = () => show(cur - 1);
   lb.querySelector('.n').onclick = () => show(cur + 1);
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
-  addEventListener('keydown', e => {
-    if (!lb.classList.contains('open')) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') show(cur - 1);
-    if (e.key === 'ArrowRight') show(cur + 1);
-  });
   let sx = null;
   main.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
   main.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); sx = null; });

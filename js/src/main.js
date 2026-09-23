@@ -20,6 +20,9 @@ function boot() {
     host.classList.remove('loading3d');
     host.classList.add('fallback3d');
     canvas.style.display = 'none';
+    // visible hint so a visitor can report why the 3D didn't start
+    const why3d = { 'WebGL not available': 'เบราว์เซอร์นี้ปิด WebGL/การเร่งกราฟิกอยู่', timeout: 'เครื่องโหลด 3D ช้าเกินไป', 'render error': 'การ์ดจอ/เบราว์เซอร์แสดง 3D ไม่ได้' };
+    host.insertAdjacentHTML('beforeend', `<div class="note3d">โหมดภาพนิ่ง · ${why3d[String(why)] || 'แสดง 3D ไม่ได้'}</div>`);
   };
   let S;
   try { S = SCENES[name](canvas); } catch (e) { return fail(e); }
