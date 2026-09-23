@@ -57,7 +57,7 @@ export default function services(canvas) {
 
   S.onFrame((t, dt) => {
     const dist = Math.abs(uTo - uFrom);
-    k = Math.min(1, k + dt / (0.9 + dist * 5));                  // longer trips take a bit longer
+    k = Math.min(1, k + dt / (0.8 + dist * 3.5));                  // longer trips take a bit longer
     uNow = uFrom + (uTo - uFrom) * smooth(k);
     const f = at(uNow), dir = Math.sign(uTo - uFrom) || 1;
 

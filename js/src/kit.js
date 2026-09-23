@@ -44,7 +44,8 @@ export function createStage(canvas, opt = {}) {
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
   Object.assign(key.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 40 });
-  key.shadow.bias = -0.0005;
+  key.shadow.bias = -0.0006;
+  key.shadow.normalBias = 0.05;   // removes striped self-shadowing (acne) on curved surfaces
   scene.add(key, key.target);
   const rim = new THREE.PointLight(0xb7f34a, 16, 30);
   rim.position.set(-6, 5, -4);
@@ -438,20 +439,55 @@ export function makeBinSet(labelTex) {
 }
 export function makeShredder() {
   const g = new THREE.Group();
-  const body = new THREE.Mesh(new RoundedBoxGeometry(1.6, 1.6, 1.1, 3, 0.1), plastic(0x2a302d)); body.position.y = 0.8; g.add(body);
-  const head = new THREE.Mesh(new RoundedBoxGeometry(1.7, 0.35, 1.2, 3, 0.08), plastic(0x3a423e)); head.position.y = 1.78; g.add(head);
-  const slot = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.04, 0.08), glow(0xb7f34a, 5)); slot.position.set(0, 1.97, 0); g.add(slot);
-  const led = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), glow(0xb7f34a, 6)); led.position.set(0.65, 1.8, 0.61); g.add(led);
-  const paper = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 1.2), new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide, roughness: 0.8 }));
-  paper.position.y = 2.6; g.add(paper);
-  const strips = [];
-  const sm = new THREE.MeshStandardMaterial({ color: 0xf2f2f2, side: THREE.DoubleSide });
-  for (let i = 0; i < 14; i++) { const s = new THREE.Mesh(new THREE.PlaneGeometry(0.05, 0.4), sm); s.userData.o = Math.random(); s.position.x = -0.45 + i * 0.07; g.add(s); strips.push(s); }
+  // clear collection bin (the paper lands in here)
+  const W = 1.5, D = 1.0, H = 1.15;
+  const clear = new THREE.MeshPhysicalMaterial({ color: 0xd6ecf5, roughness: 0.08, transparent: true, opacity: 0.28, clearcoat: 1, side: THREE.DoubleSide, depthWrite: false });
+  const frameM = plastic(0x2a302d);
+  const binBox = new THREE.Mesh(new THREE.BoxGeometry(W, H, D, 1, 1, 1), clear); binBox.position.y = H / 2 + 0.02; g.add(binBox);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W, H, D)), new THREE.LineBasicMaterial({ color: 0x3a423e }));
+  edges.position.copy(binBox.position); g.add(edges);
+  const floor = new THREE.Mesh(new RoundedBoxGeometry(W + 0.06, 0.06, D + 0.06, 2, 0.02), frameM); floor.position.y = 0.03; g.add(floor);
+  // shredded pile inside
+  const stripGeo = new THREE.BoxGeometry(0.035, 0.008, 0.34);
+  const paperM = new THREE.MeshStandardMaterial({ color: 0xf4f1e6, roughness: 0.85 });
+  const PILE = 260, pile = new THREE.InstancedMesh(stripGeo, paperM, PILE);
+  const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v = new THREE.Vector3(), one = new THREE.Vector3(1, 1, 1);
+  for (let i = 0; i < PILE; i++) {
+    const r = Math.random(), x = (Math.random() - 0.5) * (W - 0.15), z = (Math.random() - 0.5) * (D - 0.12);
+    const hump = 0.42 * (1 - Math.abs(x) / W) * (1 - Math.abs(z) / D);          // heap is higher in the middle
+    v.set(x, 0.08 + r * hump, z); e.set(Math.random() * 0.6, Math.random() * Math.PI, Math.random() * 0.6);
+    m4.compose(v, q.setFromEuler(e), one); pile.setMatrixAt(i, m4);
+  }
+  g.add(pile);
+  // shredder head sitting on the bin
+  const head = new THREE.Mesh(new RoundedBoxGeometry(W + 0.14, 0.38, D + 0.14, 3, 0.08), plastic(0x1f2622)); head.position.y = H + 0.21; g.add(head);
+  const slot = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.03, 0.07), new THREE.MeshStandardMaterial({ color: 0x050505 })); slot.position.y = H + 0.405; g.add(slot);
+  const slotGlow = new THREE.Mesh(new THREE.BoxGeometry(1.06, 0.012, 0.11), glow(0xb7f34a, 3)); slotGlow.position.y = H + 0.4; g.add(slotGlow);
+  const throat = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.03, 0.12), new THREE.MeshStandardMaterial({ color: 0x050505 })); throat.position.y = H + 0.01; g.add(throat);
+  const panel = new THREE.Mesh(new RoundedBoxGeometry(0.34, 0.2, 0.03, 2, 0.02), plastic(0x2f3833)); panel.position.set(0.52, H + 0.21, (D + 0.14) / 2 + 0.01); g.add(panel);
+  const led = new THREE.Mesh(new THREE.SphereGeometry(0.035, 10, 8), glow(0xb7f34a, 5)); led.position.set(0.44, H + 0.21, (D + 0.14) / 2 + 0.03); g.add(led);
+  const btn = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.03, 16), plastic(0xd61f2c)); btn.rotation.x = Math.PI / 2; btn.position.set(0.6, H + 0.21, (D + 0.14) / 2 + 0.03); g.add(btn);
+  // sheet being fed in from the top
+  const sheet = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 1.1), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8, side: THREE.DoubleSide }));
+  g.add(sheet);
+  // strips dropping from the throat into the bin
+  const FALL = 22, falling = new THREE.InstancedMesh(stripGeo, paperM, FALL), seeds = [];
+  for (let i = 0; i < FALL; i++) seeds.push({ o: Math.random(), x: (Math.random() - 0.5) * 0.9, z: (Math.random() - 0.5) * 0.08, spin: Math.random() * 6 });
+  g.add(falling);
   g.userData.update = t => {
-    paper.position.y = 2.0 + 0.8 * (1 - ((t * 0.3) % 1)); paper.scale.y = 1 - ((t * 0.3) % 1) * 0.6;
-    strips.forEach(s => { const k = (t * 0.6 + s.userData.o) % 1; s.position.set(s.position.x, 1.75 - k * 1.2, 0.7 + k * 0.6); s.rotation.set(k * 3, k * 2, 0); });
+    const k = (t * 0.28) % 1;                                 // one sheet every ~3.5 s
+    sheet.scale.y = 1 - k; sheet.position.set(0, H + 0.41 + 0.55 * (1 - k), 0);
+    const running = k < 0.95;
+    led.material.emissiveIntensity = (running ? 5 : 1) * DIM;
+    seeds.forEach((sd, i) => {
+      const f = (t * 0.9 + sd.o) % 1;                         // falls from the throat to the pile top
+      v.set(sd.x + Math.sin(f * 5 + sd.spin) * 0.05, H - 0.03 - f * (H - 0.5), sd.z + f * 0.15);
+      e.set(f * sd.spin, sd.spin, f * 2); m4.compose(v, q.setFromEuler(e), running ? one : v.clone().set(0, 0, 0)); falling.setMatrixAt(i, m4);
+    });
+    falling.instanceMatrix.needsUpdate = true;
   };
-  return shadow(g);
+  shadow(g); binBox.castShadow = false;                     // clear plastic shouldn't cast a solid shadow
+  return g;
 }
 
 // Stylised city + location pin (contact page)
@@ -836,7 +872,9 @@ export function stationSanitary() {
   const g = new THREE.Group();
   const pink = plastic(0xf6c9d8), white = plastic(0xffffff);
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.55, 1.5, 48), pink); body.position.y = 0.95; g.add(body);
-  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.635, 0.635, 0.12, 48), metal(0xdfe6e3, 0.2)); band.position.y = 1.64; g.add(band);
+  // open-ended band + recessed dark opening: no two faces share the top plane (that caused the stripes)
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.635, 0.635, 0.12, 48, 1, true), metal(0xdfe6e3, 0.2)); band.position.y = 1.64; g.add(band);
+  const mouth = new THREE.Mesh(new THREE.CircleGeometry(0.56, 48), new THREE.MeshStandardMaterial({ color: 0x2a1c22, roughness: 0.9 })); mouth.rotation.x = -Math.PI / 2; mouth.position.y = 1.712; g.add(mouth);
   const hinge = new THREE.Group(); hinge.position.set(0, 1.72, -0.62); g.add(hinge);
   const lid = new THREE.Mesh(new THREE.SphereGeometry(0.64, 48, 16, 0, Math.PI * 2, 0, Math.PI / 2), white); lid.scale.y = 0.3; lid.position.z = 0.62; hinge.add(lid);
   const base = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.6, 0.2, 48), white); base.position.y = 0.1; g.add(base);
@@ -866,7 +904,7 @@ export function stationEquipment(label) {
 // 06 documents: shredder + PDPA padlock shield hovering over a paper stack
 export function stationDocs() {
   const g = new THREE.Group();
-  const shred = makeShredder(); shred.position.x = -0.7; g.add(shred);
+  const shred = makeShredder(); shred.position.x = -0.6; g.add(shred);
   const stack = new THREE.Group(); stack.position.set(1.0, 0, 0.3);
   for (let i = 0; i < 8; i++) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.05, 1.2), new THREE.MeshStandardMaterial({ color: i % 2 ? 0xf4f1e6 : 0xffffff, roughness: 0.8 })); s.position.y = 0.03 + i * 0.055; s.rotation.y = (i % 3 - 1) * 0.05; stack.add(s); }
   g.add(stack);
