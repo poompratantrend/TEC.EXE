@@ -16,17 +16,17 @@ export const smooth = t => t * t * (3 - 2 * t);
 
 /* ------------------------------------------------------------------ STAGE */
 export function createStage(canvas, opt = {}) {
-  const { bloom = 0.5, fogNear = 14, fogFar = 46, cam = [0, 2, 12], fov = 40, bg = 0x04130d, fps = 30 } = opt;
+  const { bloom = 0.5, fogNear = 14, fogFar = 46, cam = [0, 2, 12], fov = 40, bg = 0x04130d, fps = 60 } = opt;
   let renderer;
   for (const o of [{ antialias: true, powerPreference: 'high-performance' }, { antialias: false }]) {
     try { renderer = new THREE.WebGLRenderer({ canvas, ...o }); break; } catch (e) { console.warn('WebGL init failed', o, e); }
   }
   if (!renderer) return null;
   const mobile = isMobile();
-  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.15 : 1.5));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));   // sharp on phones (iPhone is 3x; 2x is the sweet spot)
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.82;
-  renderer.shadowMap.enabled = !mobile;
+  renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
@@ -42,7 +42,7 @@ export function createStage(canvas, opt = {}) {
   const key = new THREE.DirectionalLight(0xffffff, 1.5);
   key.position.set(6, 10, 7);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048);
   Object.assign(key.shadow.camera, { left: -14, right: 14, top: 14, bottom: -14, near: 1, far: 40 });
   key.shadow.bias = -0.0006;
   key.shadow.normalBias = 0.05;   // removes striped self-shadowing (acne) on curved surfaces
@@ -51,7 +51,9 @@ export function createStage(canvas, opt = {}) {
   rim.position.set(-6, 5, -4);
   scene.add(rim);
 
-  const composer = new EffectComposer(renderer);
+  // MSAA render target: the post-processing chain otherwise drops anti-aliasing (jagged, "broken" edges)
+  const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: renderer.capabilities.isWebGL2 ? 4 : 0 });
+  const composer = new EffectComposer(renderer, rt);
   composer.addPass(new RenderPass(scene, camera));
   const bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), bloom, 0.4, 1.15);
   composer.addPass(bloomPass);
@@ -61,6 +63,7 @@ export function createStage(canvas, opt = {}) {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h, false);
+    composer.setPixelRatio(renderer.getPixelRatio());
     composer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
