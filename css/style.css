@@ -441,3 +441,6 @@ footer{padding-bottom:calc(40px + var(--sab))}
 html.menu-open,html.menu-open body{overflow:hidden;touch-action:none}
 html.menu-open{scroll-snap-type:none}
 @media (max-width:980px){.nav.open ul{max-height:calc(100svh - 120px - var(--sat));overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}}
+
+/* Thai word units (see thaiBreak in common.js): never split inside a unit */
+.thw{white-space:nowrap}

@@ -82,6 +82,54 @@
     setTimeout(() => { location.href = a.href; }, 220);
   });
 
+  // Thai line breaking: browsers break Thai anywhere their dictionary allows (e.g. "ทางการ / แพทย์").
+  // Split into words, re-join known phrases, glue short connectors to the next word, and only allow breaks between those units.
+  (() => {
+    if (!('Segmenter' in Intl)) return;
+    const seg = new Intl.Segmenter('th', { granularity: 'word' });
+    const PHRASES = ['ทางการแพทย์', 'ขยะติดเชื้อ', 'ขยะอันตราย', 'มูลฝอยติดเชื้อ', 'ครบวงจร', 'ถูกต้อง', 'ตามกฎหมาย', 'ตามกฎกระทรวง',
+      'ทุกขั้นตอน', 'มาตรฐาน', 'ไว้ใจได้', 'อุณหภูมิสูง', 'ควบคุมอุณหภูมิ', 'เตาเผา', 'ใบเสนอราคา', 'สถานพยาบาล', 'ผู้ประกอบการ',
+      'ศูนย์กำจัด', 'ปลอดมลพิษ', 'ผ้าอนามัย', 'เอกสารสำคัญ', 'ถังบรรจุ', 'ทำความสะอาด', 'เก็บขน', 'ขั้นตอน', 'โปร่งใส', 'ตรวจสอบได้',
+      'ตรวจสอบย้อนกลับได้', 'จัดเก็บ', 'ผู้เชี่ยวชาญ', 'เทร็นด์ อินเตอร์เทรด', 'โรงพยาบาล', 'การแพร่เชื้อ', 'จังหวัดใกล้เคียง', 'กรุงเทพฯ', 'ปริมณฑล',
+      'เรียลไทม์', 'ต้นทาง', 'รายแรก', 'ประเทศไทย', 'นายกรัฐมนตรี', 'ติดเชื้อ', 'อันตราย', 'การจัดการ', 'บริการ', 'ของคุณ', 'วันนี้'];
+    const GLUE = new Set(['และ', 'ของ', 'ด้วย', 'ตาม', 'ให้', 'จาก', 'สู่', 'ที่', 'ใน', 'กับ', 'หรือ', 'แก่', 'โดย', 'การ', 'ความ', 'ทาง', 'ผู้']);
+    const maxLen = Math.max(...PHRASES.map(p => p.length));
+    const units = text => {
+      const w = [...seg.segment(text)].map(s => s.segment);
+      const out = [];
+      for (let i = 0; i < w.length;) {
+        let j = i + 1, best = i + 1, acc = w[i];
+        while (j < w.length && (acc + w[j]).length <= maxLen) { acc += w[j]; j++; if (PHRASES.includes(acc)) best = j; }
+        out.push(w.slice(i, best).join('')); i = best;
+      }
+      const merged = [];                                   // connectors stick to what follows
+      out.forEach(u => { const prev = merged[merged.length - 1]; if (prev !== undefined && GLUE.has(prev.trim()) && !/\s$/.test(prev)) merged[merged.length - 1] = prev + u; else merged.push(u); });
+      return merged;
+    };
+    const fix = el => {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), nodes = [];
+      while (walker.nextNode()) if (/[฀-๿]/.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
+      nodes.forEach(n => {
+        const frag = document.createDocumentFragment();
+        units(n.nodeValue).forEach((u, k) => {
+          if (k) frag.appendChild(document.createElement('wbr'));
+          if (/^\s+$/.test(u)) { frag.appendChild(document.createTextNode(u)); return; }
+          const sp = document.createElement('span'); sp.className = 'thw'; sp.textContent = u; frag.appendChild(sp);
+        });
+        n.replaceWith(frag);
+      });
+    };
+    let runs = 0;
+    window.thaiBreak = root => {
+      if (++runs > 400) return;                           // safety valve
+      let n = 0;
+      (root || document).querySelectorAll('h1,h2,h3,.lead,p,.k,figcaption b,.svc-panel p,.card p,.chapter-head p').forEach(el => { if (!el.dataset.thw) { el.dataset.thw = 1; fix(el); n++; } });
+    };
+    thaiBreak();
+    let queued = false;                                 // content injected later (service panel, gallery) gets the same treatment
+    new MutationObserver(() => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; thaiBreak(); }); } }).observe(document.body, { childList: true, subtree: true });
+  })();
+
   // reveal + counters
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (!e.isIntersecting) return;
