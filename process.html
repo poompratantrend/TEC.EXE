@@ -8,46 +8,21 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=34">
+<link rel="stylesheet" href="css/style.css?v=35">
 </head>
-<body data-scene="process" style="background:var(--deep)">
+<body data-scene="process">
 
-<div class="scrolly" id="scrolly">
-  <div class="sticky">
-    <canvas class="stage" id="stage"></canvas>
-    <nav class="stepnav" id="stepnav" aria-label="ขั้นตอน">
-      <button class="arr" data-go="-1" aria-label="ขั้นก่อนหน้า">▲</button>
-      <button class="dot" data-step="0" aria-label="ขั้นที่ 1 คัดแยก"><i>1</i><span>คัดแยก</span></button>
-      <button class="dot" data-step="1" aria-label="ขั้นที่ 2 ขนส่ง"><i>2</i><span>ขนส่ง</span></button>
-      <button class="dot" data-step="2" aria-label="ขั้นที่ 3 เผาทำลาย"><i>3</i><span>เผาทำลาย</span></button>
-      <button class="dot" data-step="3" aria-label="ขั้นที่ 4 รายงาน"><i>4</i><span>รายงาน</span></button>
-      <button class="arr" data-go="1" aria-label="ขั้นถัดไป">▼</button>
-    </nav>
+<header class="hero">
+  <canvas class="stage" id="stage"></canvas>
+  <div class="wrap explorer">
+    <div>
+      <span class="tag" style="color:var(--lime)">กระบวนการ 4 ขั้นตอน</span>
+      <div class="svc-list" id="stepList"></div>
+    </div>
+    <div class="svc-panel" id="stepPanel"></div>
   </div>
-  <div class="panels wrap">
-    <div class="panel"><div class="box">
-      <span class="tag" style="color:var(--lime)">กระบวนการ · เลื่อน หรือเลือกขั้นตอน</span>
-      <div class="n">1</div><h2>คัดแยก &amp; บรรจุที่ต้นทาง</h2>
-      <p>ขยะติดเชื้อจากคลินิกถูกคัดแยกลงถังบรรจุมาตรฐาน พร้อมอบรมบุคลากรให้คัดแยกได้ถูกต้องตั้งแต่ต้นทาง แล้วยกถังขึ้นรถ</p>
-      <img src="assets/bin-bag.png" alt="" style="object-fit:contain;background:#fff">
-    </div></div>
-    <div class="panel"><div class="box">
-      <div class="n">2</div><h2>เก็บขนด้วยรถควบคุมอุณหภูมิ</h2>
-      <p>รถเก็บขนควบคุมอุณหภูมิตามกฎหมาย ออกเดินทางจากคลินิกสู่ศูนย์กำจัด ติดตามการเดินรถแบบเรียลไทม์ด้วยระบบ GPS</p>
-      <img src="assets/gallery-26.jpg" alt="">
-    </div></div>
-    <div class="panel"><div class="box">
-      <div class="n">3</div><h2>เผาทำลายด้วยอุณหภูมิสูง</h2>
-      <p>ถึงศูนย์กำจัด ขยะติดเชื้อเข้าเตาเผาอุณหภูมิสูงปลอดมลพิษ ตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545</p>
-      <img src="assets/gallery-4.jpg" alt="">
-    </div></div>
-    <div class="panel"><div class="box">
-      <div class="n">4</div><h2>รายงานผลด้วย E-Manifest</h2>
-      <p>กำกับการขนส่งด้วยเอกสาร Manifest และระบบ E-Manifest ตรวจสอบย้อนกลับได้ทุกขั้นตอน</p>
-      <div class="cta"><a href="contact.html#form" class="btn btn-lime">เริ่มใช้บริการ</a></div>
-    </div></div>
-  </div>
-</div>
+  <div class="svc-arrows"><button data-go="-1" aria-label="ขั้นก่อนหน้า">‹</button><span id="stepCount">1 / 4</span><button data-go="1" aria-label="ขั้นถัดไป">›</button></div>
+</header>
 
 <section style="background:var(--bg)">
   <div class="wrap">
@@ -61,29 +36,44 @@
   </div>
 </section>
 
-<script src="js/common.js?v=34"></script>
+<script src="js/common.js?v=35"></script>
 <script>
-// step navigation: panels + dots + arrows + keyboard. Jumps are instant (no scroll-dragging);
-// the 3D camera eases along the road on its own, so a jump still plays as one continuous trip.
+// steps work like the services page: tap / arrows / keys / swipe. The 3D travels continuously to the chosen step.
 (() => {
-  const sc = document.getElementById('scrolly'), panels = [...sc.querySelectorAll('.panel')], dots = [...document.querySelectorAll('#stepnav .dot')];
-  const N = panels.length - 1;
-  window.processProgress = () => Math.max(0, Math.min(N, (scrollY - sc.offsetTop) / innerHeight));
-  const cur = () => Math.round(processProgress());
-  const upd = () => { const i = cur(); panels.forEach((p, k) => p.classList.toggle('on', k === i)); dots.forEach((d, k) => d.classList.toggle('on', k === i)); };
-  addEventListener('scroll', upd, { passive: true }); upd();
-  const go = i => { i = Math.max(0, Math.min(N, i)); scrollTo({ top: sc.offsetTop + i * innerHeight, behavior: 'instant' }); upd(); };
-  document.getElementById('stepnav').addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.step) go(+b.dataset.step); else go(cur() + +b.dataset.go);
-  });
+  const STEPS = [
+    { t: 'คัดแยก & บรรจุที่ต้นทาง', d: 'ขยะติดเชื้อจากคลินิกถูกคัดแยกลงถังบรรจุมาตรฐาน พร้อมอบรมบุคลากรให้คัดแยกได้ถูกต้อง แล้วยกขึ้นรถ', img: 'assets/bin-bag.png', contain: true },
+    { t: 'เก็บขนด้วยรถควบคุมอุณหภูมิ', d: 'รถเก็บขนควบคุมอุณหภูมิตามกฎหมาย ออกจากคลินิกสู่ศูนย์กำจัด ติดตามการเดินรถแบบเรียลไทม์ด้วย GPS', img: 'assets/gallery-26.jpg' },
+    { t: 'เผาทำลายด้วยอุณหภูมิสูง', d: 'ถึงศูนย์กำจัด ขยะติดเชื้อเข้าเตาเผาอุณหภูมิสูงปลอดมลพิษ ตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545', img: 'assets/gallery-4.jpg' },
+    { t: 'รายงานผลด้วย E-Manifest', d: 'กำกับการขนส่งด้วยเอกสาร Manifest และระบบ E-Manifest ตรวจสอบย้อนกลับได้ทุกขั้นตอน', img: 'assets/gallery-19.jpg' }
+  ];
+  const list = document.getElementById('stepList'), panel = document.getElementById('stepPanel');
+  list.innerHTML = STEPS.map((s, i) => `<button data-i="${i}"><i>0${i + 1}</i>${s.t}</button>`).join('');
+  let cur = -1, auto = true;
+  window.processProgress = () => Math.max(0, cur);
+  const pick = (i, user) => {
+    if (user) auto = false;
+    i = (i + STEPS.length) % STEPS.length; if (i === cur) return; cur = i;
+    list.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    list.children[i].scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
+    const s = STEPS[i];
+    panel.innerHTML = `<div class="fade"><img src="${s.img}" alt=""${s.contain ? ' class="contain"' : ''}><h3>${s.t}</h3><p>${s.d}</p>
+      <div class="cta" style="margin-top:14px"><a class="btn btn-lime" href="contact.html#form">เริ่มใช้บริการ</a></div></div>`;
+    document.getElementById('stepCount').textContent = `${i + 1} / ${STEPS.length}`;
+  };
+  list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(+b.dataset.i, true); });
+  document.querySelector('.svc-arrows').addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(cur + +b.dataset.go, true); });
   addEventListener('keydown', e => {
-    const r = sc.getBoundingClientRect(); if (r.bottom < innerHeight * 0.5 || e.target.closest?.('input,textarea,select')) return;
-    if (['ArrowDown', 'ArrowRight', 'PageDown'].includes(e.key)) { e.preventDefault(); go(cur() + 1); }
-    if (['ArrowUp', 'ArrowLeft', 'PageUp'].includes(e.key) && cur() > 0) { e.preventDefault(); go(cur() - 1); }
+    if (e.target.closest?.('input,textarea,select') || document.querySelector('.hero').getBoundingClientRect().bottom < 200) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); pick(cur + 1, true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); pick(cur - 1, true); }
   });
+  let sx = null; const hero = document.querySelector('.hero');
+  hero.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  hero.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50 && !e.target.closest('.svc-list')) pick(cur + (dx < 0 ? 1 : -1), true); sx = null; });
+  pick(0);
+  setInterval(() => { if (auto) pick(cur + 1); }, 7000);
 })();
 </script>
-<script src="js/dist/scene.js?v=34"></script>
+<script src="js/dist/scene.js?v=35"></script>
 </body>
 </html>

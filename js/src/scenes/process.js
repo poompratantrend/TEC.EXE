@@ -47,7 +47,7 @@ export default function process(canvas) {
   const inc = makeIncinerator(); inc.position.copy(B.p).addScaledVector(B.side, -6.8); inc.rotation.y = faceTo(B.side); scene.add(inc);
   inc.updateMatrixWorld(true);
   const mouthW = inc.localToWorld(new THREE.Vector3(-0.7, 1.05, 1.9));
-  const holo = makeHolo(); holo.position.copy(B.p).addScaledVector(B.side, -2).addScaledVector(B.tan, 8); holo.rotation.y = faceTo(B.side); scene.add(holo);
+  const holo = makeHolo(); holo.position.copy(B.p).addScaledVector(B.side, -2.6).addScaledVector(B.tan, 4.2); holo.rotation.y = faceTo(B.side); scene.add(holo);   // pops up right beside the parked truck
 
   // cute waste: one crew hops into the bin, another jumps from the truck into the furnace
   const crewA = makeCuteWaste().slice(0, 6), crewB = makeCuteWaste().slice(6);
@@ -63,8 +63,8 @@ export default function process(canvas) {
   const pulses = Array.from({ length: 22 }, (_, i) => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 8), pulseM); m.userData.o = i / 22; scene.add(m); return m; });
 
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.07, w, h);   // full-screen backdrop behind the glass cards
-    else camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
+    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.02, w, h);
+    else camera.setViewOffset(w, h, w * 0.02, 0, w, h);             // list on the left, details on the right (same as services)
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));
 
@@ -74,7 +74,8 @@ export default function process(canvas) {
   const up = new THREE.Vector3(0, 1, 0);
 
   S.onFrame((t, dt) => {
-    prog += (progress() - prog) * (1 - Math.exp(-dt * 2.6));   // eased: arrow jumps glide instead of snapping
+    const target = progress();
+    prog += (target - prog) * (1 - Math.exp(-dt * 1.4));        // glides through every step in between
     const p = prog, zoom = isMobile() ? 1.9 : 1;
 
     // truck along the road
@@ -82,8 +83,8 @@ export default function process(canvas) {
     const T = at(u);
     truck.position.copy(T.p).addScaledVector(T.side, -0.95);   // drive on the left (Thailand)
     truck.rotation.y = faceTo(T.tan) - Math.PI / 2;
-    const moving = Math.abs(u - lastU) > 1e-5; lastU = u;
-    truck.userData.update(t, moving ? 1.8 : 0);
+    const du = u - lastU; lastU = u;
+    truck.userData.update(t, Math.abs(du) > 1e-5 ? 1.8 * Math.sign(du) : 0);   // reverses when going back
     truck.updateMatrixWorld(true);
     const truckBack = truck.localToWorld(new THREE.Vector3(-2.4, 1.6, 0));
 
@@ -119,10 +120,10 @@ export default function process(canvas) {
 
     // camera: blend between four shots; the middle one chases the truck so the story never cuts
     const shots = [
-      { l: tmpL.copy(binHome).addScaledVector(A.tan, -1).setY(1.8).clone(), o: A.side.clone().multiplyScalar(15).addScaledVector(A.tan, 5).addScaledVector(up, 6.5) },
-      { l: truck.position.clone().setY(1.3), o: T.side.clone().multiplyScalar(8).addScaledVector(T.tan, -7).addScaledVector(up, 4.2) },
-      { l: inc.position.clone().lerp(B.p, 0.3).setY(2.8), o: B.side.clone().multiplyScalar(14).addScaledVector(B.tan, 5).addScaledVector(up, 5) },
-      { l: holo.position.clone().setY(3.1), o: B.side.clone().multiplyScalar(9).addScaledVector(B.tan, 1).addScaledVector(up, 1.8) }
+      { l: tmpL.copy(binHome).lerp(truck.position, 0.5).setY(1.6).clone(), o: A.side.clone().multiplyScalar(15).addScaledVector(A.tan, 3).addScaledVector(up, 6.5) },
+      { l: truck.position.clone().setY(1.3), o: T.side.clone().multiplyScalar(9).addScaledVector(T.tan, -6).addScaledVector(up, 4.5) },
+      { l: inc.position.clone().lerp(truck.position, 0.55).setY(2.2), o: B.side.clone().multiplyScalar(15).addScaledVector(B.tan, 4).addScaledVector(up, 5.5) },
+      { l: holo.position.clone().lerp(truck.position, 0.4).setY(2.4), o: B.side.clone().multiplyScalar(12).addScaledVector(B.tan, 2).addScaledVector(up, 3) }
     ];
     const keys = [0, 1.25, 2.05, 3];
     let i = 0; while (i < 2 && p > keys[i + 1]) i++;
