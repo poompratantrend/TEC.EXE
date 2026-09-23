@@ -685,22 +685,31 @@ function canvasTex(w, h, draw) {
 let _bagTex;
 function bagTexture() {
   if (_bagTex) return _bagTex;
-  return (_bagTex = canvasTex(512, 256, (x, w, h) => {
+  // canvas wraps once around the bag (~3.5 units) and spans its height (~1.04), so 1024x288 keeps shapes round
+  return (_bagTex = canvasTex(1024, 288, (x, w, h) => {
     x.fillStyle = '#d8232f'; x.fillRect(0, 0, w, h);
-    // black biohazard mark + text printed on the front (u = 0.5 faces +z)
-    x.save(); x.translate(w / 2, h * 0.5); x.fillStyle = '#141414'; x.strokeStyle = '#141414';
+    const R = 46;                                         // standard biohazard trefoil, drawn in black
+    x.save(); x.translate(w / 2, h * 0.44); x.fillStyle = '#141414';
     for (let i = 0; i < 3; i++) {
       x.save(); x.rotate(i * Math.PI * 2 / 3);
-      x.beginPath(); x.arc(0, -26, 26, 0, Math.PI * 2); x.fill();
-      x.globalCompositeOperation = 'destination-out'; x.beginPath(); x.arc(0, -33, 19, 0, Math.PI * 2); x.fill();
-      x.restore();
+      x.beginPath(); x.arc(0, -R * 0.44, R * 0.48, 0, Math.PI * 2); x.fill();
+      x.globalCompositeOperation = 'destination-out';
+      x.beginPath(); x.arc(0, -R * 0.56, R * 0.35, 0, Math.PI * 2); x.fill();
+      x.globalCompositeOperation = 'source-over'; x.restore();
     }
+    x.globalCompositeOperation = 'destination-out';
+    x.beginPath(); x.arc(0, 0, R * 0.16, 0, Math.PI * 2); x.fill();
     x.globalCompositeOperation = 'source-over';
-    x.lineWidth = 6; x.beginPath(); x.arc(0, 0, 21, 0, Math.PI * 2); x.stroke();
-    x.fillStyle = '#d8232f'; x.beginPath(); x.arc(0, 0, 8, 0, Math.PI * 2); x.fill();
+    x.strokeStyle = '#141414'; x.lineWidth = R * 0.09;
+    for (let i = 0; i < 3; i++) {                         // broken inner ring between the blades
+      const a = i * Math.PI * 2 / 3 + Math.PI / 6;
+      x.beginPath(); x.arc(0, 0, R * 0.34, a + 0.28, a + Math.PI * 2 / 3 - 0.28); x.stroke();
+    }
     x.restore();
-    x.fillStyle = '#141414'; x.font = 'bold 22px Prompt, sans-serif'; x.textAlign = 'center';
-    x.fillText('ขยะติดเชื้อ', w / 2, h * 0.5 + 62);
+    x.fillStyle = '#141414'; x.textAlign = 'center';
+    x.font = 'bold 30px Prompt, sans-serif'; x.fillText('ขยะติดเชื้อ', w / 2, h * 0.44 + R + 38);
+    x.font = 'bold 17px Prompt, sans-serif'; x.fillText('INFECTIOUS WASTE', w / 2, h * 0.44 + R + 60);
+    x.fillStyle = 'rgba(0,0,0,.08)'; for (let i = 0; i < 40; i++) x.fillRect(i * 26, 0, 2, h); // faint film texture
   }));
 }
 function redBag(s = 1) {
@@ -731,7 +740,7 @@ function redBag(s = 1) {
 export function stationInfectious(label) {
   const g = new THREE.Group();
   const bin = makeBin(label); g.add(bin);
-  [[-1.25, 0.3, 0.8], [1.2, 0.2, 0.9], [1.0, -0.6, 0.65]].forEach(([x, z, s]) => { const b = redBag(s); b.position.set(x, 0, z); b.rotation.y = x; g.add(b); });
+  [[-1.25, 0.3, 0.8], [1.2, 0.2, 0.9], [1.0, -0.6, 0.65]].forEach(([x, z, s]) => { const b = redBag(s); b.position.set(x, 0, z); b.rotation.y = x * 0.18; g.add(b); });
   g.userData.update = t => { bin.userData.lid.rotation.x = -Math.max(0, Math.sin(t * 1.3)) * 1.1; };
   return g;
 }

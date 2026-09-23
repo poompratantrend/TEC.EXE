@@ -63,7 +63,7 @@ export default function services(canvas) {
 
     // truck drives along the road (just ahead of the camera focus), parks at the chosen station
     const tf = at(Math.min(0.99, Math.max(0.01, uNow + 0.038 * dir)));   // parks just past the station
-    truck.position.copy(tf.p).addScaledVector(tf.side, -0.5);
+    truck.position.copy(tf.p).addScaledVector(tf.side, -0.8 * dir);   // left lane for whichever way it's heading
     truck.rotation.y = faceTo(tf.tan.clone().multiplyScalar(dir)) - Math.PI / 2;
     truck.userData.update(t, k < 1 ? 2 : 0);
 

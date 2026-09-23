@@ -80,7 +80,8 @@ export default function process(canvas) {
     // truck along the road
     const u = U0 + (U1 - U0) * seg(p, 0.6, 1.9);
     const T = at(u);
-    truck.position.copy(T.p); truck.rotation.y = faceTo(T.tan) - Math.PI / 2;
+    truck.position.copy(T.p).addScaledVector(T.side, -0.95);   // drive on the left (Thailand)
+    truck.rotation.y = faceTo(T.tan) - Math.PI / 2;
     const moving = Math.abs(u - lastU) > 1e-5; lastU = u;
     truck.userData.update(t, moving ? 1.8 : 0);
     truck.updateMatrixWorld(true);
