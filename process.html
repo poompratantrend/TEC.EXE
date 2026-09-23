@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=35">
+<link rel="stylesheet" href="css/style.css?v=36">
 </head>
 <body data-scene="process">
 
@@ -36,7 +36,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=35"></script>
+<script src="js/common.js?v=36"></script>
 <script>
 // steps work like the services page: tap / arrows / keys / swipe. The 3D travels continuously to the chosen step.
 (() => {
@@ -54,7 +54,9 @@
     if (user) auto = false;
     i = (i + STEPS.length) % STEPS.length; if (i === cur) return; cur = i;
     list.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
-    list.children[i].scrollIntoView({ inline: 'nearest', block: 'nearest', behavior: 'smooth' });
+    // keep the chosen chip visible by scrolling only the chip row (scrollIntoView would also move the page)
+    const chip = list.children[i];
+    if (chip && list.scrollWidth > list.clientWidth) list.scrollTo({ left: chip.offsetLeft - list.clientWidth / 2 + chip.offsetWidth / 2, behavior: 'smooth' });
     const s = STEPS[i];
     panel.innerHTML = `<div class="fade"><img src="${s.img}" alt=""${s.contain ? ' class="contain"' : ''}><h3>${s.t}</h3><p>${s.d}</p>
       <div class="cta" style="margin-top:14px"><a class="btn btn-lime" href="contact.html#form">เริ่มใช้บริการ</a></div></div>`;
@@ -74,6 +76,6 @@
   setInterval(() => { if (auto) pick(cur + 1); }, 7000);
 })();
 </script>
-<script src="js/dist/scene.js?v=35"></script>
+<script src="js/dist/scene.js?v=36"></script>
 </body>
 </html>

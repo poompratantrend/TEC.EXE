@@ -11,7 +11,7 @@ body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--deep
 @keyframes pageIn{from{opacity:0}}
 body.leaving{opacity:0}
 h1,h2,h3,h4,.btn,.nav a,.eyebrow,.num,.tag{font-family:"Prompt",sans-serif}
-h1,h2,h3{text-wrap:balance;word-break:normal;overflow-wrap:break-word}
+h1,h2,h3{word-break:normal;overflow-wrap:break-word}   /* no text-wrap:balance: with the Thai no-break units it can hang the layout */
 p,li,b,span,a,label,small{overflow-wrap:break-word}
 .nw{white-space:nowrap}
 a{color:inherit;text-decoration:none}
