@@ -8,7 +8,7 @@ export default function contact(canvas) {
   const city = makeCity(isMobile() ? 140 : 260, 40); scene.add(city);
   scene.add(makeDust(500, 40));
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.clearViewOffset();
+    if (isMobile()) camera.setViewOffset(w, h, 0, -h * 0.2, w, h);
     else camera.setViewOffset(w, h, -w * 0.22, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));

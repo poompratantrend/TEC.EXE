@@ -63,7 +63,7 @@ export default function process(canvas) {
   const pulses = Array.from({ length: 22 }, (_, i) => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 8), pulseM); m.userData.o = i / 22; scene.add(m); return m; });
 
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.16, w, h);   // scene in the upper half, text card below
+    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.07, w, h);   // full-screen backdrop behind the glass cards
     else camera.setViewOffset(w, h, -w * 0.18, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));

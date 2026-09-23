@@ -18,7 +18,7 @@ export default function about(canvas) {
   const spot = new THREE.SpotLight(0xe8fff0, 28, 20, 0.45, 0.5); spot.position.set(0, 10, 4); spot.target = trophy; scene.add(spot);
 
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.clearViewOffset();
+    if (isMobile()) camera.setViewOffset(w, h, 0, -h * 0.17, w, h);
     else camera.setViewOffset(w, h, -w * 0.24, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));
@@ -33,7 +33,7 @@ export default function about(canvas) {
       if (i === 0) o.rotateY(t * 2);
     });
     rings.userData.update(t);
-    camera.position.set(mouse.x * 1.5, 3.5 - mouse.y, isMobile() ? 24 : 13.5);
+    camera.position.set(mouse.x * 1.5, 3.5 - mouse.y, isMobile() ? 21 : 13.5);
     camera.lookAt(0, 2.4, 0);
   });
   return S;

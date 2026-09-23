@@ -20,7 +20,7 @@ export default function home(canvas) {
 
   S.onResize.push((w, h) => {
     // model sits right of the text on desktop, below it on mobile
-    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.06, w, h);
+    if (isMobile()) camera.setViewOffset(w, h, 0, -h * 0.17, w, h);   // model in the lower part, text on top
     else camera.setViewOffset(w, h, -w * 0.17, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));
@@ -51,7 +51,7 @@ export default function home(canvas) {
     truck.rotation.y = Math.atan2(-Math.cos(a) * RZ, -Math.sin(a) * RX); // face along the path
     truck.userData.update(t, 1.2);
     const sc = Math.min(scrollY / innerHeight, 1);
-    const z = isMobile() ? 21 : 15;
+    const z = isMobile() ? 18 : 15;
     camera.position.set(mouse.x * 2.2, 3.9 - mouse.y * 1.0 + sc * 3, z + sc * 4);
     camera.lookAt(0, 2.9 - sc, 0);
   });

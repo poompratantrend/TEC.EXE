@@ -45,7 +45,7 @@ export default function services(canvas) {
   const pulses = Array.from({ length: 18 }, (_, i) => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), pulseM); m.userData.o = i / 18; scene.add(m); return m; });
 
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.1, w, h);
+    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.02, w, h);
     else camera.setViewOffset(w, h, w * 0.02, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));
