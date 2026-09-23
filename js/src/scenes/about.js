@@ -18,7 +18,7 @@ export default function about(canvas) {
   const spot = new THREE.SpotLight(0xe8fff0, 28, 20, 0.45, 0.5); spot.position.set(0, 10, 4); spot.target = trophy; scene.add(spot);
 
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.setViewOffset(w, h, 0, -h * 0.22, w, h);
+    if (isMobile()) camera.clearViewOffset();
     else camera.setViewOffset(w, h, -w * 0.24, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));

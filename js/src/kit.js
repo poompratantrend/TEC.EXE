@@ -16,14 +16,14 @@ export const smooth = t => t * t * (3 - 2 * t);
 
 /* ------------------------------------------------------------------ STAGE */
 export function createStage(canvas, opt = {}) {
-  const { bloom = 0.5, fogNear = 14, fogFar = 46, cam = [0, 2, 12], fov = 40, bg = 0x04130d } = opt;
+  const { bloom = 0.5, fogNear = 14, fogFar = 46, cam = [0, 2, 12], fov = 40, bg = 0x04130d, fps = 30 } = opt;
   let renderer;
   for (const o of [{ antialias: true, powerPreference: 'high-performance' }, { antialias: false }]) {
     try { renderer = new THREE.WebGLRenderer({ canvas, ...o }); break; } catch (e) { console.warn('WebGL init failed', o, e); }
   }
   if (!renderer) return null;
   const mobile = isMobile();
-  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.3 : 1.75));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.15 : 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.82;
   renderer.shadowMap.enabled = !mobile;
@@ -73,7 +73,6 @@ export function createStage(canvas, opt = {}) {
   // checked every frame (an IntersectionObserver could report a stale "hidden" on load and freeze the scene)
   const onScreen = () => { const r = canvas.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight && r.width > 0; };
 
-  const clock = new THREE.Clock();
   const stage = { THREE, scene, camera, renderer, composer, key, rim, mouse, mobile, frames: [], onResize: [], onReady: null,
     onFrame(fn) { this.frames.push(fn); } };
   let first = true, failed = false;
@@ -82,10 +81,13 @@ export function createStage(canvas, opt = {}) {
   new ResizeObserver(resize).observe(canvas);
   resize();
 
-  renderer.setAnimationLoop(() => {
-    const dt = Math.min(clock.getDelta(), 0.05);
+  // capped at `fps` (30): every animation is time-based, so it looks the same at 24/30/60 fps
+  let last = 0;
+  renderer.setAnimationLoop(now => {
+    if (now - last < 1000 / fps - 2) return;
+    const dt = Math.min((now - last) / 1000, 0.1); last = now;
     if (document.hidden || !onScreen()) return;
-    const t = clock.elapsedTime;
+    const t = now / 1000;
     mouse.x = lerp(mouse.x, mouse.tx, 0.05);
     mouse.y = lerp(mouse.y, mouse.ty, 0.05);
     if (failed) return;
@@ -129,6 +131,7 @@ const shadow = o => { o.traverse(m => { if (m.isMesh) { m.castShadow = true; m.r
 
 /* Floating dust / sparks */
 export function makeDust(n = 600, spread = 30, color = 0x7dffb2, size = 0.09) {
+  if (isMobile()) n = Math.round(n * 0.45);
   const g = new THREE.BufferGeometry(), p = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) { p[i * 3] = (Math.random() - 0.5) * spread; p[i * 3 + 1] = Math.random() * spread * 0.45; p[i * 3 + 2] = (Math.random() - 0.5) * spread; }
   g.setAttribute('position', new THREE.BufferAttribute(p, 3));

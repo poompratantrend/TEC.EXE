@@ -45,7 +45,7 @@ export default function services(canvas) {
   const pulses = Array.from({ length: 18 }, (_, i) => { const m = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), pulseM); m.userData.o = i / 18; scene.add(m); return m; });
 
   S.onResize.push((w, h) => {
-    if (isMobile()) camera.setViewOffset(w, h, 0, -h * 0.02, w, h);
+    if (isMobile()) camera.setViewOffset(w, h, 0, h * 0.1, w, h);
     else camera.setViewOffset(w, h, w * 0.02, 0, w, h);
   });
   S.onResize.forEach(f => f(canvas.clientWidth, canvas.clientHeight));
@@ -71,7 +71,7 @@ export default function services(canvas) {
     const st = items[sel].g.position;
     const arrive = smooth(Math.max(0, (k - 0.55) / 0.45));
     look.copy(f.p).lerp(st, 0.35 + 0.45 * arrive).setY(1.5);
-    const zoom = isMobile() ? 2.1 : 1;
+    const zoom = isMobile() ? 1.35 : 1;
     const off = f.side.clone().multiplyScalar(9.5 * zoom).addScaledVector(up, (4.0 + Math.sin(Math.PI * k) * 2.2) * zoom);
     camera.position.copy(look).add(off).add(new THREE.Vector3(mouse.x * 1.2, -mouse.y * 0.8, 0));
     camera.lookAt(look);
