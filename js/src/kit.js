@@ -238,7 +238,7 @@ export function makeTruck(logoTex) {
   const glass = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.55, 1.4), new THREE.MeshPhysicalMaterial({ color: 0x0b1a14, roughness: 0.05, metalness: 0.5 }));
   glass.position.set(2.42, 1.48, 0); g.add(glass);
   const chassis = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.26, 1.34), dark); chassis.position.set(0.1, 0.55, 0); g.add(chassis);
-  const wheels = [];
+  const wheels = [], tails = [];
   const tire = new THREE.MeshStandardMaterial({ color: 0x121212, roughness: 0.85 });
   const hub = metal(0xaab4b0, 0.3);
   for (const x of [-1.45, 1.6]) for (const z of [0.72, -0.72]) {
@@ -249,7 +249,7 @@ export function makeTruck(logoTex) {
   }
   for (const z of [0.52, -0.52]) {
     const hl = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.16, 0.3), glow(0xfff1c4, 6)); hl.position.set(2.44, 0.82, z); g.add(hl);
-    const tl = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.14, 0.24), glow(0xff2a2a, 4)); tl.position.set(-2.16, 0.78, z); g.add(tl);
+    const tl = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.14, 0.24), glow(0xff2a2a, 4)); tl.position.set(-2.16, 0.78, z); g.add(tl); tails.push(tl);
   }
   // GPS pin
   const pin = new THREE.Group(); pin.position.set(0, 3.6, 0);
@@ -262,7 +262,8 @@ export function makeTruck(logoTex) {
   g.add(pin);
   g.userData = { wheels, pin, pulse };
   g.userData.update = (t, speed = 1) => {
-    wheels.forEach(w => { w.rotation.z -= 0.12 * speed; });
+    wheels.forEach(w => { w.rotation.z -= 0.12 * speed; });          // speed < 0 = reversing
+    tails.forEach(l => { l.material.emissiveIntensity = (speed < 0 ? 9 : 4) * DIM; });
     pin.position.y = 3.6 + Math.sin(t * 3) * 0.15; pin.rotation.y = t * 1.5;
     const s = 1 + ((t * 0.8) % 1) * 3; pulse.scale.setScalar(s); pulse.material.opacity = 1 - ((t * 0.8) % 1);
   };
@@ -779,8 +780,26 @@ function redBag(s = 1) {
 export function stationInfectious(label) {
   const g = new THREE.Group();
   const bin = makeBin(label); g.add(bin);
+  // same show as the home page: cute waste spirals out while the lid is open, then dives back in
+  const toys = makeCuteWaste().slice(0, 7);
+  toys.forEach((o, i) => { o.visible = false; o.userData.dir = i % 2 ? 1 : -1; o.userData.a0 = i * 2.4; g.add(o); });
   [[-1.25, 0.3, 0.8], [1.2, 0.2, 0.9], [1.0, -0.6, 0.65]].forEach(([x, z, s]) => { const b = redBag(s); b.position.set(x, 0, z); b.rotation.y = x * 0.18; g.add(b); });
-  g.userData.update = t => { bin.userData.lid.rotation.x = -Math.max(0, Math.sin(t * 1.3)) * 1.1; };
+  const P = 6.8, OPEN = 0.5, CLOSE = 4.9, FLY = 2.4, GAP = 0.22, MOUTH = 2.3;
+  const c01 = v => Math.max(0, Math.min(1, v));
+  g.userData.update = t => {
+    const ph = t % P;
+    bin.userData.lid.rotation.x = -smooth(c01((ph - 0.1) / 0.4)) * (1 - smooth(c01((ph - CLOSE) / 0.45))) * 1.25;
+    toys.forEach((o, i) => {
+      const u = (ph - OPEN - i * GAP) / FLY;
+      if (u <= 0 || u >= 1) { o.visible = false; return; }
+      o.visible = true;
+      const k = Math.sin(Math.PI * u), d = o.userData, ang = d.a0 + d.dir * u * Math.PI * 2.2, r = 1.55 * k;
+      o.position.set(Math.cos(ang) * r, MOUTH - 0.2 + 0.55 * Math.pow(k, 0.7), Math.sin(ang) * r * 0.7 + 0.8 * k);   // orbit around the bin, stays in frame
+      const pop = Math.min(1, u * 9, (1 - u) * 9), st = 1 + Math.cos(Math.PI * u) * 0.12;
+      o.scale.set(0.6 * pop / Math.sqrt(st), 0.6 * pop * st, 0.6 * pop);
+      o.rotation.set(Math.sin(t * 3 + i) * 0.25, Math.sin(t * 2 + i) * 0.5, d.dir * u * Math.PI * 1.5);
+    });
+  };
   return g;
 }
 // 02 hazardous: orange hazardous-waste bin + what actually goes in it —

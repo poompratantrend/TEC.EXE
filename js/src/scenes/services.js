@@ -62,17 +62,18 @@ export default function services(canvas) {
     const f = at(uNow), dir = Math.sign(uTo - uFrom) || 1;
 
     // truck drives along the road (just ahead of the camera focus), parks at the chosen station
-    const tf = at(Math.min(0.99, Math.max(0.01, uNow + 0.038 * dir)));   // parks just past the station
-    truck.position.copy(tf.p).addScaledVector(tf.side, -0.8 * dir);   // left lane for whichever way it's heading
-    truck.rotation.y = faceTo(tf.tan.clone().multiplyScalar(dir)) - Math.PI / 2;
-    truck.userData.update(t, k < 1 ? 2 : 0);
+    // always faces forward along the road; going back to an earlier station it reverses instead of U-turning
+    const tf = at(Math.min(0.99, Math.max(0.01, uNow + 0.038)));
+    truck.position.copy(tf.p).addScaledVector(tf.side, -0.8);            // left lane
+    truck.rotation.y = faceTo(tf.tan) - Math.PI / 2;
+    truck.userData.update(t, k < 1 ? 2 * dir : 0);
 
     // camera: focus drifts from road to the station while arriving
     const st = items[sel].g.position;
     const arrive = smooth(Math.max(0, (k - 0.55) / 0.45));
-    look.copy(f.p).lerp(st, 0.35 + 0.45 * arrive).setY(1.5);
+    look.copy(f.p).lerp(st, 0.35 + 0.45 * arrive).setY(1.9);
     const zoom = isMobile() ? 1.35 : 1;
-    const off = f.side.clone().multiplyScalar(9.5 * zoom).addScaledVector(up, (4.0 + Math.sin(Math.PI * k) * 2.2) * zoom);
+    const off = f.side.clone().multiplyScalar(11.5 * zoom).addScaledVector(up, (4.3 + Math.sin(Math.PI * k) * 2.2) * zoom);
     camera.position.copy(look).add(off).add(new THREE.Vector3(mouse.x * 1.2, -mouse.y * 0.8, 0));
     camera.lookAt(look);
 
