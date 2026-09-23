@@ -6,8 +6,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;background:#04130d;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-@media (max-width:980px){html,body{touch-action:pan-x pan-y}}   /* phones: no pinch-zoom, page keeps its layout */
-body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden;animation:pageIn .45s both;transition:opacity .22s}
+@media (max-width:980px){html,body{touch-action:pan-y}.svc-list,.lb .strip,.filters{touch-action:pan-x pan-y}}   /* phones: no pinch-zoom, page keeps its layout */
+body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--deep);color:var(--ink);line-height:1.7;overflow-x:clip;animation:pageIn .45s both;transition:opacity .22s}
 @keyframes pageIn{from{opacity:0}}
 body.leaving{opacity:0}
 h1,h2,h3,h4,.btn,.nav a,.eyebrow,.num,.tag{font-family:"Prompt",sans-serif}
@@ -371,3 +371,34 @@ footer .soc{width:26px;height:26px;padding:5px;border-radius:8px}
 .badges span,.btn-ghost{background:rgba(4,19,13,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
 .hero h1,.hero p.lead{text-shadow:0 2px 16px rgba(0,0,0,.65)}
 @media (max-width:980px){.hero .svc-panel{background:linear-gradient(180deg,rgba(4,19,13,.2),rgba(4,19,13,.72))}}
+
+/* the 3D runs edge to edge up to the top of the screen on every page (same feel as the process page) */
+.hero::before{display:none!important}
+.hero::after{display:none!important}
+.hero h1,.hero p.lead,.hero .eyebrow{text-shadow:0 2px 18px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}
+.hero p.lead{color:#e3efe8}
+/* process: step 4 holds for one more scroll before the page moves on */
+.scrolly .panel:last-child{height:200svh;align-items:flex-start}
+.scrolly .panel:last-child .box{position:sticky;top:calc(50svh - 120px)}
+@media (max-width:980px){.scrolly .panel:last-child .box{top:calc(100svh - 350px);margin-top:calc(100svh - 350px)}}
+
+/* page canvas is dark everywhere (zoom-out / overscroll never shows white); content blocks carry their own light background */
+body>section:not(.dark),body>.stats{background:var(--bg)}
+body>.stats{background:linear-gradient(transparent 80px,var(--bg) 80px)}
+@media (max-width:980px){body>.stats{background:var(--bg);padding-top:20px;margin-top:0}}
+/* no sideways drift: clip (not hidden) so position:sticky keeps working */
+html,body{max-width:100%;overflow-x:clip;overscroll-behavior-x:none}
+
+/* short phones (e.g. 360x640): tighten type so every scene fits one screen */
+@media (max-width:980px) and (max-height:720px){
+  .hero .hero-content{padding-top:84px!important}
+  .hero h1{font-size:1.5rem;line-height:1.25}
+  .hero .cta{gap:8px}.hero .cta .btn{padding:10px 16px;font-size:.88rem}
+  .scrolly .panel .box{padding:18px 20px}
+  .scrolly .box h2{font-size:1.3rem;margin-bottom:6px}
+  .scrolly .box p{font-size:.88rem;line-height:1.55}
+  .scrolly .box .n{width:32px;height:32px;margin-bottom:8px}
+  .scrolly .panel:last-child .box{top:calc(100svh - 300px);margin-top:calc(100svh - 300px)}
+  .hero .svc-panel h3{font-size:1.1rem}
+  .svc-list button{padding:8px 12px}
+}
