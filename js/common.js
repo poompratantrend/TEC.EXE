@@ -39,6 +39,11 @@
 
   document.querySelectorAll('[data-ico]').forEach(el => { el.classList.add('soc', 'soc-' + el.dataset.ico); el.innerHTML = icon(el.dataset.ico); });
 
+  // iOS Safari ignores user-scalable=no; block its pinch gesture and double-tap zoom explicitly
+  ['gesturestart', 'gesturechange'].forEach(ev => document.addEventListener(ev, e => e.preventDefault(), { passive: false }));
+  let lastTouch = 0;
+  document.addEventListener('touchend', e => { const now = Date.now(); if (now - lastTouch < 300 && !e.target.closest('a,button,input,select,textarea')) e.preventDefault(); lastTouch = now; }, { passive: false });
+
   const nav = document.getElementById('nav');
   nav.querySelector('.burger').onclick = () => nav.classList.toggle('open');
   const onScroll = () => nav.classList.toggle('scrolled', scrollY > 40);

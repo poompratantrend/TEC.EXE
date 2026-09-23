@@ -5,7 +5,8 @@
   --radius:22px; --shadow:0 20px 60px -20px rgba(6,40,24,.25);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:#04130d;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+@media (max-width:980px){html,body{touch-action:pan-x pan-y}}   /* phones: no pinch-zoom, page keeps its layout */
 body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:hidden;animation:pageIn .45s both;transition:opacity .22s}
 @keyframes pageIn{from{opacity:0}}
 body.leaving{opacity:0}
