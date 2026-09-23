@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f4f8f5">
+<title>กระบวนการ — I-TEC</title>
+<link rel="icon" href="assets/trend-e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=v2-1">
+</head>
+<body data-scene="process">
+
+<header class="hero">
+  <canvas class="stage" id="stage"></canvas>
+  <div class="wrap explorer">
+    <div>
+      <span class="tag" style="color:var(--lime)">กระบวนการ 4 ขั้นตอน</span>
+      <div class="svc-list" id="stepList"></div>
+    </div>
+    <div class="svc-panel" id="stepPanel"></div>
+  </div>
+  <div class="svc-arrows"><button data-go="-1" aria-label="ขั้นก่อนหน้า">‹</button><span id="stepCount">1 / 4</span><button data-go="1" aria-label="ขั้นถัดไป">›</button></div>
+</header>
+
+<section style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sec-head rv"><div><span class="tag">สรุป</span><h2>4 ขั้นตอน โปร่งใส ตรวจสอบได้</h2></div><p>ทีมงานผ่านการฝึกอบรมการป้องกันและระงับการแพร่เชื้อจากมูลฝอยติดเชื้อ</p></div>
+    <div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(230px,1fr))">
+      <article class="card tilt"><span class="num">01</span><div class="thumb contain"><img src="assets/bin-bag.png" alt="" loading="lazy"></div><div class="body"><h3>คัดแยก &amp; บรรจุ</h3><p>ถังและถุงแดงมาตรฐาน</p></div></article>
+      <article class="card tilt"><span class="num">02</span><div class="thumb"><img src="assets/gallery-26.jpg" alt="" loading="lazy"></div><div class="body"><h3>เก็บขน</h3><p>รถควบคุมอุณหภูมิ + GPS</p></div></article>
+      <article class="card tilt"><span class="num">03</span><div class="thumb"><img src="assets/gallery-4.jpg" alt="" loading="lazy"></div><div class="body"><h3>เผาทำลาย</h3><p>เตาเผาอุณหภูมิสูงปลอดมลพิษ</p></div></article>
+      <article class="card tilt"><span class="num">04</span><div class="thumb"><img src="assets/gallery-19.jpg" alt="" loading="lazy"></div><div class="body"><h3>รายงานผล</h3><p>Manifest / E-Manifest</p></div></article>
+    </div>
+  </div>
+</section>
+
+<script src="js/common.js?v=v2-1"></script>
+<script>
+// steps work like the services page: tap / arrows / keys / swipe. The 3D travels continuously to the chosen step.
+(() => {
+  const STEPS = [
+    { t: 'คัดแยก & บรรจุที่ต้นทาง', d: 'ขยะติดเชื้อจากคลินิกถูกคัดแยกลงถังบรรจุมาตรฐาน พร้อมอบรมบุคลากรให้คัดแยกได้ถูกต้อง แล้วยกขึ้นรถ', img: 'assets/bin-bag.png', contain: true },
+    { t: 'เก็บขนด้วยรถควบคุมอุณหภูมิ', d: 'รถเก็บขนควบคุมอุณหภูมิตามกฎหมาย ออกจากคลินิกสู่ศูนย์กำจัด ติดตามการเดินรถแบบเรียลไทม์ด้วย GPS', img: 'assets/gallery-26.jpg' },
+    { t: 'เผาทำลายด้วยอุณหภูมิสูง', d: 'ถึงศูนย์กำจัด ขยะติดเชื้อเข้าเตาเผาอุณหภูมิสูงปลอดมลพิษ ตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545', img: 'assets/gallery-4.jpg' },
+    { t: 'รายงานผลด้วย E-Manifest', d: 'กำกับการขนส่งด้วยเอกสาร Manifest และระบบ E-Manifest ตรวจสอบย้อนกลับได้ทุกขั้นตอน', img: 'assets/gallery-19.jpg' }
+  ];
+  const list = document.getElementById('stepList'), panel = document.getElementById('stepPanel');
+  list.innerHTML = STEPS.map((s, i) => `<button data-i="${i}"><i>0${i + 1}</i>${s.t}</button>`).join('');
+  let cur = -1, auto = true;
+  window.processProgress = () => Math.max(0, cur);
+  const pick = (i, user) => {
+    if (user) auto = false;
+    i = (i + STEPS.length) % STEPS.length; if (i === cur) return; cur = i;
+    list.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    // keep the chosen chip visible by scrolling only the chip row (scrollIntoView would also move the page)
+    const chip = list.children[i];
+    if (chip && list.scrollWidth > list.clientWidth) list.scrollTo({ left: chip.offsetLeft - list.clientWidth / 2 + chip.offsetWidth / 2, behavior: 'smooth' });
+    const s = STEPS[i];
+    panel.innerHTML = `<div class="fade"><img src="${s.img}" alt=""${s.contain ? ' class="contain"' : ''}><h3>${s.t}</h3><p>${s.d}</p>
+      <div class="cta" style="margin-top:14px"><a class="btn btn-lime" href="contact.html#form">เริ่มใช้บริการ</a></div></div>`;
+    document.getElementById('stepCount').textContent = `${i + 1} / ${STEPS.length}`;
+  };
+  list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(+b.dataset.i, true); });
+  document.querySelector('.svc-arrows').addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(cur + +b.dataset.go, true); });
+  addEventListener('keydown', e => {
+    if (e.target.closest?.('input,textarea,select') || document.querySelector('.hero').getBoundingClientRect().bottom < 200) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); pick(cur + 1, true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); pick(cur - 1, true); }
+  });
+  let sx = null; const hero = document.querySelector('.hero');
+  hero.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  hero.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 50 && !e.target.closest('.svc-list')) pick(cur + (dx < 0 ? 1 : -1), true); sx = null; });
+  pick(0);
+  setInterval(() => { if (auto) pick(cur + 1); }, 7000);
+})();
+</script>
+<script src="js/dist/scene.js?v=v2-1"></script>
+</body>
+</html>
