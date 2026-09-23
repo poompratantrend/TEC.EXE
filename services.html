@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บริการ — I-TEC</title>
+<link rel="icon" href="assets/trend-e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=11">
+</head>
+<body data-scene="services">
+
+<header class="hero">
+  <canvas class="stage" id="stage"></canvas>
+  <div class="wrap explorer">
+    <div>
+      <span class="tag" style="color:var(--lime)">บริการของเรา</span>
+      <div class="svc-list" id="svcList"></div>
+    </div>
+    <div class="svc-panel" id="svcPanel"></div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head rv"><div><span class="tag">รายละเอียดบริการ</span><h2>บริการครบ จบในที่เดียว สำหรับสถานพยาบาลและผู้ประกอบการ</h2></div>
+      <p>ตั้งแต่ถังบรรจุ จนถึงการเผาทำลาย ทุกขั้นตอนมีเอกสารกำกับ ตรวจสอบย้อนกลับได้</p></div>
+    <div class="grid3" id="svcCards"></div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap"><div class="band rv">
+    <div><h2>ไม่แน่ใจว่าต้องใช้บริการไหน?</h2><p style="opacity:.85">บอกประเภทขยะและปริมาณ เราช่วยแนะนำให้</p></div>
+    <div class="cta" style="margin:0"><a href="contact.html#quote" class="btn btn-lime">ขอใบเสนอราคา</a></div>
+  </div></div>
+</section>
+
+<script>
+window.SERVICES = [
+  { t: 'กำจัดขยะติดเชื้อ', d: 'เก็บขนด้วยรถควบคุมอุณหภูมิตามกฎหมาย และทำลายเชื้อด้วยเตาเผาอุณหภูมิสูงปลอดมลพิษ', img: 'assets/gallery-14.jpg',
+    li: ['รถเก็บขนควบคุมอุณหภูมิ', 'ติดตามรถด้วย GPS', 'เอกสาร Manifest / E-Manifest'] },
+  { t: 'กำจัดขยะอันตราย', d: 'จัดการของเสียอันตรายจากสถานพยาบาลและผู้ประกอบการ อย่างถูกต้องตามหลักวิชาการ', img: 'assets/red-bins.jpg',
+    li: ['คัดแยกตามประเภท', 'ขนส่งโดยทีมที่ผ่านการอบรม', 'กำจัดถูกต้องตามกฎหมาย'] },
+  { t: 'อบรมการจัดการขยะติดเชื้อ', d: 'อบรมบุคลากรโรงพยาบาล เรื่องการคัดแยก การบรรจุ และการป้องกันการแพร่เชื้อ', img: 'assets/training.jpg',
+    li: ['สำหรับโรงพยาบาลและคลินิก', 'การป้องกันและระงับการแพร่เชื้อ', 'จัดอบรมได้ตามต้องการ'] },
+  { t: 'รับกำจัดผ้าอนามัย', d: 'บริการเก็บและกำจัดผ้าอนามัยจากผู้ประกอบการ อาคารสำนักงาน และห้างร้าน', img: 'assets/gallery-33.jpg',
+    li: ['สำหรับผู้ประกอบการ', 'เก็บตามรอบที่ตกลง', 'กำจัดอย่างถูกสุขลักษณะ'] },
+  { t: 'จำหน่ายอุปกรณ์ & ถังบรรจุ', d: 'ถังบรรจุมูลฝอยติดเชื้อ ถุงแดง และอุปกรณ์สำหรับการคัดแยกขยะ', img: 'assets/bins-set.png', contain: true,
+    li: ['ถังบรรจุมูลฝอยติดเชื้อ', 'ถุงแดง', 'อุปกรณ์คัดแยกขยะ'] },
+  { t: 'ทำลายเอกสารสำคัญ', d: 'ทำลายเอกสาร PDPA การเงิน และบัญชี อย่างปลอดภัย ไม่รั่วไหล', img: 'assets/truck-loading.jpg',
+    li: ['เอกสาร PDPA', 'เอกสารการเงิน / บัญชี', 'ขนย้ายอย่างปลอดภัย'] }
+];
+</script>
+<script src="js/common.js?v=11"></script>
+<script>
+// list, panel, detail cards (work even without WebGL)
+(() => {
+  const S = window.SERVICES, list = document.getElementById('svcList'), panel = document.getElementById('svcPanel');
+  list.innerHTML = S.map((s, i) => `<button data-i="${i}"><i>0${i + 1}</i>${s.t}</button>`).join('');
+  document.getElementById('svcCards').innerHTML = S.map((s, i) => `
+    <article class="card tilt"><span class="num">0${i + 1}</span>
+      <div class="thumb${s.contain ? ' contain' : ''}"><img src="${s.img}" alt="${s.t}" loading="lazy"></div>
+      <div class="body"><h3>${s.t}</h3><p>${s.d}</p><ul>${s.li.map(l => `<li>${l}</li>`).join('')}</ul></div>
+    </article>`).join('');
+  applyTilt();
+  let cur = -1, auto = true;
+  window.selectService = (i, user) => {
+    if (user) auto = false;
+    if (i === cur) return; cur = window.currentService = i;
+    list.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    const s = S[i];
+    panel.innerHTML = `<div class="fade"><img src="${s.img}" alt=""${s.contain ? ' class="contain"' : ''}><h3>${s.t}</h3><p>${s.d}</p>
+      <div class="cta" style="margin-top:14px"><a class="btn btn-lime" href="contact.html#quote">ขอราคาบริการนี้</a></div></div>`;
+    window.dispatchEvent(new CustomEvent('service', { detail: i }));
+  };
+  list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) selectService(+b.dataset.i, true); });
+  selectService(0);
+  setInterval(() => { if (auto) selectService((cur + 1) % S.length); }, 6500);
+})();
+</script>
+<script src="js/dist/scene.js?v=11"></script>
+</body>
+</html>

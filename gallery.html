@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ผลงาน — I-TEC</title>
+<link rel="icon" href="assets/trend-e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=11">
+<style>
+.g-hero{position:relative;background:radial-gradient(900px 500px at 75% 30%,#0f3a26,var(--deep) 70%);color:#fff;padding:150px 0 70px;overflow:hidden}
+.g-hero h1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.2;margin:16px 0 12px}
+.g-hero p{color:#b9cfc2;max-width:520px}
+.g-hero img{position:absolute;right:6%;bottom:-30px;height:300px;filter:drop-shadow(0 20px 40px rgba(0,0,0,.5));animation:bob 5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-12px)}}
+@media (max-width:980px){.g-hero img{display:none}}
+</style>
+</head>
+<body>
+
+<header class="g-hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>ผลงาน</span>
+    <h1>ภาพการทำงาน<span class="hl">จริง</span>ของทีม I-TEC</h1>
+    <p>การเก็บขน การทำความสะอาดถัง การขนส่ง และการเยี่ยมชมศูนย์กำจัด รวม <b id="count">30</b> ภาพ — แตะที่ภาพเพื่อดูขนาดใหญ่</p>
+  </div>
+  <img src="assets/mascot.png" alt="">
+</header>
+
+<section>
+  <div class="wrap"><div class="gal" id="gal"></div></div>
+</section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="ดูภาพ">
+  <button class="ctl x" aria-label="ปิด">✕</button>
+  <button class="ctl p" aria-label="ก่อนหน้า">‹</button>
+  <img class="main" alt="">
+  <button class="ctl n" aria-label="ถัดไป">›</button>
+  <span class="cnt"></span>
+  <div class="strip"></div>
+</div>
+
+<script src="js/common.js?v=11"></script>
+<script>
+(() => {
+  const nums = [1, 3, 4, 8, 9, 10, 11, 13, 14, 16, 19, 21, 25, 26, 28, 30, 31, 32, 33, 35, 38, 41, 42, 46, 47, 50, 52, 56, 59, 60];
+  const G = nums.map(n => `assets/gallery-${n}.jpg`);
+  document.getElementById('count').textContent = G.length;
+  const gal = document.getElementById('gal');
+  // fixed rhythm of big / wide / tall tiles so the grid looks designed, not random
+  const shape = i => ['w h', '', '', 'h', '', 'w', '', '', 'h', '', '', 'w'][i % 12];
+  gal.innerHTML = G.map((src, i) => `<button class="${shape(i)}" data-i="${i}" aria-label="ดูภาพที่ ${i + 1}"><img src="${src}" alt="ภาพการทำงาน I-TEC ${i + 1}" loading="lazy"></button>`).join('');
+
+  const lb = document.getElementById('lb'), main = lb.querySelector('.main'), cnt = lb.querySelector('.cnt'), strip = lb.querySelector('.strip');
+  strip.innerHTML = G.map((s, i) => `<img src="${s}" data-i="${i}" alt="" loading="lazy">`).join('');
+  let cur = 0;
+  const show = i => {
+    cur = (i + G.length) % G.length;
+    main.src = G[cur]; cnt.textContent = `${cur + 1} / ${G.length}`;
+    strip.querySelectorAll('img').forEach((im, k) => im.classList.toggle('on', k === cur));
+    strip.children[cur].scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    lb.classList.add('open'); document.body.style.overflow = 'hidden';
+  };
+  const close = () => { lb.classList.remove('open'); document.body.style.overflow = ''; };
+  gal.addEventListener('click', e => { const b = e.target.closest('button'); if (b) show(+b.dataset.i); });
+  strip.addEventListener('click', e => { const im = e.target.closest('img'); if (im) show(+im.dataset.i); });
+  lb.querySelector('.x').onclick = close;
+  lb.querySelector('.p').onclick = () => show(cur - 1);
+  lb.querySelector('.n').onclick = () => show(cur + 1);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(cur - 1);
+    if (e.key === 'ArrowRight') show(cur + 1);
+  });
+  let sx = null;
+  main.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  main.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); sx = null; });
+})();
+</script>
+</body>
+</html>
