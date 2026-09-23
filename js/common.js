@@ -13,8 +13,8 @@
   const header = `
   <nav class="nav" id="nav"><div class="wrap bar">
     <a href="index.html" class="logo"><img src="assets/trend-e.png" alt="I-TEC / TREND"><span>I-TEC<small>WASTE SOLUTIONS</small></span></a>
-    <ul>${PAGES.map(([h, t]) => `<li><a href="${h}"${h === here ? ' class="active"' : ''}>${t}</a></li>`).join('')}<li class="m-only"><a href="contact.html#quote">ขอใบเสนอราคา →</a></li><li class="m-only"><a href="https://line.me/ti/p/~@itecwaste" target="_blank" rel="noopener"><span class="soc soc-line">${icon('line')}</span>LINE @itecwaste</a></li></ul>
-    <a href="contact.html#quote" class="btn btn-lime">ขอใบเสนอราคา →</a>
+    <ul>${PAGES.map(([h, t]) => `<li><a href="${h}"${h === here ? ' class="active"' : ''}>${t}</a></li>`).join('')}<li class="m-only"><a href="contact.html#form">ขอใบเสนอราคา →</a></li><li class="m-only"><a href="https://line.me/ti/p/~@itecwaste" target="_blank" rel="noopener"><span class="soc soc-line">${icon('line')}</span>LINE @itecwaste</a></li></ul>
+    <a href="contact.html#form" class="btn btn-lime">ขอใบเสนอราคา →</a>
     <button class="burger" aria-label="เมนู">☰</button>
   </div></nav>`;
 
@@ -48,6 +48,12 @@
   nav.querySelector('.burger').onclick = () => nav.classList.toggle('open');
   const onScroll = () => nav.classList.toggle('scrolled', scrollY > 40);
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // arriving with #form (or any hash): re-scroll once fonts, nav and 3D have settled, so the layout shift doesn't leave us short
+  if (location.hash) {
+    const go = () => { const el = document.querySelector(location.hash); if (el) el.scrollIntoView({ block: 'start' }); };
+    addEventListener('load', () => { go(); setTimeout(go, 400); });
+  }
 
   // page fade transitions
   addEventListener('pageshow', () => document.body.classList.remove('leaving'));
