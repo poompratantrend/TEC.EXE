@@ -1,11 +1,11 @@
 :root{
-  --bg:#f4f8f5; --surface:#fff; --ink:#0c1f17; --ink-2:#44564d; --line:#dbe6df;
-  --brand:#0f8a4b; --brand-2:#2e9e62; --lime:#0f8a4b; --deep:#0b4d2c; --deep-2:#0e5c35; --mint:#e8f3ec; --brand-dark:#0b6b3a;
-  --glass:rgba(255,255,255,.72); --glass-line:rgba(15,138,75,.16);
+  --bg:#e6f0e9; --surface:#fff; --ink:#0a1c14; --ink-2:#34473d; --line:#c3d8ca;
+  --brand:#0f8a4b; --brand-2:#2e9e62; --lime:#0f8a4b; --deep:#0b4d2c; --deep-2:#0e5c35; --mint:#d9eadf; --brand-dark:#0b6b3a;
+  --glass:rgba(255,255,255,.9); --glass-line:rgba(15,138,75,.28);
   --radius:22px; --shadow:0 20px 60px -20px rgba(6,40,24,.25);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;background:#f4f8f5;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{scroll-behavior:smooth;background:#e6f0e9;overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media (max-width:980px){html,body{touch-action:pan-y}.svc-list,.lb .strip,.filters{touch-action:pan-x pan-y}}   /* phones: no pinch-zoom, page keeps its layout */
 body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:clip;animation:pageIn .45s both;transition:opacity .22s}
 @keyframes pageIn{from{opacity:0}}
@@ -20,7 +20,7 @@ img{max-width:100%;display:block}
 
 /* NAV */
 .nav{position:fixed;inset:14px 0 auto;z-index:50}
-.nav .bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 10px 8px 12px;border-radius:999px;background:rgba(255,255,255,.78);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--line);box-shadow:0 8px 30px -18px rgba(6,40,24,.35);transition:background .3s}
+.nav .bar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 10px 8px 12px;border-radius:999px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--line);box-shadow:0 10px 30px -16px rgba(6,40,24,.4);transition:background .3s}
 .nav.scrolled .bar{background:rgba(255,255,255,.95)}
 .logo{display:flex;align-items:center;gap:10px;color:var(--brand-dark);font-family:Prompt;font-weight:700;font-size:1.1rem;flex:none}
 .logo img{height:46px;width:46px;border-radius:12px;background:#fff;object-fit:contain;padding:2px;box-shadow:0 0 0 2px rgba(15,138,75,.45)}
@@ -41,7 +41,7 @@ img{max-width:100%;display:block}
 .btn-dark:hover{transform:translateY(-2px)}
 
 /* HERO (3D) */
-.hero{position:relative;min-height:100svh;background:radial-gradient(1200px 700px at 70% 40%,#ffffff,#eef6f1 45%,#e3efe7 80%);color:var(--ink);overflow:hidden;display:flex;align-items:center}
+.hero{position:relative;min-height:100svh;background:radial-gradient(1200px 700px at 70% 40%,#eef6f1,#dcebe1 45%,#cfe3d6 80%);color:var(--ink);overflow:hidden;display:flex;align-items:center}
 .hero.short{min-height:78svh}
 .stage{position:absolute;inset:0;width:100%;height:100%;display:block}
 .stage{opacity:0;transition:opacity 1s ease}
@@ -123,7 +123,7 @@ section{padding:100px 0;position:relative}
 .explorer{display:grid;grid-template-columns:300px 1fr;gap:30px;align-items:start;width:100%;min-height:100svh;padding:110px 0 70px}
 .svc-list{display:grid;gap:8px;position:relative;z-index:2}
 .svc-list button{display:flex;align-items:center;gap:12px;text-align:left;font:inherit;font-family:Prompt;font-size:.98rem;color:var(--ink);padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid var(--glass-line);cursor:pointer;backdrop-filter:blur(10px);transition:.25s}
-.svc-list button i{font-style:normal;font-size:.75rem;color:var(--ink-2);width:22px}
+.svc-list button i{font-style:normal;font-size:.75rem;color:var(--brand);font-weight:600;width:22px}
 .svc-list button:hover{border-color:var(--brand-2);color:var(--brand-dark)}
 .svc-list button.on{background:var(--brand);border-color:var(--brand);color:#fff;transform:translateX(6px)}
 .svc-list button.on i{color:#d5ecdf}
@@ -356,29 +356,32 @@ footer .soc{width:26px;height:26px;padding:5px;border-radius:8px}
 }
 
 /* process: the 3D scene is the backdrop for the step cards and step buttons (light glass, no solid boxes) */
-.scrolly .panel .box{background:linear-gradient(140deg,rgba(255,255,255,.9),rgba(255,255,255,.62) 70%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:rgba(15,138,75,.18);box-shadow:0 18px 50px -24px rgba(6,40,24,.35)}
+.scrolly .panel .box{background:rgba(255,255,255,.97);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);box-shadow:0 18px 50px -20px rgba(6,40,24,.45)}
 .scrolly .box p{color:var(--ink-2)}
 .scrolly .box img{box-shadow:0 10px 26px -12px rgba(6,40,24,.35)}
-.stepnav button{background:rgba(255,255,255,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);color:var(--ink-2)}
+.stepnav button{background:rgba(255,255,255,.95);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);color:var(--ink-2)}
 .stepnav .dot.on{background:#fff}
 @media (max-width:980px){.scrolly .panel .box{background:rgba(255,255,255,.9)}}
 
 /* glass choices everywhere: the 3D scene shows through lists, panels and buttons */
-.svc-list button{background:rgba(255,255,255,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line)}
+.svc-list button{background:rgba(255,255,255,.95);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);color:var(--ink);box-shadow:0 4px 14px -8px rgba(6,40,24,.35)}
 .svc-list button.on{background:var(--brand)}
-.svc-panel{background:linear-gradient(140deg,rgba(255,255,255,.92),rgba(255,255,255,.7) 75%);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:rgba(15,138,75,.18);box-shadow:0 18px 50px -24px rgba(6,40,24,.35)}
+.svc-panel{background:rgba(255,255,255,.97);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);box-shadow:0 18px 50px -20px rgba(6,40,24,.45)}
 .svc-panel p{color:var(--ink-2)}
-.svc-arrows{background:rgba(255,255,255,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);color:var(--ink-2)}
-.badges span,.btn-ghost{background:rgba(255,255,255,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.svc-arrows{background:rgba(255,255,255,.95);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-color:var(--line);color:var(--ink-2)}
+.badges span,.btn-ghost{background:rgba(255,255,255,.95);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .hero h1,.hero p.lead{text-shadow:0 1px 16px rgba(255,255,255,.9)}
 @media (max-width:980px){.hero .svc-panel{background:rgba(255,255,255,.9)}}
 
 /* the 3D runs edge to edge up to the top of the screen on every page (same feel as the process page) */
 .hero::before{display:none!important}
+/* V2: a soft mint veil behind the hero text so it never sits straight on busy 3D */
+.hero.has-model::before,.hero.short::before{display:block!important;background:linear-gradient(90deg,rgba(230,240,233,.92) 0%,rgba(230,240,233,.7) 34%,rgba(230,240,233,0) 58%)}
+@media (max-width:980px){.hero.has-model::before,.hero.short::before{background:linear-gradient(180deg,rgba(230,240,233,.95) 0%,rgba(230,240,233,.75) 30%,rgba(230,240,233,0) 48%)}}
 .hero::after{display:none!important}
 .hero h1,.hero p.lead{text-shadow:0 0 18px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.9)}
 .hero .eyebrow{text-shadow:none}
-.hero p.lead{color:var(--ink-2)}
+.hero p.lead{color:var(--ink);font-weight:400}
 /* process: step 4 holds for one more scroll before the page moves on */
 .scrolly .panel:last-child{height:200svh;align-items:flex-start}
 .scrolly .panel:last-child .box{position:sticky;top:calc(50svh - 120px)}
