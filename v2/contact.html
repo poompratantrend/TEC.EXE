@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v2-4">
+<link rel="stylesheet" href="css/style.css?v=v2-5">
 </head>
 <body data-scene="contact">
 
@@ -48,19 +48,26 @@
       <div class="qr"><img src="assets/line-qr.jpg" alt="LINE QR @itecwaste"><p>สแกนเพื่อแอดไลน์<br><b style="color:#fff">@itecwaste</b></p></div>
     </div>
 
-    <form class="form rv" id="form">
+    <form class="form rv" id="form" novalidate>
       <h3>ขอใบเสนอราคา</h3>
-      <label>ชื่อผู้ติดต่อ<input name="name" required placeholder="ชื่อ-นามสกุล"></label>
-      <label>เบอร์โทร<input name="tel" required type="tel" placeholder="0xx-xxx-xxxx"></label>
-      <label class="full">หน่วยงาน / สถานพยาบาล<input name="org" placeholder="ชื่อโรงพยาบาล คลินิก หรือบริษัท"></label>
-      <label>ประเภทบริการ<select name="svc"><option>กำจัดขยะติดเชื้อ</option><option>กำจัดขยะอันตราย</option><option>อบรมการจัดการขยะติดเชื้อ</option><option>รับกำจัดผ้าอนามัย</option><option>อุปกรณ์ &amp; ถังบรรจุ</option><option>ทำลายเอกสารสำคัญ</option></select></label>
+      <label class="full">หน่วยงาน (โรงพยาบาล / บริษัท / ศูนย์ / สถาบัน / คลินิก)<input name="org" required placeholder="ชื่อโรงพยาบาล คลินิก หรือบริษัท"></label>
+      <label>ชื่อ-สกุล / ตำแหน่ง ผู้ติดต่อ<input name="name" required placeholder="ชื่อ-นามสกุล, ตำแหน่ง"></label>
+      <label>เบอร์โทรศัพท์<input name="tel" required type="tel" inputmode="tel" placeholder="0xx-xxx-xxxx"></label>
+      <label>LINE ID<input name="lineid" required placeholder="ไว้ให้ทีมงานติดต่อกลับทาง LINE"></label>
+      <label>อีเมล<input name="email" required type="email" inputmode="email" placeholder="name@example.com"></label>
+      <label class="full">ที่อยู่<input name="address" required placeholder="เลขที่ ถนน แขวง/ตำบล เขต/อำเภอ"></label>
       <label>จังหวัด<select name="area" id="areaSel"></select></label>
-      <label class="full">รายละเอียดเพิ่มเติม<textarea name="msg" placeholder="ปริมาณโดยประมาณ ความถี่ในการเก็บ ฯลฯ"></textarea></label>
+      <label>จำนวนที่ต้องการจัดเก็บ (ครั้ง/เดือน)<input name="times" required type="number" min="1" inputmode="numeric" placeholder="เช่น 4"></label>
+      <label>ปริมาณน้ำหนักขยะ / เดือน<select name="weight" id="weightSel" required></select></label>
+      <label>ประเภทบริการ<select name="svc"><option>กำจัดขยะติดเชื้อ</option><option>กำจัดขยะอันตราย</option><option>อบรมการจัดการขยะติดเชื้อ</option><option>รับกำจัดผ้าอนามัย</option><option>อุปกรณ์ &amp; ถังบรรจุ</option><option>ทำลายเอกสารสำคัญ</option></select></label>
+      <label class="full">รายละเอียดเพิ่มเติม<textarea name="msg" placeholder="ถ้ามี เช่น ช่วงเวลาที่สะดวกให้เข้าเก็บ"></textarea></label>
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <div class="full cta" style="margin:0">
-        <button class="btn btn-line" type="submit" data-via="line"><span data-ico="line"></span>ส่งทาง LINE</button>
-        <button class="btn btn-dark" type="submit" data-via="mail"><span data-ico="mail"></span>ส่งทางอีเมล</button>
+        <button class="btn btn-lime" type="submit" data-via="form"><span data-ico="mail"></span>ส่งแบบฟอร์ม</button>
+        <button class="btn btn-line" type="submit" data-via="line" formnovalidate><span data-ico="line"></span>ส่งทาง LINE</button>
       </div>
-      <p class="ok">เปิดแอปเพื่อส่งข้อความแล้ว — กดส่งในแอปเพื่อยืนยัน</p>
+      <p class="full hint">ส่งแบบฟอร์ม: ข้อมูลถึงทีมงานทันที · ส่งทาง LINE: จะเปิดแอป LINE พร้อมข้อความ แล้วแตะ <b>ส่ง</b> อีกครั้ง (กรอกแค่ชื่อกับเบอร์โทรก็ได้)</p>
+      <p class="ok" id="formStatus" role="status"></p>
     </form>
   </div>
 </section>
@@ -72,7 +79,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v2-4"></script>
+<script src="js/common.js?v=v2-5"></script>
 <script>
 (() => {
   const AREAS = ['กรุงเทพมหานคร', 'นนทบุรี', 'ปทุมธานี', 'สมุทรปราการ', 'สมุทรสาคร', 'นครปฐม', 'พระนครศรีอยุธยา', 'ฉะเชิงเทรา', 'จังหวัดอื่นๆ'];
@@ -90,21 +97,41 @@
   box.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; pick(b.textContent); });
   sel.addEventListener('change', () => sel.value && pick(sel.value));
 
-  const form = document.getElementById('form');
-  let via = 'line';
-  form.querySelectorAll('[data-via]').forEach(b => b.addEventListener('click', () => { via = b.dataset.via; }));
-  form.addEventListener('submit', e => {
+  // quote form → the company's Google Form (answers land in its Sheet); LINE opens a ready-made chat message
+  const GFORM = 'https://docs.google.com/forms/d/e/1FAIpQLScwP_vdSIQa1W4WGCOKT7rJD0--Pq5Ez2L9Zi-oalqMyJP95w/formResponse';
+  const WEIGHTS = ['0-20  กิโลกรัม', 'ไม่เกิน 40 กิโลกรัม', 'ไม่เกิน 60 กิโลกรัม', 'ไม่เกิน 80 กิโลกรัม', 'มากกว่า 100 กิโลกรัม'];   // exactly as in the Google Form
+  const wsel = document.getElementById('weightSel');
+  wsel.innerHTML = '<option value="">— เลือก —</option>' + WEIGHTS.map(w => `<option value="${w}">${w.replace(/\s+/g, ' ')}</option>`).join('');
+  const form = document.getElementById('form'), status = document.getElementById('formStatus');
+  const say = (msg, bad) => { status.textContent = msg; status.classList.toggle('bad', !!bad); form.classList.add('sent'); };
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    const f = Object.fromEntries(new FormData(form));
-    const text = `ขอใบเสนอราคา\nชื่อ: ${f.name}\nโทร: ${f.tel}\nหน่วยงาน: ${f.org || '-'}\nบริการ: ${f.svc}\nจังหวัด: ${f.area || '-'}\nรายละเอียด: ${f.msg || '-'}`;
-    const url = via === 'line'
-      ? 'https://line.me/R/oaMessage/@itecwaste/?' + encodeURIComponent(text)
-      : 'mailto:otrend@hotmail.com?subject=' + encodeURIComponent('ขอใบเสนอราคา - ' + f.name) + '&body=' + encodeURIComponent(text);
-    window.open(url, '_blank');
-    form.classList.add('sent');
+    const via = e.submitter?.dataset.via || 'form', f = Object.fromEntries(new FormData(form));
+    if (f.website) return;                                   // bot filled the hidden field
+    const address = f.address + (f.area ? ` (${f.area})` : '');
+    if (via === 'line') {
+      for (const n of ['name', 'tel']) if (!form.elements[n].value.trim()) { form.elements[n].reportValidity(); return; }
+      const rows = [['หน่วยงาน', f.org], ['ชื่อ', f.name], ['โทร', f.tel], ['LINE ID', f.lineid], ['อีเมล', f.email], ['ที่อยู่', f.address && address],
+        ['บริการ', f.svc], ['เก็บ', f.times && f.times + ' ครั้ง/เดือน'], ['น้ำหนัก', f.weight && f.weight.replace(/\s+/g, ' ') + '/เดือน'], ['รายละเอียด', f.msg]];
+      const text = 'ขอใบเสนอราคา\n' + rows.filter(r => r[1]).map(([k, v]) => `${k}: ${v}`).join('\n');
+      window.open('https://line.me/R/oaMessage/@itecwaste/?' + encodeURIComponent(text), '_blank');
+      return say('เปิด LINE แล้ว — แตะ "ส่ง" ในแอป LINE เพื่อส่งข้อความถึงเรา');
+    }
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const body = new URLSearchParams({
+      'entry.1025691336': f.org, 'entry.1311699129': address, 'entry.1252970410': f.name, 'entry.1795757430': f.tel,
+      'entry.1517086429': f.lineid, 'entry.1275544601': f.email, 'entry.176561681': f.times, 'entry.1324727562': f.weight
+    });
+    const btn = e.submitter; btn.disabled = true;
+    try {
+      await fetch(GFORM, { method: 'POST', mode: 'no-cors', body });   // Google doesn't let other sites read the reply; a network error still throws
+      form.reset(); say('ส่งข้อมูลเรียบร้อย ขอบคุณที่ติดต่อ I-TEC ทีมงานจะติดต่อกลับโดยเร็ว');
+    } catch (err) {
+      say('ส่งไม่สำเร็จ กรุณาลองอีกครั้ง หรือกด "ส่งทาง LINE" / โทร 061-694-2944', true);
+    } finally { btn.disabled = false; }
   });
 })();
 </script>
-<script src="js/dist/scene.js?v=v2-4"></script>
+<script src="js/dist/scene.js?v=v2-5"></script>
 </body>
 </html>

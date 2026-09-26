@@ -464,3 +464,8 @@ body[data-scene=services] .explorer .tag,body[data-scene=process] .explorer .tag
 body[data-scene=about] .hero,body[data-scene=contact] .hero{background:linear-gradient(180deg,#5aa7df 0%,#9fd0ef 45%,#e4f1f6 70%,#8cc56a 71%,#7fb85f 100%)}
 body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.short::before{background:linear-gradient(90deg,rgba(236,246,251,.85) 0%,rgba(236,246,251,.6) 34%,rgba(236,246,251,0) 58%)}
 @media (max-width:980px){body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.short::before{background:linear-gradient(180deg,rgba(236,246,251,.9) 0%,rgba(236,246,251,.65) 30%,rgba(236,246,251,0) 48%)}}
+/* V2 quote form: honeypot, hint line, error state */
+.form .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.form .hint{font-size:.82rem;color:var(--ink-2);line-height:1.5;margin-top:-4px}
+.form .ok.bad{background:#fdecec;color:#b3261e}
+.form button:disabled{opacity:.6;cursor:wait}
