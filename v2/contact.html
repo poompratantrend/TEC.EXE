@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v2-6">
+<link rel="stylesheet" href="css/style.css?v=v2-7">
 </head>
 <body data-scene="contact">
 
@@ -53,8 +53,7 @@
       <label class="full">หน่วยงาน (โรงพยาบาล / บริษัท / ศูนย์ / สถาบัน / คลินิก)<input name="org" required placeholder="ชื่อโรงพยาบาล คลินิก หรือบริษัท"></label>
       <label>ชื่อ-สกุล / ตำแหน่ง ผู้ติดต่อ<input name="name" required placeholder="ชื่อ-นามสกุล, ตำแหน่ง"></label>
       <label>เบอร์โทรศัพท์<input name="tel" required type="tel" inputmode="tel" placeholder="0xx-xxx-xxxx"></label>
-      <label>LINE ID<input name="lineid" required placeholder="ไว้ให้ทีมงานติดต่อกลับทาง LINE"></label>
-      <label>อีเมล<input name="email" required type="email" inputmode="email" placeholder="name@example.com"></label>
+      <label class="full">อีเมล<input name="email" required type="email" inputmode="email" placeholder="name@example.com"></label>
       <label class="full">ที่อยู่<input name="address" required placeholder="เลขที่ ถนน แขวง/ตำบล เขต/อำเภอ"></label>
       <label>จังหวัด<select name="area" id="areaSel"></select></label>
       <label>จำนวนที่ต้องการจัดเก็บ (ครั้ง/เดือน)<input name="times" required type="number" min="1" inputmode="numeric" placeholder="เช่น 4"></label>
@@ -79,7 +78,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v2-6"></script>
+<script src="js/common.js?v=v2-7"></script>
 <script>
 (() => {
   const AREAS = ['กรุงเทพมหานคร', 'นนทบุรี', 'ปทุมธานี', 'สมุทรปราการ', 'สมุทรสาคร', 'นครปฐม', 'พระนครศรีอยุธยา', 'ฉะเชิงเทรา', 'จังหวัดอื่นๆ'];
@@ -111,26 +110,38 @@
     const address = f.address + (f.area ? ` (${f.area})` : '');
     if (via === 'line') {
       for (const n of ['name', 'tel']) if (!form.elements[n].value.trim()) { form.elements[n].reportValidity(); return; }
-      const rows = [['หน่วยงาน', f.org], ['ชื่อ', f.name], ['โทร', f.tel], ['LINE ID', f.lineid], ['อีเมล', f.email], ['ที่อยู่', f.address && address],
+      const rows = [['หน่วยงาน', f.org], ['ชื่อ', f.name], ['โทร', f.tel], ['อีเมล', f.email], ['ที่อยู่', f.address && address],
         ['บริการ', f.svc], ['เก็บ', f.times && f.times + ' ครั้ง/เดือน'], ['น้ำหนัก', f.weight && f.weight.replace(/\s+/g, ' ') + '/เดือน'], ['รายละเอียด', f.msg]];
       const text = 'ขอใบเสนอราคา\n' + rows.filter(r => r[1]).map(([k, v]) => `${k}: ${v}`).join('\n');
-      window.open('https://line.me/R/oaMessage/%40itecwaste/?' + encodeURIComponent(text), '_blank');
-      say('เปิด LINE แล้ว — แตะ "ส่ง" ในแอป LINE เพื่อส่งข้อความถึงเรา');
-      // fallback: some LINE apps turn Thai in a pre-filled message into "????" — let people copy and paste it instead
+      const url = 'https://line.me/R/oaMessage/%40itecwaste/?' + encodeURIComponent(text);   // all-ASCII link: nothing can mangle the Thai
       const copy = document.createElement('button');
-      copy.type = 'button'; copy.className = 'copy'; copy.textContent = 'ข้อความใน LINE อ่านไม่ออก? กดคัดลอก แล้ววางในแชต';
+      copy.type = 'button'; copy.className = 'copy'; copy.textContent = 'คัดลอกข้อความ (ไว้วางในแชตเอง)';
       copy.onclick = async () => {
         try { await navigator.clipboard.writeText(text); }
         catch { const ta = Object.assign(document.createElement('textarea'), { value: text }); document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
         copy.textContent = 'คัดลอกแล้ว — ไปวางในแชต @itecwaste ได้เลย';
       };
-      status.append(document.createElement('br'), copy);
+      if (matchMedia('(pointer: coarse)').matches) {         // phone / tablet: straight into the LINE app
+        window.open(url, '_blank');
+        say('เปิด LINE แล้ว — แตะ "ส่ง" ในแอป LINE เพื่อส่งข้อความถึงเรา');
+        status.append(document.createElement('br'), copy);
+        return;
+      }
+      // computer: LINE's own desktop page turns Thai into "????", so show our own QR of the link to scan with the phone
+      say('สแกน QR นี้ด้วยกล้องมือถือ → เปิด LINE พร้อมข้อความ แล้วแตะ "ส่ง"');
+      const img = new Image(); img.className = 'qrline'; img.alt = 'QR ส่งข้อความทาง LINE';
+      status.append(document.createElement('br'), img, document.createElement('br'), copy);
+      try {
+        if (!window.qrcode) await new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; sc.onload = ok; sc.onerror = no; document.head.append(sc); });
+        const qr = qrcode(0, 'L'); qr.addData(url); qr.make(); img.src = qr.createDataURL(6, 3);
+      } catch { img.remove(); window.open(url, '_blank'); say('เปิด LINE แล้ว — ถ้าข้อความเป็น ???? ให้กดคัดลอกแล้ววางในแชตเอง'); status.append(document.createElement('br'), copy); }
       return;
     }
     if (!form.checkValidity()) { form.reportValidity(); return; }
     const body = new URLSearchParams({
       'entry.1025691336': f.org, 'entry.1311699129': address, 'entry.1252970410': f.name, 'entry.1795757430': f.tel,
-      'entry.1517086429': f.lineid, 'entry.1275544601': f.email, 'entry.176561681': f.times, 'entry.1324727562': f.weight
+      'entry.1517086429': '-',   // LINE ID: no longer asked on the site, but still required in the Google Form
+      'entry.1275544601': f.email, 'entry.176561681': f.times, 'entry.1324727562': f.weight
     });
     const btn = e.submitter; btn.disabled = true;
     try {
@@ -142,6 +153,6 @@
   });
 })();
 </script>
-<script src="js/dist/scene.js?v=v2-6"></script>
+<script src="js/dist/scene.js?v=v2-7"></script>
 </body>
 </html>

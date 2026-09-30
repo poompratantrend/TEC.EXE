@@ -471,3 +471,4 @@ body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.sh
 .form button:disabled{opacity:.6;cursor:wait}
 .form .ok .copy{margin-top:8px;font:inherit;font-size:.88rem;font-weight:600;color:var(--brand-dark);background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
 .form .ok .copy:hover{border-color:var(--brand)}
+.form .ok .qrline{width:min(290px,100%);height:auto;image-rendering:pixelated;margin:10px 0 2px;border-radius:10px;background:#fff;box-shadow:0 0 0 1px var(--line)}
