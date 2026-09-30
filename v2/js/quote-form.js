@@ -38,11 +38,12 @@
     if (!navigator.geolocation) { locNote.textContent = 'เครื่องนี้หาตำแหน่งไม่ได้ วางลิงก์ Google Maps แทนได้'; return; }
     locNote.textContent = 'กำลังหาตำแหน่ง…';
     navigator.geolocation.getCurrentPosition(
-      p => { loc.value = `${p.coords.latitude.toFixed(6)},${p.coords.longitude.toFixed(6)}`; locNote.textContent = 'ได้ตำแหน่งแล้ว (ถ้ากรอกอยู่ที่หน่วยงาน)'; },
+      p => { loc.value = `${p.coords.latitude.toFixed(6)},${p.coords.longitude.toFixed(6)}`; form.elements.address.setCustomValidity(''); locNote.textContent = 'ได้ตำแหน่งแล้ว (ถ้ากรอกอยู่ที่หน่วยงาน)'; },
       () => { locNote.textContent = 'ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง วางลิงก์ Google Maps แทนได้'; },
       { enableHighAccuracy: true, timeout: 12000 });
   });
 
+  [form.elements.address, loc].forEach(el => el.addEventListener('input', () => form.elements.address.setCustomValidity('')));
   const postcode = $('qf-postcode');
   postcode.addEventListener('input', () => { postcode.value = postcode.value.replace(/\D/g, '').slice(0, 5); });
 
@@ -54,6 +55,9 @@
     e.preventDefault();
     status.hidden = true;
     if (form.elements.website.value) return;                 // honeypot
+    // an address OR a map location is enough for the truck to find the place
+    const addr = form.elements.address;
+    addr.setCustomValidity(addr.value.trim() || loc.value.trim() ? '' : 'พิมพ์ที่อยู่ หรือใส่ตำแหน่งบนแผนที่อย่างใดอย่างหนึ่ง');
     if (!form.checkValidity()) { form.reportValidity(); return; }
     const f = new FormData(form), one = k => (f.get(k) || '').toString().trim(), many = k => f.getAll(k).join(', ');
     const province = prov.value === OTHER ? one('province_other') : prov.value;

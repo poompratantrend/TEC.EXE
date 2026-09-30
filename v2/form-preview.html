@@ -9,7 +9,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v2-9">
+<link rel="stylesheet" href="css/style.css?v=v2-10">
 </head>
 <body>
 
@@ -38,11 +38,12 @@
         <select name="district" id="qf-district" required></select>
         <input name="district_other" id="qf-district-other" placeholder="พิมพ์เขต / อำเภอ" hidden></label>
       <label class="full" id="qf-province-other-row"><input name="province_other" id="qf-province-other" placeholder="พิมพ์ชื่อจังหวัด" hidden></label>
-      <label>รหัสไปรษณีย์ <span class="req">*</span><input name="postcode" id="qf-postcode" required inputmode="numeric" pattern="\d{5}" minlength="5" maxlength="5" placeholder="10160"></label>
-      <label>ที่อยู่ (เลขที่ ซอย ถนน)<input name="address" id="qf-address" placeholder="ถ้ามี"></label>
+      <label class="full">รหัสไปรษณีย์ <span class="req">*</span><input name="postcode" id="qf-postcode" required inputmode="numeric" pattern="\d{5}" minlength="5" maxlength="5" placeholder="10160"></label>
+      <label class="full">ที่อยู่ / จุดสังเกต <span class="req">*</span> <span class="opt">หรือใส่ตำแหน่งด้านล่างแทนก็ได้</span>
+        <textarea name="address" id="qf-address" rows="2" placeholder="เลขที่ ซอย ถนน แขวง/ตำบล หรือจุดสังเกต เช่น ตรงข้ามตลาด…"></textarea></label>
       <div class="full qf-loc">
-        <label for="qf-location">ตำแหน่งบนแผนที่ <span class="opt">ไม่บังคับ · ช่วยให้รถหาเจอง่าย</span></label>
-        <div class="qf-loc-row"><input name="location" id="qf-location" placeholder="วางลิงก์ Google Maps หรือกดปุ่ม"><button class="btn btn-ghost" type="button" id="qf-locate">ใช้ตำแหน่งปัจจุบัน</button></div>
+        <label for="qf-location">ตำแหน่งบนแผนที่ <span class="opt">ถ้าสะดวก · วางลิงก์ Google Maps หรือกดปุ่ม</span></label>
+        <div class="qf-loc-row"><input name="location" id="qf-location" placeholder="https://maps.app.goo.gl/…"><button class="btn btn-ghost" type="button" id="qf-locate">ใช้ตำแหน่งปัจจุบัน</button></div>
         <small id="qf-locate-note"></small>
       </div>
 
@@ -94,7 +95,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v2-9"></script>
-<script src="js/quote-form.js?v=v2-9"></script>
+<script src="js/common.js?v=v2-10"></script>
+<script src="js/quote-form.js?v=v2-10"></script>
 </body>
 </html>
