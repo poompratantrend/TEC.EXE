@@ -481,3 +481,33 @@ body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.sh
 .form .thanks a{color:var(--brand)}
 .form .thanks .btn{margin-top:8px}
 @keyframes pop{from{transform:scale(.3);opacity:0}}
+/* quote form (v2): sections, chips, location row */
+.qf-page{padding:calc(110px + var(--sat)) 0 70px;background:var(--bg)}
+.qf-wrap{max-width:760px;display:grid;gap:14px}
+.qf-banner{justify-self:start;background:#fff4dc;color:#7a5410;border-radius:999px;padding:6px 14px;font-size:.85rem;font-weight:600}
+.form.qf{grid-template-columns:1fr 1fr}
+.form.qf h4{font-family:Prompt;font-size:.95rem;color:var(--brand);letter-spacing:.3px;margin-top:10px;padding-top:12px;border-top:1px solid var(--line)}
+.form.qf h4:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.form.qf .qf-lead{color:var(--ink-2);font-size:.92rem;margin-top:-6px}
+.form.qf .req{color:#c8483a}
+.form.qf .opt{color:var(--ink-2);font-size:.78rem;font-weight:400}
+.form.qf fieldset{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px}
+.form.qf legend{font-size:.85rem;color:var(--ink-2);margin-bottom:8px;padding:0;width:100%}
+.qf-chips label{display:inline-flex;flex-direction:row;cursor:pointer}
+.qf-chips input{position:absolute;opacity:0;width:1px;height:1px}
+.qf-chips label>span{display:inline-block;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:.9rem;transition:.15s}
+.qf-chips input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff}
+.qf-chips input:focus-visible+span{outline:2px solid var(--brand);outline-offset:2px}
+.qf-loc{display:grid;gap:6px}
+.qf-loc>label{font-size:.85rem;color:var(--ink-2)}
+.qf-loc-row{display:flex;gap:8px;flex-wrap:wrap}
+.qf-loc-row input{flex:1 1 220px}
+.qf-loc-row .btn{padding:10px 16px}
+.qf-loc small{color:var(--ink-2);font-size:.8rem;min-height:1em}
+.form.qf .ok.bad[hidden]{display:none}
+.form.qf .ok.bad:not([hidden]){display:block}
+@media (max-width:620px){.form.qf{grid-template-columns:1fr}}
+.form.qf>label{display:block}
+.form.qf>label>input,.form.qf>label>select,.form.qf>label>textarea{display:block;margin-top:6px}
+.form.qf>label[hidden]{display:none}
+[hidden]{display:none!important}
