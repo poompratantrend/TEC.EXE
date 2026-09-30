@@ -511,3 +511,14 @@ body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.sh
 .form.qf>label>input,.form.qf>label>select,.form.qf>label>textarea{display:block;margin-top:6px}
 .form.qf>label[hidden]{display:none}
 [hidden]{display:none!important}
+/* contact: channels as a strip on top, the quote form full width below */
+.contact-grid.stack{grid-template-columns:1fr;gap:26px}
+.contact-grid.stack .panel-dark{display:grid;grid-template-columns:1fr auto;gap:14px 26px;align-items:start;padding:26px 28px}
+.contact-grid.stack .panel-dark .tag{grid-column:1/-1;margin:0}
+.contact-grid.stack .clist{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.contact-grid.stack .qr{flex-direction:column;align-items:center;text-align:center;margin:0;gap:8px}
+.contact-grid.stack .qr img{width:118px;height:118px}
+.contact-grid.stack .form{width:100%;max-width:900px;justify-self:center}
+@media (max-width:860px){.contact-grid.stack .panel-dark{grid-template-columns:1fr}.contact-grid.stack .qr{flex-direction:row;text-align:left;justify-content:flex-start}}
+@media (max-width:620px){.contact-grid.stack .panel-dark{padding:20px}}
+.contact-grid.stack .clist>a:last-child{grid-column:1/-1}
