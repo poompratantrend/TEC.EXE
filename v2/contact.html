@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v2-5">
+<link rel="stylesheet" href="css/style.css?v=v2-6">
 </head>
 <body data-scene="contact">
 
@@ -79,7 +79,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v2-5"></script>
+<script src="js/common.js?v=v2-6"></script>
 <script>
 (() => {
   const AREAS = ['กรุงเทพมหานคร', 'นนทบุรี', 'ปทุมธานี', 'สมุทรปราการ', 'สมุทรสาคร', 'นครปฐม', 'พระนครศรีอยุธยา', 'ฉะเชิงเทรา', 'จังหวัดอื่นๆ'];
@@ -114,8 +114,18 @@
       const rows = [['หน่วยงาน', f.org], ['ชื่อ', f.name], ['โทร', f.tel], ['LINE ID', f.lineid], ['อีเมล', f.email], ['ที่อยู่', f.address && address],
         ['บริการ', f.svc], ['เก็บ', f.times && f.times + ' ครั้ง/เดือน'], ['น้ำหนัก', f.weight && f.weight.replace(/\s+/g, ' ') + '/เดือน'], ['รายละเอียด', f.msg]];
       const text = 'ขอใบเสนอราคา\n' + rows.filter(r => r[1]).map(([k, v]) => `${k}: ${v}`).join('\n');
-      window.open('https://line.me/R/oaMessage/@itecwaste/?' + encodeURIComponent(text), '_blank');
-      return say('เปิด LINE แล้ว — แตะ "ส่ง" ในแอป LINE เพื่อส่งข้อความถึงเรา');
+      window.open('https://line.me/R/oaMessage/%40itecwaste/?' + encodeURIComponent(text), '_blank');
+      say('เปิด LINE แล้ว — แตะ "ส่ง" ในแอป LINE เพื่อส่งข้อความถึงเรา');
+      // fallback: some LINE apps turn Thai in a pre-filled message into "????" — let people copy and paste it instead
+      const copy = document.createElement('button');
+      copy.type = 'button'; copy.className = 'copy'; copy.textContent = 'ข้อความใน LINE อ่านไม่ออก? กดคัดลอก แล้ววางในแชต';
+      copy.onclick = async () => {
+        try { await navigator.clipboard.writeText(text); }
+        catch { const ta = Object.assign(document.createElement('textarea'), { value: text }); document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+        copy.textContent = 'คัดลอกแล้ว — ไปวางในแชต @itecwaste ได้เลย';
+      };
+      status.append(document.createElement('br'), copy);
+      return;
     }
     if (!form.checkValidity()) { form.reportValidity(); return; }
     const body = new URLSearchParams({
@@ -132,6 +142,6 @@
   });
 })();
 </script>
-<script src="js/dist/scene.js?v=v2-5"></script>
+<script src="js/dist/scene.js?v=v2-6"></script>
 </body>
 </html>
