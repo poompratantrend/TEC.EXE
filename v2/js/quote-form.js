@@ -1,7 +1,7 @@
 // Quote request form: dependent province → district lists, location button, validation, thank-you card.
 // Sends to the company's Google Form when the form has data-gform + data-entries; with data-preview it only shows the card.
 (() => {
-  const form = document.getElementById('quote-form');
+  const form = document.querySelector('form.qf');
   if (!form) return;
 
   const DISTRICTS = {
@@ -67,6 +67,15 @@
       province, district, postcode: one('postcode'), address: one('address'), location: one('location'),
       waste: many('waste'), weight: one('weight'), freq: one('freq'), bins: one('bins'), days: many('days'), note: one('note')
     };
+    // for the current Google Form (fewer questions): everything that has no question of its own rides along in "ที่อยู่",
+    // and the weight goes to the nearest of its old choices (the exact one is in the text too)
+    const LEGACY_WEIGHT = { 'ไม่เกิน 20 กก.': '0-20  กิโลกรัม', '21–40 กก.': 'ไม่เกิน 40 กิโลกรัม', '41–60 กก.': 'ไม่เกิน 60 กิโลกรัม', '61–80 กก.': 'ไม่เกิน 80 กิโลกรัม',
+      '81–100 กก.': 'มากกว่า 100 กิโลกรัม', '101–200 กก.': 'มากกว่า 100 กิโลกรัม', 'มากกว่า 200 กก.': 'มากกว่า 100 กิโลกรัม', 'ยังไม่แน่ใจ': '0-20  กิโลกรัม' };
+    const extra = [['ประเภท', answers.type], ['ชนิดขยะ', answers.waste], ['น้ำหนัก/เดือน', answers.weight], ['ถัง/ถุงแดง', answers.bins], ['วันสะดวก', answers.days], ['หมายเหตุ', answers.note]]
+      .filter(r => r[1]).map(([k, v]) => `${k}: ${v}`);
+    answers.addressFull = [answers.address, `${district}, ${province} ${answers.postcode}`, answers.location && 'แผนที่: ' + answers.location, extra.length && '— ' + extra.join(' · ')].filter(Boolean).join('\n');
+    answers.weightLegacy = LEGACY_WEIGHT[answers.weight] || '0-20  กิโลกรัม';
+    answers.emailOrDash = answers.email || '-';
     const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
     try {
       if (!form.dataset.preview) {
