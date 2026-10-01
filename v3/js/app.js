@@ -8,20 +8,37 @@
     'มาตรฐาน', 'อุณหภูมิสูง', 'ควบคุมอุณหภูมิ', 'เตาเผา', 'ใบเสนอราคา', 'สถานพยาบาล', 'ผู้ประกอบการ', 'ศูนย์กำจัด', 'ปลอดมลพิษ', 'ผ้าอนามัย',
     'เอกสารสำคัญ', 'ถังบรรจุ', 'ทำความสะอาด', 'เก็บขน', 'จัดเก็บ', 'ขั้นตอน', 'โปร่งใส', 'ตรวจสอบได้', 'ตรวจสอบย้อนกลับได้', 'ผู้เชี่ยวชาญ',
     'โรงพยาบาล', 'การแพร่เชื้อ', 'จังหวัดใกล้เคียง', 'กรุงเทพฯ', 'ปริมณฑล', 'เรียลไทม์', 'ต้นทาง', 'รายแรก', 'ประเทศไทย', 'นายกรัฐมนตรี',
-    'ติดเชื้อ', 'อันตราย', 'การจัดการ', 'บริการ', 'ของคุณ', 'วันนี้', 'ที่เดียว', 'เทร็นด์', 'อินเตอร์เทรด', 'หลักวิชาการ', 'ไว้วางใจ', 'I-TEC', 'E-Manifest', 'ISO 9001:2015', 'พ.ศ.2545'];
-  const GLUE = new Set(['และ', 'ของ', 'ด้วย', 'ตาม', 'ให้', 'จาก', 'สู่', 'ที่', 'ใน', 'กับ', 'หรือ', 'แก่', 'โดย', 'การ', 'ความ', 'ทาง', 'ผู้']);
+    'ติดเชื้อ', 'อันตราย', 'การจัดการ', 'บริการ', 'ของคุณ', 'วันนี้', 'ที่เดียว', 'เทร็นด์', 'อินเตอร์เทรด', 'หลักวิชาการ', 'ไว้วางใจ', 'I-TEC', 'E-Manifest', 'ISO 9001:2015', 'พ.ศ.2545', 'ปลอดภัย', 'ภาครัฐ', 'สิ่งแวดล้อม', 'ธุรกิจ', 'สังคม', 'รั่วไหล', 'บุคลากร', 'ห้างร้าน', 'สำนักงาน', 'อุปกรณ์', 'เอกสาร', 'กฎกระทรวง', 'มูลฝอย', 'ของเสีย', 'ประสบการณ์', 'ใบอนุญาต', 'ผู้ติดต่อ', 'หน่วยงาน', 'นายกรัฐมนตรี', 'จัดซื้อจัดจ้าง', 'ขึ้นทะเบียน', 'เยี่ยมชม', 'ประเทศไทย'];
+  const GLUE = new Set(['และ', 'ของ', 'ด้วย', 'ตาม', 'ให้', 'จาก', 'สู่', 'ที่', 'ใน', 'กับ', 'หรือ', 'แก่', 'โดย', 'การ', 'ความ', 'ทาง', 'ผู้', 'อย่าง', 'เพื่อ', 'กลุ่ม', 'ทีม', 'ด้าน', 'จน', 'ทุก', 'ได้']);
   const MAXP = Math.max(...PHRASES.map(p => p.length));
   const units = text => {
     if (!seg) return [text];
     const w = [...seg.segment(text)].map(s => s.segment), out = [];
+    // 1. keep known phrases whole
     for (let i = 0; i < w.length;) {
       let j = i + 1, best = i + 1, acc = w[i];
       while (j < w.length && (acc + w[j]).length <= MAXP) { acc += w[j]; j++; if (PHRASES.includes(acc)) best = j; }
       out.push(w.slice(i, best).join('')); i = best;
     }
+    // 2. connector words ride with the word after them
     const m = [];
-    out.forEach(u => { const p = m[m.length - 1]; if (p !== undefined && GLUE.has(p.trim()) && !/\s$/.test(p)) m[m.length - 1] = p + u; else m.push(u); });
-    return m;
+    out.forEach(u => { const p = m[m.length - 1]; if (p !== undefined && GLUE.has(p) ) m[m.length - 1] = p + u; else m.push(u); });
+    // 3. punctuation (· — & + / :) is tied to the words on both sides, spaces become non-breaking
+    const isSp = u => /^\s+$/.test(u), isP = u => /^[·—–&+/:]$/.test(u.trim());
+    const q = [];
+    for (let i = 0; i < m.length; i++) {
+      if (isP(m[i]) && q.length) {
+        let tie = '';
+        while (q.length && isSp(q[q.length - 1])) tie = ' ' + tie, q.pop();
+        let k = i + 1, after = '';
+        while (k < m.length && isSp(m[k])) after += ' ', k++;
+        // always stays with the word before it; takes the next word along only if that word is short
+        const nx = m[k] || '';
+        if (nx && nx.length <= 10) { q[q.length - 1] += tie + m[i].trim() + after + nx; i = k; }
+        else { q[q.length - 1] += tie + m[i].trim(); i = k - 1; if (after) q.push(' '); }
+      } else q.push(m[i]);
+    }
+    return q;
   };
   const breakThai = el => {
     if (el.dataset.thw) return; el.dataset.thw = 1;
@@ -36,8 +53,21 @@
       });
       n.replaceWith(f);
     });
+    // no lonely last word: the last two units always share a line
+    const us = [...el.querySelectorAll(':scope > .thw, :scope > .holo-text > .thw')].filter(u => u.textContent.trim());
+    if (us.length > 2) {
+      const a = us[us.length - 2], b = us[us.length - 1];
+      if (a.parentNode === b.parentNode && b.textContent.length <= 7 && a.textContent.length + b.textContent.length <= 22) {
+        let n = a.nextSibling; const mid = [];
+        while (n && n !== b) { mid.push(n); n = n.nextSibling; }
+        if (mid.every(x => x.nodeName === 'WBR' || (x.nodeType === 3 && /^\s*$/.test(x.data)))) {
+          mid.forEach(x => { if (x.nodeName === 'WBR') x.remove(); else a.textContent += x.data.replace(/ /g, '\u00a0'), x.remove(); });
+          a.textContent += b.textContent; b.remove();
+        }
+      }
+    }
   };
-  $$('h1,h2,h3,p,.stat span,.li li').forEach(breakThai);
+  $$('h1,h2,h3,p,.stat>span,.li li').forEach(breakThai);
   // word-by-word reveal timing for headings marked .words
   $$('.words').forEach(h => $$('.thw', h).forEach((u, i) => { u.style.transitionDelay = (0.05 + i * 0.055) + 's'; }));
 
@@ -104,6 +134,7 @@
   $('#albums').innerHTML = CH.map((c, i) => `<button class="album rv" style="--d:${i * 0.08}s" data-a="${i}">
       <span class="stack">${c.n.slice(0, 3).reverse().map(n => `<img src="${src(n)}" alt="" loading="lazy">`).join('')}</span>
       <span class="meta"><b>${c.t}</b><small>${c.d}</small><em>${c.n.length} ภาพ →</em></span></button>`).join('');
+  $$('.album b,.album small').forEach(breakThai);
   $$('.album').forEach(el => io.observe(el));
   const rowHTML = ALL.map((n, i) => `<button data-i="${i}" aria-label="ดูภาพ"><img src="${src(n)}" alt="ภาพการทำงาน I-TEC" loading="lazy"></button>`).join('');
   $('#row1 .track').innerHTML = rowHTML + rowHTML;
@@ -161,33 +192,10 @@
   });
 
 
-  /* ---------- smooth scroll: inertial wheel on desktop, native momentum on touch ---------- */
+  /* ---------- anchor scrolling (native wheel/touch scroll is left alone: it never lags) ---------- */
   const root = document.documentElement;
-  const S = { y: scrollY, t: scrollY, set: scrollY, run: false, last: 0 };
-  const maxY = () => root.scrollHeight - innerHeight;
-  const tick = now => {
-    // someone else moved the page (keyboard, scrollbar, focus): hand control back immediately
-    if (Math.abs(scrollY - S.set) > 3) { S.run = false; S.last = 0; S.t = S.y = scrollY; return; }
-    const dt = Math.min((now - (S.last || now)) / 1000, 0.05); S.last = now;
-    S.t = Math.min(S.t, maxY());
-    S.y += (S.t - S.y) * (1 - Math.exp(-dt * 7.5));
-    if (Math.abs(S.t - S.y) < 0.4) { S.y = S.t; S.run = false; }
-    scrollTo(0, S.y); S.set = scrollY;
-    if (S.run) requestAnimationFrame(tick); else S.last = 0;
-  };
-  const go = () => { if (!S.run) { S.run = true; S.y = S.set = scrollY; requestAnimationFrame(tick); } };
-  window.smoothTo = y => { S.t = Math.max(0, Math.min(maxY(), y)); go(); };
+  window.smoothTo = y => scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
   const fine = matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if (fine) addEventListener('wheel', e => {
-    if (e.ctrlKey || root.classList.contains('lock') || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-    if (e.target.closest('textarea,select,.lb')) return;
-    e.preventDefault();
-    if (!S.run) S.t = scrollY;
-    S.t = Math.max(0, Math.min(maxY(), S.t + e.deltaY * (e.deltaMode === 1 ? 40 : 1)));
-    go();
-  }, { passive: false });
-  // keyboard, scrollbar, find-in-page: follow whatever the browser did
-  addEventListener('scroll', () => { if (!S.run) S.t = S.y = scrollY; }, { passive: true });
 
   /* ---------- intro curtain → hero entrance ---------- */
   const intro = $('#intro'), bar = $('#introBar');
@@ -224,9 +232,11 @@
       el.style.transform = el.classList.contains('stack') ? `translateY(${k * -18}px)` : `translateY(${k * -6}%) scale(1.14)`;
     });
     if (gr) { const r = chamber.getBoundingClientRect(); if (r.bottom > 0 && r.top < h) gr.style.transform = `translateX(${-(h - r.top) * 0.35}px)`; }
-    requestAnimationFrame(frame);
+    queued = false;
   };
-  requestAnimationFrame(frame);
+  let queued = false;
+  const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(frame); } };
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
 
   /* ---------- magnetic buttons (desktop) ---------- */
   if (fine) $$('.btn').forEach(b => {

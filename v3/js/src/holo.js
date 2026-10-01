@@ -1,5 +1,4 @@
-// v3 — one holographic biohazard emblem that drifts with the story. Between sections its three blades
-// part, twist and lock back together, scrubbed by the scroll.
+// v3 — one holographic biohazard emblem that glides between poses as the story scrolls.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
@@ -24,7 +23,7 @@ function crescentShape() {
   s.absarc(0, d2, r2, aI1, aI2 + Math.PI * 2, false);
   return s;
 }
-const EXT = { depth: 0.16, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.035, bevelSegments: 6, curveSegments: 64 };
+const EXT = { depth: 0.16, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.035, bevelSegments: 4, curveSegments: 48 };
 const bladeGeo = () => { const g = new THREE.ExtrudeGeometry(crescentShape(), EXT); g.translate(0, 0, -0.08); return g; };
 const ringGeo = () => new THREE.TorusGeometry(0.31, 0.045, 32, 128);
 
@@ -67,7 +66,7 @@ function makeTrefoil(material, skin) {
 /* ---------- stage ---------- */
 export function startHolo(canvas) {
   let renderer;
-  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' }); }
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: devicePixelRatio < 1.5, alpha: true, powerPreference: 'high-performance' }); }
   catch (e) { return null; }
   let dpr = Math.min(devicePixelRatio, 2);
   renderer.setPixelRatio(dpr);
@@ -82,7 +81,7 @@ export function startHolo(canvas) {
   // pearl-green foil: iridescent clear-coat that shifts colour with viewing angle
   const holo = new THREE.MeshPhysicalMaterial({
     color: 0xc8f5d8, emissive: 0x0e5a30, emissiveIntensity: 0.18, metalness: 0.15, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.04,
-    iridescence: 0.75, iridescenceIOR: 1.6, iridescenceThicknessRange: [360, 560], sheen: 0.8, sheenColor: 0x9dffc4, envMapIntensity: 1.35
+    iridescence: 0.75, iridescenceIOR: 1.6, iridescenceThicknessRange: [360, 560], envMapIntensity: 1.35
   });
   const skin = holoSkin();
   const emblem = makeTrefoil(holo, skin);
@@ -147,15 +146,13 @@ export function startHolo(canvas) {
     rig.scale.setScalar(base * P.s * (0.55 + 0.45 * ie));
     emblem.rotation.set(mouse.y * 0.25 + Math.sin(t * 0.5) * 0.08, mouse.x * 0.35 + P.r + t * 0.12, t * 0.05);
 
-    // blades fly in on load; between two sections they part, twist and lock back (scrubbed by the scroll)
-    const sp = ia === ib ? 0 : Math.sin(Math.PI * f);
+    // blades fly in on load, then the emblem stays whole
     emblem.userData.blades.forEach((bl, i) => {
-      const ang = deg(i * 120 + 90), out = (1 - ie) * 2.6 + sp * 0.32;
-      bl.m.position.set(Math.cos(ang) * out, Math.sin(ang) * out, (1 - ie) * 1.5 + sp * 0.12 * (i - 1));
-      bl.m.rotation.set(sp * 0.35 * (i % 2 ? 1 : -1), sp * 0.5, (1 - ie) * (i + 1) * 1.2 + sp * 0.4);
+      const ang = deg(i * 120 + 90);
+      bl.m.position.set(Math.cos(ang) * (1 - ie) * 2.6, Math.sin(ang) * (1 - ie) * 2.6, (1 - ie) * 1.5);
+      bl.m.rotation.z = (1 - ie) * (i + 1) * 1.2;
     });
-    emblem.userData.ring.scale.setScalar(ie * (1 - sp * 0.25));
-    emblem.userData.core.scale.setScalar(ie * (1 + sp * 0.6));
+    emblem.userData.ring.scale.setScalar(Math.max(ie, 0.001));
     skin.uniforms.uT.value = t; skin.uniforms.uA.value = ie;
     holo.iridescenceThicknessRange = [360 + P.h * 40, 560 + P.h * 80];
     tintA.position.x = -3 + Math.sin(t * 0.6) * 1.2; tintB.position.y = -1.5 + Math.cos(t * 0.5);
