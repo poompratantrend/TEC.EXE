@@ -1,9 +1,7 @@
-// v3 — one holographic biohazard emblem + a particle field that re-forms itself as the story scrolls:
-// the solid emblem dissolves into a dot-matrix trefoil → collection truck → standards shield → photo wave → map pin.
+// v3 — one holographic biohazard emblem that drifts with the story. Between sections its three blades
+// part, twist and lock back together, scrubbed by the scroll.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const clamp01 = t => t < 0 ? 0 : t > 1 ? 1 : t;
@@ -66,74 +64,6 @@ function makeTrefoil(material, skin) {
   return g;
 }
 
-/* ---------- particle formations (all centred, roughly radius 1–1.3) ---------- */
-const rnd = (a = 1) => (Math.random() * 2 - 1) * a;
-function sampleGeo(geo, N) {
-  const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial());
-  const s = new MeshSurfaceSampler(mesh).build(), p = new THREE.Vector3(), out = new Float32Array(N * 3);
-  for (let i = 0; i < N; i++) { s.sample(p); out.set([p.x, p.y, p.z], i * 3); }
-  return out;
-}
-const flat = list => mergeGeometries(list.map(g => (g.index ? g.toNonIndexed() : g)).map(g => {
-  for (const k of Object.keys(g.attributes)) if (!['position', 'normal', 'uv'].includes(k)) g.deleteAttribute(k);
-  return g;
-}));
-const SHAPES = {
-  trefoil(N) {
-    const gs = [0, 1, 2].map(i => bladeGeo().rotateZ(deg(i * 120)));
-    return sampleGeo(flat([...gs, ringGeo()]), N);
-  },
-  truck(N) {
-    const box = (w, h, d, x, y, z = 0) => new THREE.BoxGeometry(w, h, d, 6, 4, 4).translate(x, y, z);
-    const wheel = (x, z) => new THREE.CylinderGeometry(0.19, 0.19, 0.1, 28).rotateX(Math.PI / 2).translate(x, -0.42, z);
-    const parts = [box(1.45, 0.86, 0.82, -0.32, 0.12), box(0.56, 0.58, 0.8, 0.72, -0.02), box(0.5, 0.06, 0.78, 0.74, 0.3),
-      box(2.1, 0.08, 0.7, 0.04, -0.33)];
-    [-0.75, -0.2, 0.72].forEach(x => [0.42, -0.42].forEach(z => parts.push(wheel(x, z))));
-    const o = sampleGeo(flat(parts), N);
-    for (let i = 0; i < o.length; i++) o[i] *= 1.15;
-    return o;
-  },
-  shield(N) {
-    const S = k => {
-      const s = new THREE.Shape();
-      s.moveTo(0, 1.05 * k); s.quadraticCurveTo(0.55 * k, 0.95 * k, 0.88 * k, 0.78 * k);
-      s.lineTo(0.84 * k, -0.05 * k); s.quadraticCurveTo(0.75 * k, -0.7 * k, 0, -1.08 * k);
-      s.quadraticCurveTo(-0.75 * k, -0.7 * k, -0.84 * k, -0.05 * k); s.lineTo(-0.88 * k, 0.78 * k);
-      s.quadraticCurveTo(-0.55 * k, 0.95 * k, 0, 1.05 * k);
-      return s;
-    };
-    const rim = S(1); rim.holes.push(new THREE.Path(S(0.82).getPoints(64).reverse()));
-    const tick = new THREE.Shape();
-    [[-0.42, 0.02], [-0.14, -0.28], [0.44, 0.34], [0.32, 0.46], [-0.14, -0.02], [-0.3, 0.14]].forEach(([x, y], i) => i ? tick.lineTo(x, y) : tick.moveTo(x, y));
-    const e = { depth: 0.2, bevelEnabled: false, curveSegments: 40 };
-    const na = Math.floor(N * 0.62);
-    const a = sampleGeo(flat([new THREE.ExtrudeGeometry(rim, e).translate(0, 0, -0.1)]), na);
-    const b = sampleGeo(flat([new THREE.ExtrudeGeometry(tick, e).translate(0, 0, -0.05)]), N - na);
-    const o = new Float32Array(N * 3); o.set(a); o.set(b, a.length);
-    for (let i = 0; i < o.length; i++) o[i] *= 1.1;
-    return o;
-  },
-  wave(N) {                                    // a rolling sheet of light behind the photos
-    const o = new Float32Array(N * 3), c = Math.cos(1.05), s = Math.sin(1.05);
-    for (let i = 0; i < N; i++) {
-      const x = rnd(2.6), z = rnd(1.4), y = Math.sin(x * 2.1) * 0.2 + Math.cos(z * 3.2 + x) * 0.12;
-      o.set([x, y * c - z * s, y * s + z * c], i * 3);
-    }
-    return o;
-  },
-  pin(N) {                                     // service area: a map pin
-    const p = new THREE.Shape();
-    p.moveTo(0, -1.15);
-    p.bezierCurveTo(-0.25, -0.62, -0.78, -0.18, -0.78, 0.3);
-    p.bezierCurveTo(-0.78, 0.78, -0.42, 1.1, 0, 1.1);
-    p.bezierCurveTo(0.42, 1.1, 0.78, 0.78, 0.78, 0.3);
-    p.bezierCurveTo(0.78, -0.18, 0.25, -0.62, 0, -1.15);
-    p.holes.push(new THREE.Path().absarc(0, 0.32, 0.3, 0, Math.PI * 2, true));
-    const o = sampleGeo(flat([new THREE.ExtrudeGeometry(p, { depth: 0.24, bevelEnabled: false, curveSegments: 48 }).translate(0, 0, -0.12)]), N);
-    return o;
-  }
-};
-
 /* ---------- stage ---------- */
 export function startHolo(canvas) {
   let renderer;
@@ -163,43 +93,9 @@ export function startHolo(canvas) {
   const tintA = new THREE.PointLight(0x22c55e, 9, 12); tintA.position.set(-3, 1.5, 2.5); scene.add(tintA);
   const tintB = new THREE.PointLight(0xa3e635, 7, 12); tintB.position.set(3, -1.5, 2.5); scene.add(tintB);
 
-  /* particles */
-  const N = isMobile() ? 9000 : 15000;
-  const shapes = Object.fromEntries(Object.keys(SHAPES).map(n => [n, SHAPES[n](N)]));
-  const jit = new Float32Array(N * 3), delay = new Float32Array(N), seed = new Float32Array(N);
-  for (let i = 0; i < N; i++) {
-    jit.set([rnd(0.45), rnd(0.45), rnd(0.45)], i * 3);
-    delay[i] = Math.random(); seed[i] = Math.random();
-  }
-  const pos = new Float32Array(N * 3); pos.set(shapes.trefoil);
-  const pg = new THREE.BufferGeometry();
-  pg.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
-  pg.setAttribute('seed', new THREE.BufferAttribute(seed, 1));
-  pg.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 20);
-  const pm = new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false,
-    uniforms: { uT: { value: 0 }, uPx: { value: dpr }, uSize: { value: 11 }, uLightA: { value: 0.75 }, uFade: { value: 0 } },
-    vertexShader: `attribute float seed; uniform float uT; uniform float uPx; uniform float uSize; varying float vS;
-      void main(){ vec3 p = position;
-        p += .008 * vec3(sin(uT*1.3 + seed*40.), cos(uT*1.1 + seed*31.), sin(uT*.9 + seed*23.));
-        vec4 mv = modelViewMatrix * vec4(p,1.); vS = seed;
-        gl_PointSize = uSize * uPx * (.8 + seed*.4) / -mv.z;
-        gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: `uniform float uLightA; uniform float uFade; uniform float uPx; varying float vS;
-      void main(){ vec2 c = gl_PointCoord - .5; float d = length(c); if (d > .5) discard;
-        float dot = smoothstep(.5, .32, d);
-        float scan = .78 + .22 * step(.5, fract(gl_FragCoord.y / (3. * uPx)));
-        vec3 col = mix(vec3(.05,.5,.25), vec3(.4,.75,.12), vS);
-        gl_FragColor = vec4(col, uLightA * dot * scan * uFade); }`
-  });
-  const points = new THREE.Points(pg, pm);
-  points.frustumCulled = false;
-  emblem.add(points);
-
   const resize = () => {
     renderer.setPixelRatio(dpr); renderer.setSize(innerWidth, innerHeight, false);
     camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
-    pm.uniforms.uPx.value = dpr;
   };
   addEventListener('resize', resize); resize();
 
@@ -211,9 +107,7 @@ export function startHolo(canvas) {
   // so poses AND formations are scrubbed by the scroll, never triggered.
   const parse = el => {
     const [x, y, s, r, h] = el.dataset.holo.split(' ').map(Number);
-    const shape = el.dataset.shape || 'trefoil';
-    // formations that must stay readable (truck, shield, wave) hold a 3/4 view instead of spinning
-    return { el, x, y, s, r, h: h || 0, shape, e: el.dataset.emblem === '0' ? 0 : 1, w: ['truck', 'shield', 'wave'].includes(shape) ? 0 : 1 };
+    return { el, x, y, s, r, h: h || 0 };
   };
   let M = [...document.querySelectorAll('[data-holo]')].map(parse);
   addEventListener('resize', () => { M = [...document.querySelectorAll('[data-holo]')].map(parse); });
@@ -232,7 +126,7 @@ export function startHolo(canvas) {
   setTimeout(() => { if (t0 === null) t0 = performance.now(); }, 6000);
 
   const halfH = () => Math.tan(deg(camera.fov / 2)) * camera.position.z, halfW = () => halfH() * camera.aspect;
-  let last = 0, ready = false, lastKey = '', ft = 0, fn = 0, spin = 0;
+  let last = 0, ready = false, ft = 0, fn = 0;
   window.__holo = { get u() { return u; } };
 
   renderer.setAnimationLoop(now => {
@@ -246,44 +140,24 @@ export function startHolo(canvas) {
     u += (targetU() - u) * k;
     mouse.x += (mouse.tx - mouse.x) * k; mouse.y += (mouse.ty - mouse.y) * k;
     const ia = Math.min(Math.floor(u), M.length - 1), ib = Math.min(ia + 1, M.length - 1), f = u - ia, a = M[ia], b = M[ib], fe = ease(f);
-    const P = {}; for (const q of ['x', 'y', 's', 'r', 'h', 'e', 'w']) P[q] = lerp(a[q], b[q], fe);
+    const P = {}; for (const q of ['x', 'y', 's', 'r', 'h']) P[q] = lerp(a[q], b[q], fe);
 
     const mob = isMobile(), base = mob ? 0.64 : 1.12;
     rig.position.set(P.x * halfW() * (mob ? 0.3 : 0.62), -P.y * halfH() * 0.62 + Math.sin(t * 0.8) * 0.05, 0);
     rig.scale.setScalar(base * P.s * (0.55 + 0.45 * ie));
-    spin += dt * 0.12 * P.w;
-    emblem.rotation.set(mouse.y * 0.25 + Math.sin(t * 0.5) * 0.08, mouse.x * 0.35 + P.r + spin + Math.sin(t * 0.4) * 0.22 * (1 - P.w), t * 0.05 * P.e);
+    emblem.rotation.set(mouse.y * 0.25 + Math.sin(t * 0.5) * 0.08, mouse.x * 0.35 + P.r + t * 0.12, t * 0.05);
 
-    // solid emblem: blades fly in, then shrink away whenever the particles take over
-    const ev = smooth(clamp01(P.e)) * ie;
-    emblem.userData.parts.forEach(p => { p.scale.setScalar(Math.max(ev, 0.0001)); p.visible = ev > 0.01; });
+    // blades fly in on load; between two sections they part, twist and lock back (scrubbed by the scroll)
+    const sp = ia === ib ? 0 : Math.sin(Math.PI * f);
     emblem.userData.blades.forEach((bl, i) => {
-      const ang = deg(i * 120 + 90);
-      bl.m.position.set(Math.cos(ang) * (1 - ie) * 2.6, Math.sin(ang) * (1 - ie) * 2.6, (1 - ie) * 1.5);
-      bl.m.rotation.z = (1 - ie) * (i + 1) * 1.2;
+      const ang = deg(i * 120 + 90), out = (1 - ie) * 2.6 + sp * 0.32;
+      bl.m.position.set(Math.cos(ang) * out, Math.sin(ang) * out, (1 - ie) * 1.5 + sp * 0.12 * (i - 1));
+      bl.m.rotation.set(sp * 0.35 * (i % 2 ? 1 : -1), sp * 0.5, (1 - ie) * (i + 1) * 1.2 + sp * 0.4);
     });
-    skin.uniforms.uT.value = t; skin.uniforms.uA.value = ev;
+    emblem.userData.ring.scale.setScalar(ie * (1 - sp * 0.25));
+    emblem.userData.core.scale.setScalar(ie * (1 + sp * 0.6));
+    skin.uniforms.uT.value = t; skin.uniforms.uA.value = ie;
     holo.iridescenceThicknessRange = [360 + P.h * 40, 560 + P.h * 80];
-    // particles: staggered morph between the two formations, bulging outward mid-flight
-    const mk = `${a.shape}|${b.shape}|${f.toFixed(4)}`;
-    if (mk !== lastKey) {
-      lastKey = mk;
-      const A = shapes[a.shape], B = shapes[b.shape], same = a.shape === b.shape;
-      for (let i = 0; i < N; i++) {
-        const j = i * 3;
-        const ti = same ? 0 : smooth(clamp01(f * 1.7 - delay[i] * 0.7)), bul = Math.sin(Math.PI * ti);
-        pos[j] = lerp(A[j], B[j], ti) + jit[j] * bul;
-        pos[j + 1] = lerp(A[j + 1], B[j + 1], ti) + jit[j + 1] * bul;
-        pos[j + 2] = lerp(A[j + 2], B[j + 2], ti) + jit[j + 2] * bul;
-      }
-      pg.attributes.position.needsUpdate = true;
-    }
-    pm.uniforms.uT.value = t;
-    // dots only show while the solid emblem is away, so the hand-over reads as the emblem dissolving into them
-    pm.uniforms.uFade.value = ie * (1 - ev);
-    points.visible = ev < 0.99;
-    pm.uniforms.uLightA.value = mob ? 0.55 : 0.75;
-    pm.uniforms.uSize.value = mob ? 10 : 11;
     tintA.position.x = -3 + Math.sin(t * 0.6) * 1.2; tintB.position.y = -1.5 + Math.cos(t * 0.5);
 
     renderer.render(scene, camera);
