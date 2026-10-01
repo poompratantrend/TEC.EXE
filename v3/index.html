@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f5faf7">
+<title>I-TEC — ขยะติดเชื้อ ครบวงจร</title>
+<meta name="description" content="ศูนย์ I-TEC จัดเก็บ ขนส่ง และกำจัดขยะติดเชื้อและขยะอันตรายทางการแพทย์ ครบวงจร มาตรฐาน ISO 9001:2015">
+<link rel="icon" href="../assets/trend-e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/v3.css?v=1">
+</head>
+<body>
+<div class="aura" aria-hidden="true"></div>
+<canvas id="holo" aria-hidden="true"></canvas>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="holoStroke" x1="0" x2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset=".35" stop-color="#f9a8d4"/><stop offset=".65" stop-color="#86efac"/><stop offset="1" stop-color="#7dd3fc"/></linearGradient></defs></svg>
+
+<nav class="nav" id="nav">
+  <a href="#top" class="brand"><img src="../assets/trend-e.png" alt="TREND"><span>I-TEC<small>WASTE SOLUTIONS</small></span></a>
+  <ul>
+    <li><a href="#services">บริการ</a></li><li><a href="#process">กระบวนการ</a></li><li><a href="#standards">รางวัล &amp; มาตรฐาน</a></li>
+    <li><a href="#work">ผลงาน</a></li><li><a href="#about">เกี่ยวกับเรา</a></li><li><a href="#contact">ติดต่อ</a></li>
+  </ul>
+  <a href="#form" class="btn btn-ink">ขอใบเสนอราคา <span class="dot">→</span></a>
+  <button class="burger" aria-label="เมนู"><i></i><i></i></button>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <header class="hero" id="top" data-holo="0 0.18 1.25 0 0">
+    <div class="wrap">
+      <span class="eyebrow rv"><b>25+ ปี</b> ผู้เชี่ยวชาญกว่า 25 ปี</span>
+      <h1 class="words">จัดการ<span class="holo-text">ขยะติดเชื้อ</span> และขยะอันตรายทางการแพทย์ ครบวงจร</h1>
+      <p class="lead rv" style="--d:.25s">จัดเก็บ ขนส่ง และกำจัด ด้วยเตาเผาอุณหภูมิสูงปลอดมลพิษ ถูกต้องตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545 และมาตรฐาน ISO 9001:2015</p>
+      <div class="cta rv" style="--d:.4s">
+        <a href="#form" class="btn btn-ink">ขอใบเสนอราคาฟรี <span class="dot">→</span></a>
+        <a href="tel:0616942944" class="btn btn-glass">โทร 061-694-2944</a>
+      </div>
+      <div class="hero-chips rv" style="--d:.55s">
+        <span class="chip"><i></i>#1 ใบอนุญาตรายแรกของไทย</span><span class="chip"><i></i>ISO 9001:2015</span><span class="chip"><i></i>GPS + E-Manifest</span>
+      </div>
+      <div class="scroll-cue rv" style="--d:.8s">SCROLL</div>
+    </div>
+  </header>
+
+  <!-- CREDENTIALS -->
+  <div class="creds rv" data-holo="0.62 -0.1 0.7 1.2 0.4">
+    <p>ใบอนุญาต &amp; รางวัล</p>
+    <div class="marq"><div class="track" id="credTrack"></div></div>
+  </div>
+
+  <!-- STATS -->
+  <section style="padding-top:40px" data-holo="0.62 -0.1 0.7 1.2 0.4">
+    <div class="wrap stats">
+      <div class="panel stat rv"><b class="holo-text"><span data-count="25">0</span>+</b><span>ปีประสบการณ์ด้านมูลฝอยติดเชื้อ</span></div>
+      <div class="panel stat rv" style="--d:.08s"><b>รายแรก</b><span>ได้รับใบอนุญาตเก็บขนมูลฝอยติดเชื้อในประเทศไทย</span></div>
+      <div class="panel stat rv" style="--d:.16s"><b>ISO</b><span>9001:2015 รับรองด้านงานบริการ</span></div>
+      <div class="panel stat rv" style="--d:.24s"><b>2018</b><span>รางวัล SME ดีเด่น จากนายกรัฐมนตรี</span></div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" data-holo="-0.68 -0.35 0.62 2.4 1">
+    <div class="wrap">
+      <div class="sec-title"><span class="kicker rv">บริการของเรา</span><h2 class="words">บริการครบ จบในที่เดียว สำหรับสถานพยาบาลและผู้ประกอบการ</h2><p class="rv">ตั้งแต่ถังบรรจุ จนถึงการเผาทำลาย ทุกขั้นตอนมีเอกสารกำกับ ตรวจสอบย้อนกลับได้</p></div>
+      <div class="bento">
+        <article class="tile holo-card big rv tilt">
+          <div class="ico dark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2"/><path d="M12 9.8V5.5a3.5 3.5 0 0 1 3 5.4M10.1 13.1l-3.7 2.2a3.5 3.5 0 0 1 .1-6.2M13.9 13.1l3.7 2.2a3.5 3.5 0 0 1-3.1 5.3"/></svg></div>
+          <h3>กำจัดขยะติดเชื้อ</h3><p>เก็บขนด้วยรถควบคุมอุณหภูมิตามกฎหมาย และทำลายเชื้อด้วยเตาเผาอุณหภูมิสูงปลอดมลพิษ</p><ul class="li"><li>รถเก็บขนควบคุมอุณหภูมิ</li><li>ติดตามรถด้วย GPS</li><li>เอกสาร Manifest / E-Manifest</li></ul>
+          <div class="ph"><img src="../assets/gallery-14.jpg" alt="ทีม I-TEC ขนถังขยะติดเชื้อขึ้นรถ" loading="lazy"></div>
+        </article>
+        <article class="tile rv tilt" style="--d:.06s"><span class="num">02</span>
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M9 3h6M10 3v5l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 14h9"/></svg></div>
+          <h3>กำจัดขยะอันตราย</h3><p>จัดการของเสียอันตรายจากสถานพยาบาลและผู้ประกอบการ อย่างถูกต้องตามหลักวิชาการ</p><ul class="li"><li>คัดแยกตามประเภท</li><li>ขนส่งโดยทีมที่ผ่านการอบรม</li><li>กำจัดถูกต้องตามกฎหมาย</li></ul></article>
+        <article class="tile rv tilt" style="--d:.12s"><span class="num">03</span>
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 8l9-4 9 4-9 4-9-4z"/><path d="M7 10v5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5"/></svg></div>
+          <h3>อบรมการจัดการขยะติดเชื้อ</h3><p>อบรมบุคลากรโรงพยาบาล เรื่องการคัดแยก การบรรจุ และการป้องกันการแพร่เชื้อ</p><ul class="li"><li>สำหรับโรงพยาบาลและคลินิก</li><li>การป้องกันและระงับการแพร่เชื้อ</li><li>จัดอบรมได้ตามต้องการ</li></ul></article>
+        <article class="tile rv tilt" style="--d:.06s"><span class="num">04</span>
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M6 8h12l-1.2 11.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 8z"/><path d="M5 8h14M10 5h4"/><path d="M12 12v4M10 14h4"/></svg></div>
+          <h3>รับกำจัดผ้าอนามัย</h3><p>บริการเก็บและกำจัดผ้าอนามัยจากผู้ประกอบการ อาคารสำนักงาน และห้างร้าน</p><ul class="li"><li>สำหรับผู้ประกอบการ</li><li>เก็บตามรอบที่ตกลง</li><li>กำจัดอย่างถูกสุขลักษณะ</li></ul></article>
+        <article class="tile rv tilt" style="--d:.12s"><span class="num">05</span>
+          <div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="7" height="13" rx="2"/><rect x="13" y="10" width="7" height="10" rx="2"/><path d="M5 7V5h5v2M14 10V8h5v2"/></svg></div>
+          <h3>จำหน่ายอุปกรณ์ &amp; ถังบรรจุ</h3><p>ถังบรรจุมูลฝอยติดเชื้อ ถุงแดง และอุปกรณ์สำหรับการคัดแยกขยะ</p><ul class="li"><li>ถังบรรจุมูลฝอยติดเชื้อ</li><li>ถุงแดง</li><li>อุปกรณ์คัดแยกขยะ</li></ul></article>
+        <article class="tile wide rv tilt" style="--d:.06s">
+          <div><span class="num">06</span>
+            <div class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="9" rx="1.5"/><path d="M3 12h18v4H3zM7 16v5M10 16v4M13 16v5M16 16v4"/></svg></div>
+            <h3>ทำลายเอกสารสำคัญ</h3><p>ทำลายเอกสาร PDPA การเงิน และบัญชี อย่างปลอดภัย ไม่รั่วไหล</p><ul class="li"><li>เอกสาร PDPA</li><li>เอกสารการเงิน / บัญชี</li><li>ขนย้ายอย่างปลอดภัย</li></ul></div>
+          <img src="../assets/truck-loading.jpg" alt="ขนย้ายเอกสาร" loading="lazy">
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" data-holo="0.7 -0.62 0.5 3.6 1.6">
+    <div class="wrap">
+      <div class="sec-title"><span class="kicker rv">กระบวนการ 4 ขั้นตอน</span><h2 class="words">4 ขั้นตอน โปร่งใส ตรวจสอบได้</h2><p class="rv">ทีมงานผ่านการฝึกอบรมการป้องกันและระงับการแพร่เชื้อจากมูลฝอยติดเชื้อ</p></div>
+      <div class="steps" id="steps">
+        <svg class="line" viewBox="0 0 100 4" preserveAspectRatio="none"><path d="M6 2 H94" pathLength="1"/></svg>
+        <div class="panel step rv"><div class="n">1</div><img class="contain" src="../assets/bin-bag.png" alt="" loading="lazy"><h3>คัดแยก &amp; บรรจุที่ต้นทาง</h3><p>ขยะติดเชื้อจากคลินิกถูกคัดแยกลงถังบรรจุมาตรฐาน พร้อมอบรมบุคลากรให้คัดแยกได้ถูกต้อง แล้วยกขึ้นรถ</p></div>
+        <div class="panel step rv" style="--d:.1s"><div class="n">2</div><img src="../assets/gallery-26.jpg" alt="" loading="lazy"><h3>เก็บขนด้วยรถควบคุมอุณหภูมิ</h3><p>รถเก็บขนควบคุมอุณหภูมิตามกฎหมาย ออกจากคลินิกสู่ศูนย์กำจัด ติดตามการเดินรถแบบเรียลไทม์ด้วย GPS</p></div>
+        <div class="panel step rv" style="--d:.2s"><div class="n">3</div><img src="../assets/gallery-4.jpg" alt="" loading="lazy"><h3>เผาทำลายด้วยอุณหภูมิสูง</h3><p>ถึงศูนย์กำจัด ขยะติดเชื้อเข้าเตาเผาอุณหภูมิสูงปลอดมลพิษ ตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545</p></div>
+        <div class="panel step rv" style="--d:.3s"><div class="n">4</div><img src="../assets/gallery-19.jpg" alt="" loading="lazy"><h3>รายงานผลด้วย E-Manifest</h3><p>กำกับการขนส่งด้วยเอกสาร Manifest และระบบ E-Manifest ตรวจสอบย้อนกลับได้ทุกขั้นตอน</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STANDARDS -->
+  <section id="standards" data-holo="-0.7 -0.55 0.55 5 2.2">
+    <div class="wrap">
+      <div class="sec-title"><span class="kicker rv">ใบอนุญาต &amp; รางวัล</span><h2 class="words">ทำไมโรงพยาบาลไว้ใจ I-TEC</h2></div>
+      <div class="std">
+        <div class="std-grid">
+          <div class="tile rv tilt"><div class="ico"><svg viewBox="0 0 24 24"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div><h3>ใบอนุญาตรายแรก</h3><p>เก็บขนมูลฝอยติดเชื้อรายแรกของประเทศไทย</p></div>
+          <div class="tile rv tilt" style="--d:.06s"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></div><h3>GPS + E-Manifest</h3><p>รถควบคุมอุณหภูมิตามกฎหมาย ติดตามด้วย GPS กำกับด้วย Manifest / E-Manifest</p></div>
+          <div class="tile rv tilt" style="--d:.12s"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="m9 13 2 2 4-4"/></svg></div><h3>THAI SME-GP</h3><p>ขึ้นทะเบียนผู้ประกอบการ SME เพื่อการจัดซื้อจัดจ้างภาครัฐ</p></div>
+          <div class="tile rv tilt" style="--d:.18s"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div><h3>ทีมผ่านการอบรม</h3><p>การป้องกันและระงับการแพร่เชื้อ หรืออันตรายจากมูลฝอยติดเชื้อ</p></div>
+        </div>
+        <div class="tile holo-card award rv tilt" style="--d:.1s">
+          <div><span class="kicker" style="font-family:Anuphan;font-weight:600;font-size:.8rem;letter-spacing:.02em;color:#4b5161">AWARDS &amp; CERTIFICATION</span>
+            <h3 style="font-size:1.6rem;margin-top:10px">SME ดีเด่น 2018 · ISO 9001:2015</h3>
+            <p style="margin-top:8px">SME ดีเด่น 2018 — รางวัลจากนายกรัฐมนตรี กลุ่มธุรกิจเพื่อสังคมและสิ่งแวดล้อม · ISO 9001:2015 — ได้รับรองด้านงานบริการ</p></div>
+          <div class="imgs"><img src="../assets/sme-award.png" alt="SME National Awards 2018" loading="lazy"><img class="iso" src="../assets/iso-badges.png" alt="IAS / ISO 9001" loading="lazy"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work" data-holo="0 -1.4 0.4 6 2.6">
+    <div class="wrap"><div class="sec-title"><span class="kicker rv">ผลงาน</span><h2 class="words">ดูภาพการทำงานจริงของทีมเรา</h2><p class="rv">30 ภาพจากหน้างานจริง</p></div></div>
+    <div class="gal-rows rv"><div class="gal-row" id="row1"><div class="track"></div></div><div class="gal-row rev" id="row2"><div class="track"></div></div></div>
+    <div class="gal-more"><button class="btn btn-glass" id="openAll">ดูทั้งหมด 30 ภาพ</button></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" data-holo="0.7 -0.5 0.5 7 3">
+    <div class="wrap about">
+      <div class="panel txt rv"><span class="kicker" style="font-family:Anuphan;font-weight:600;font-size:.8rem;letter-spacing:.02em;color:var(--ink-3)">เรื่องราวของเรา</span>
+        <h2 class="words">ผู้เชี่ยวชาญกว่า 25 ปี ด้านขยะติดเชื้อและขยะอันตรายทางการแพทย์</h2>
+        <p>การจัดการขยะติดเชื้อและขยะอันตรายทางการแพทย์ในประเทศไทยยังเป็นปัญหาที่ต้องจัดการอย่างต่อเนื่อง ปริมาณมูลฝอยติดเชื้อเพิ่มขึ้น และต้องทำลายเชื้อด้วยระบบเตาเผาอุณหภูมิสูงปลอดมลพิษ</p>
+        <p>ศูนย์ I-TEC บริหารจัดการจัดเก็บ ขนส่ง และกำจัด ถูกต้องตามหลักวิชาการและกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545 บริหารองค์กรอย่างเป็นระบบตาม ISO 9001:2015 ควบคุมความเสี่ยง และพัฒนาอย่างต่อเนื่อง</p>
+        <div class="co"><img src="../assets/trend-logo-wide.jpg" alt="TREND"><div><b>บริษัท เทร็นด์ อินเตอร์เทรด จำกัด</b><span>TREND INTERTRADE COMPANY LIMITED · โทร. 061-694-2944</span></div></div>
+      </div>
+      <div class="pic rv" style="--d:.1s"><img src="../assets/plant-team.jpg" alt="ทีมงาน I-TEC ที่ศูนย์กำจัด" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding-top:20px" data-holo="0.75 -0.8 0.42 8 3.4">
+    <div class="wrap"><div class="cta-card holo-card rv">
+      <img class="avatar" src="../assets/mascot.png" alt="">
+      <div><h2 class="words">ไม่แน่ใจว่าต้องใช้บริการไหน?</h2><p>บอกประเภทขยะและปริมาณ เราช่วยแนะนำให้</p></div>
+      <a href="#form" class="btn btn-ink">ขอใบเสนอราคา <span class="dot">→</span></a>
+    </div></div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" data-holo="-0.72 -0.7 0.45 9 3.8">
+    <div class="wrap">
+      <div class="sec-title"><span class="kicker rv">ติดต่อเรา</span><h2 class="words">พร้อมดูแลขยะติดเชื้อของคุณวันนี้</h2><p class="rv">ปรึกษาฟรี ตอบกลับรวดเร็ว ให้บริการกรุงเทพฯ ปริมณฑล และจังหวัดใกล้เคียง</p></div>
+      <div class="contact">
+        <div class="panel side rv">
+          <div><h3 style="font-size:1.1rem;margin-bottom:6px">พื้นที่บริการ · เลือกจังหวัดของคุณ</h3><p class="note" style="margin:0 0 10px">กดเลือกจังหวัด ระบบจะใส่ให้ในฟอร์มขอใบเสนอราคาด้านล่างอัตโนมัติ</p><div class="chips" id="areas"></div><p class="note" id="areaNote"></p></div>
+          <div style="display:grid;gap:8px" id="channels"></div>
+          <div class="qr"><img src="../assets/line-qr.jpg" alt="LINE QR @itecwaste" loading="lazy"><p>สแกนเพื่อแอดไลน์<br><b>@itecwaste</b></p></div>
+        </div>
+        <form class="panel form rv" id="form" style="--d:.1s">
+          <h3>ขอใบเสนอราคา</h3>
+          <label>ชื่อผู้ติดต่อ<input name="name" required placeholder="ชื่อ-นามสกุล"></label>
+          <label>เบอร์โทร<input name="tel" required type="tel" placeholder="0xx-xxx-xxxx"></label>
+          <label class="full">หน่วยงาน / สถานพยาบาล<input name="org" placeholder="ชื่อโรงพยาบาล คลินิก หรือบริษัท"></label>
+          <label>ประเภทบริการ<select name="svc"><option>กำจัดขยะติดเชื้อ</option><option>กำจัดขยะอันตราย</option><option>อบรมการจัดการขยะติดเชื้อ</option><option>รับกำจัดผ้าอนามัย</option><option>อุปกรณ์ &amp; ถังบรรจุ</option><option>ทำลายเอกสารสำคัญ</option></select></label>
+          <label>จังหวัด<select name="area" id="areaSel"></select></label>
+          <label class="full">รายละเอียดเพิ่มเติม<textarea name="msg" placeholder="ปริมาณโดยประมาณ ความถี่ในการเก็บ ฯลฯ"></textarea></label>
+          <div class="full send"><button class="btn btn-line" type="submit" data-via="line">ส่งทาง LINE</button><button class="btn btn-ink" type="submit" data-via="mail">ส่งทางอีเมล</button></div>
+          <p class="ok">เปิดแอปเพื่อส่งข้อความแล้ว — กดส่งในแอปเพื่อยืนยัน</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <div><div class="logos"><img src="../assets/itec-logo.png" alt="ศูนย์ I-TEC"><img src="../assets/trend-logo-wide.jpg" alt="TREND"></div>
+        <p style="margin-top:12px;max-width:380px;font-size:.9rem">ศูนย์บริหารจัดการขยะติดเชื้อ และขยะอันตรายทางการแพทย์ ครบวงจร โดย บริษัท เทร็นด์ อินเตอร์เทรด จำกัด<br>472/1 ซ.เพชรเกษม 55/2 แขวงหลักสอง เขตบางแค กรุงเทพฯ 10160</p></div>
+      <nav><a href="#services">บริการ</a><a href="#process">กระบวนการ</a><a href="#standards">รางวัล &amp; มาตรฐาน</a><a href="#work">ผลงาน</a><a href="#about">เกี่ยวกับเรา</a><a href="#contact">ติดต่อ</a></nav>
+    </div>
+    <div class="giant" aria-hidden="true">I-TEC</div>
+    <div class="bottom"><span>© 2026 itecwastesolutions — ต้นแบบดีไซน์ใหม่</span><span>ISO 9001:2015 · THAI SME-GP</span></div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="ดูภาพ">
+  <button class="ctl x" aria-label="ปิด">✕</button><button class="ctl p" aria-label="ก่อนหน้า">‹</button>
+  <img class="main" alt=""><button class="ctl n" aria-label="ถัดไป">›</button>
+  <span class="cnt"></span><div class="lb-strip"></div>
+</div>
+
+<script src="js/app.js?v=1"></script>
+<script src="js/dist/holo.js?v=1"></script>
+</body>
+</html>
