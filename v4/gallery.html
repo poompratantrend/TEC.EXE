@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#e6f0e9">
+<title>ผลงาน — I-TEC</title>
+<link rel="icon" href="assets/trend-e.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=v2-15">
+<style>
+.g-hero{position:relative;background:radial-gradient(900px 500px at 75% 30%,#f3f8f5,#d9eadf 70%);color:var(--ink);padding:140px 0 56px;overflow:hidden}
+.g-hero h1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.2;margin:16px 0 12px}
+.g-hero p{color:var(--ink-2);max-width:540px}
+.g-hero .g-stats{display:flex;gap:28px;margin-top:26px;flex-wrap:wrap}
+.g-hero .g-stats b{display:block;font-family:Prompt;font-size:1.8rem;color:var(--brand);line-height:1}
+.g-hero .g-stats span{font-size:.85rem;color:var(--ink-2)}
+.g-hero img.mascot{position:absolute;right:6%;bottom:-30px;height:290px;filter:drop-shadow(0 20px 30px rgba(6,40,24,.18));animation:bob 5s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-12px)}}
+
+
+
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ph{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;cursor:zoom-in;background:#dfe9e3;opacity:0;transform:translateY(18px) scale(.98);transition:opacity .6s,transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.ph.in{opacity:1;transform:none}
+.ph:hover{box-shadow:var(--shadow)}
+.ph img{width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.ph:hover img{transform:scale(1.07)}
+.ph figcaption{opacity:0;transform:translateY(8px);transition:.35s;padding:16px}
+.ph:hover figcaption,.ph:focus-visible figcaption{opacity:1;transform:none}
+.ph figcaption b{display:block;font-family:Prompt;font-weight:500;font-size:.92rem}
+.ph .zoom{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.9);color:var(--brand);display:grid;place-items:center;opacity:0;transition:.3s;backdrop-filter:blur(6px)}
+.ph:hover .zoom{opacity:1}
+
+/* albums: stacked-photo covers; open one to see its photos */
+.albums{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:26px 20px;margin-top:-26px;position:relative;z-index:2}
+.album{all:unset;cursor:pointer;display:grid;gap:12px;border-radius:20px;padding:12px 12px 16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 14px 34px -24px rgba(6,40,24,.45);transition:transform .25s,box-shadow .25s}
+.album:hover,.album:focus-visible{transform:translateY(-4px);box-shadow:0 22px 44px -24px rgba(6,40,24,.55)}
+.album:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.album .stack{position:relative;aspect-ratio:4/3;margin:6px 8px 0}
+.album .stack img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:12px;border:4px solid #fff;box-shadow:0 8px 20px -10px rgba(6,40,24,.5);transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.album .stack img:nth-child(1){transform:rotate(-5deg) translate(-6px,4px)}
+.album .stack img:nth-child(2){transform:rotate(4deg) translate(6px,2px)}
+.album:hover .stack img:nth-child(1){transform:rotate(-9deg) translate(-16px,6px)}
+.album:hover .stack img:nth-child(2){transform:rotate(8deg) translate(16px,2px)}
+.album .stack .count{position:absolute;right:8px;bottom:8px;z-index:3;background:rgba(11,77,44,.88);color:#fff;font-family:Prompt;font-size:.8rem;padding:3px 10px;border-radius:999px}
+.album h3{font-size:1.1rem;line-height:1.3;padding:0 4px}
+.album p{font-size:.88rem;color:var(--ink-2);padding:0 4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.album-view{display:grid;gap:18px;margin-top:-26px;position:relative;z-index:2;background:var(--bg);padding-top:6px}
+.album-view .back{justify-self:start;font:inherit;font-family:Prompt;font-size:.92rem;color:var(--brand-dark);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
+.album-view .back:hover{border-color:var(--brand)}
+.av-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.av-head h2{font-size:clamp(1.4rem,2.6vw,2rem);line-height:1.2}
+.av-head p{color:var(--ink-2);max-width:460px;font-size:.95rem}
+.av-head .n{font-family:Prompt;font-weight:700;color:var(--brand);font-size:.85rem;letter-spacing:1px}
+/* lightbox caption */
+.lb .cap{color:var(--ink);font-family:Prompt;text-align:center}
+.lb .cap small{display:block;color:var(--lime);font-size:.75rem;letter-spacing:1px}
+
+@media (max-width:980px){.g-hero img.mascot{display:none}}
+@media (max-width:620px){
+  .g-hero{padding:110px 0 44px}.g-hero .g-stats{gap:18px}.g-hero .g-stats b{font-size:1.4rem}
+  .photos{grid-template-columns:1fr 1fr;gap:8px}.albums{grid-template-columns:1fr 1fr;gap:14px}.album{padding:8px 8px 12px;border-radius:16px}.album h3{font-size:.95rem}.album p{display:none}.ph{border-radius:12px}.ph figcaption{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="g-hero">
+  <div class="wrap">
+    <span class="eyebrow"><span class="dot"></span>ผลงาน</span>
+    <h1>ภาพการทำงาน<span class="hl">จริง</span>ของทีม I-TEC</h1>
+    <p>ตั้งแต่การเก็บขนที่ต้นทาง การดูแลความสะอาดถังบรรจุ จนถึงการอบรมและเยี่ยมชมศูนย์กำจัด</p>
+    <div class="g-stats" id="stats"></div>
+  </div>
+  <img class="mascot" src="assets/mascot.png" alt="">
+</header>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="albums" id="albums" aria-label="อัลบั้ม"></div>
+    <div class="album-view" id="albumView" hidden>
+      <button class="back" type="button" id="albumBack">← อัลบั้มทั้งหมด</button>
+      <div class="av-head"><div><span class="n" id="avNum"></span><h2 id="avTitle"></h2></div><p id="avDesc"></p></div>
+      <div class="photos" id="avPhotos"></div>
+    </div>
+  </div>
+</section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="ดูภาพ">
+  <button class="ctl x" aria-label="ปิด">✕</button>
+  <button class="ctl p" aria-label="ก่อนหน้า">‹</button>
+  <img class="main" alt="">
+  <button class="ctl n" aria-label="ถัดไป">›</button>
+  <div class="cap"></div>
+  <span class="cnt"></span>
+  <div class="strip"></div>
+</div>
+
+<script src="js/common.js?v=v2-15"></script>
+<script>
+(() => {
+  // albums (numbers = assets/gallery-N.jpg; the first three make the cover stack)
+  const CH = [
+    { id: 'collect', t: 'การเก็บขน', d: 'ทีมงานสวมชุดป้องกัน ขนถังบรรจุขึ้นรถควบคุมอุณหภูมิจากต้นทาง', n: [14, 1, 13, 16, 19, 21, 25, 26, 28, 30] },
+    { id: 'clean', t: 'ถังบรรจุ & การทำความสะอาด', d: 'การดูแลและทำความสะอาดถังบรรจุมูลฝอยติดเชื้อ', n: [33, 11, 31, 32, 38, 41, 42, 46, 47, 50, 52, 59, 60] },
+    { id: 'team', t: 'ทีมงาน', d: 'พนักงานผ่านการฝึกอบรมการป้องกันและระงับการแพร่เชื้อ', n: [35, 10, 56] },
+    { id: 'plant', t: 'ศูนย์กำจัด & การอบรม', d: 'เยี่ยมชมระบบเตาเผาอุณหภูมิสูง และจัดอบรมการจัดการขยะติดเชื้อ', n: [4, 8, 3, 9] }
+  ];
+  const ALL = CH.flatMap(c => c.n.map(n => ({ src: `assets/gallery-${n}.jpg`, ch: c })));
+  const img = n => `assets/gallery-${n}.jpg`;
+
+  document.getElementById('stats').innerHTML =
+    `<div><b>${ALL.length}</b><span>ภาพจากหน้างาน</span></div><div><b>${CH.length}</b><span>อัลบั้ม</span></div>`;
+
+  // album covers
+  const albums = document.getElementById('albums'), view = document.getElementById('albumView'), grid = document.getElementById('avPhotos');
+  albums.innerHTML = CH.map(c => `
+    <button class="album" type="button" data-album="${c.id}" aria-label="เปิดอัลบั้ม ${c.t} (${c.n.length} ภาพ)">
+      <span class="stack">${c.n.slice(0, 3).reverse().map(n => `<img src="${img(n)}" alt="" loading="lazy">`).join('')}<span class="count">${c.n.length} ภาพ</span></span>
+      <h3>${c.t}</h3><p>${c.d}</p>
+    </button>`).join('');
+
+  // one album at a time; #album-id in the address so Back returns to the covers
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.1 });
+  let current = null;
+  const render = () => {
+    const c = CH.find(x => x.id === location.hash.slice(1));
+    current = c || null;
+    albums.hidden = !!c; view.hidden = !c;
+    if (!c) return;
+    document.getElementById('avNum').textContent = `อัลบั้ม ${CH.indexOf(c) + 1} / ${CH.length} · ${c.n.length} ภาพ`;
+    document.getElementById('avTitle').textContent = c.t;
+    document.getElementById('avDesc').textContent = c.d;
+    grid.innerHTML = c.n.map(n => `<figure class="ph" data-src="${img(n)}" tabindex="0"><img src="${img(n)}" alt="${c.t}" loading="lazy"><span class="zoom">⤢</span></figure>`).join('');
+    grid.querySelectorAll('.ph').forEach((el, i) => { el.style.transitionDelay = (i % 8) * 50 + 'ms'; io.observe(el); });
+  };
+  const toTop = () => { const top = view.parentElement.getBoundingClientRect().top + scrollY - 110; if (Math.abs(scrollY - top) > 40) scrollTo({ top, behavior: 'smooth' }); };
+  let fromCovers = false;                                   // opened from the covers here, so Back can simply go back
+  albums.addEventListener('click', e => { const b = e.target.closest('[data-album]'); if (!b) return; fromCovers = true; location.hash = b.dataset.album; toTop(); });
+  document.getElementById('albumBack').addEventListener('click', () => { if (fromCovers) { fromCovers = false; history.back(); } else location.hash = ''; toTop(); });
+  addEventListener('hashchange', () => { render(); if (!current) history.replaceState(null, '', location.pathname + location.search); });
+  render();
+
+  // lightbox (browses the open album)
+  const lb = document.getElementById('lb'), main = lb.querySelector('.main'), cnt = lb.querySelector('.cnt'), cap = lb.querySelector('.cap'), strip = lb.querySelector('.strip');
+  let list = ALL, cur = 0;
+  const show = i => {
+    cur = (i + list.length) % list.length; const p = list[cur];
+    main.src = p.src; cap.innerHTML = `<small>${p.ch.t}</small>`; cnt.textContent = `${cur + 1} / ${list.length}`;
+    strip.querySelectorAll('img').forEach((im, k) => im.classList.toggle('on', k === cur));
+    strip.children[cur]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+    lb.classList.add('open'); document.body.style.overflow = 'hidden';
+  };
+  const open = src => {
+    list = current ? ALL.filter(p => p.ch === current) : ALL;
+    if (!list.some(p => p.src === src)) list = ALL;
+    strip.innerHTML = list.map((p, k) => `<img src="${p.src}" data-i="${k}" alt="" loading="lazy">`).join('');
+    show(list.findIndex(p => p.src === src));
+  };
+  const close = () => { lb.classList.remove('open'); document.body.style.overflow = ''; };
+  document.addEventListener('click', e => { const f = e.target.closest('figure[data-src]'); if (f) open(f.dataset.src); });
+  document.addEventListener('keydown', e => {
+    const f = e.target.closest?.('figure[data-src]');
+    if (f && e.key === 'Enter') open(f.dataset.src);
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close(); if (e.key === 'ArrowLeft') show(cur - 1); if (e.key === 'ArrowRight') show(cur + 1);
+  });
+  strip.addEventListener('click', e => { const im = e.target.closest('img'); if (im) show(+im.dataset.i); });
+  lb.querySelector('.x').onclick = close;
+  lb.querySelector('.p').onclick = () => show(cur - 1);
+  lb.querySelector('.n').onclick = () => show(cur + 1);
+  lb.addEventListener('click', e => { if (e.target === lb) close(); });
+  let sx = null;
+  main.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+  main.addEventListener('touchend', e => { if (sx === null) return; const dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1)); sx = null; });
+})();
+</script>
+</body>
+</html>

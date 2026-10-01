@@ -1,0 +1,4 @@
+# build-only files (recreate with: bash tools/build.sh)
+tools/node_modules/
+tools/tex/
+.DS_Store
