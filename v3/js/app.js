@@ -8,7 +8,7 @@
     'มาตรฐาน', 'อุณหภูมิสูง', 'ควบคุมอุณหภูมิ', 'เตาเผา', 'ใบเสนอราคา', 'สถานพยาบาล', 'ผู้ประกอบการ', 'ศูนย์กำจัด', 'ปลอดมลพิษ', 'ผ้าอนามัย',
     'เอกสารสำคัญ', 'ถังบรรจุ', 'ทำความสะอาด', 'เก็บขน', 'จัดเก็บ', 'ขั้นตอน', 'โปร่งใส', 'ตรวจสอบได้', 'ตรวจสอบย้อนกลับได้', 'ผู้เชี่ยวชาญ',
     'โรงพยาบาล', 'การแพร่เชื้อ', 'จังหวัดใกล้เคียง', 'กรุงเทพฯ', 'ปริมณฑล', 'เรียลไทม์', 'ต้นทาง', 'รายแรก', 'ประเทศไทย', 'นายกรัฐมนตรี',
-    'ติดเชื้อ', 'อันตราย', 'การจัดการ', 'บริการ', 'ของคุณ', 'วันนี้', 'ที่เดียว', 'เทร็นด์', 'อินเตอร์เทรด', 'หลักวิชาการ', 'ไว้วางใจ'];
+    'ติดเชื้อ', 'อันตราย', 'การจัดการ', 'บริการ', 'ของคุณ', 'วันนี้', 'ที่เดียว', 'เทร็นด์', 'อินเตอร์เทรด', 'หลักวิชาการ', 'ไว้วางใจ', 'I-TEC', 'E-Manifest', 'ISO 9001:2015', 'พ.ศ.2545'];
   const GLUE = new Set(['และ', 'ของ', 'ด้วย', 'ตาม', 'ให้', 'จาก', 'สู่', 'ที่', 'ใน', 'กับ', 'หรือ', 'แก่', 'โดย', 'การ', 'ความ', 'ทาง', 'ผู้']);
   const MAXP = Math.max(...PHRASES.map(p => p.length));
   const units = text => {
@@ -50,14 +50,12 @@
       const step = now => { const p = Math.min((now - t0) / 1600, 1); c.textContent = Math.round(end * (1 - (1 - p) ** 4)); if (p < 1) requestAnimationFrame(step); };
       requestAnimationFrame(step);
     });
-  }), { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-  $$('.rv,.words,#steps').forEach(el => io.observe(el));
-  // the hero shouldn't wait for scrolling
-  requestAnimationFrame(() => $$('.hero .rv,.hero .words').forEach(el => el.classList.add('in')));
+  }), { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+  $$('.rv,.words,#steps').forEach(el => { if (!el.closest('.hero')) io.observe(el); });
 
   /* ---------- nav: active section, burger, page lock while open ---------- */
   const nav = $('#nav'), links = $$('.nav ul a');
-  const setMenu = o => { nav.classList.toggle('open', o); document.documentElement.style.overflow = o ? 'hidden' : ''; };
+  const setMenu = o => { nav.classList.toggle('open', o); document.documentElement.classList.toggle('lock', o); };
   $('.burger').onclick = e => { e.stopPropagation(); setMenu(!nav.classList.contains('open')); };
   nav.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); });
   document.addEventListener('click', e => { if (nav.classList.contains('open') && !e.target.closest('.nav')) setMenu(false); });
@@ -68,17 +66,18 @@
     links.forEach(a => a.classList.toggle('on', cur && a.getAttribute('href') === '#' + cur.id));
   };
   addEventListener('scroll', spy, { passive: true }); spy();
-  // anchors land below the floating nav
+  // anchors land below the floating nav (through the smooth-scroll engine)
   document.addEventListener('click', e => {
     const a = e.target.closest('a[href^="#"]'); if (!a) return;
     const el = $(a.getAttribute('href')); if (!el) return;
     e.preventDefault();
-    scrollTo({ top: el.getBoundingClientRect().top + scrollY - (el.id === 'top' ? 0 : 90), behavior: 'smooth' });
+    window.smoothTo(el.getBoundingClientRect().top + scrollY - (el.id === 'top' ? 0 : 90));
     history.replaceState(null, '', a.getAttribute('href'));
   });
 
   /* ---------- tilt + holographic sheen that follows the pointer ---------- */
   if (matchMedia('(hover:hover)').matches) $$('.tilt').forEach(c => {
+    if (c.closest('.hero')) return;
     c.addEventListener('pointermove', e => {
       const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       c.style.transform = `perspective(1000px) rotateY(${(x - .5) * 8}deg) rotateX(${(.5 - y) * 8}deg) translateY(-2px)`;
@@ -93,26 +92,37 @@
   const credHTML = creds.map(([img, t]) => `<span class="cred">${img ? `<img src="${img}" alt="">` : '<span class="chip" style="padding:0;border:0;background:none"><i></i></span>'}${t}</span>`).join('');
   $('#credTrack').innerHTML = credHTML + credHTML;
 
-  /* ---------- gallery rows + lightbox ---------- */
-  const NUMS = [1, 3, 4, 8, 9, 10, 11, 13, 14, 16, 19, 21, 25, 26, 28, 30, 31, 32, 33, 35, 38, 41, 42, 46, 47, 50, 52, 56, 59, 60];
-  const G = NUMS.map(n => `../assets/gallery-${n}.jpg`);
-  const half = Math.ceil(G.length / 2);
-  [[$('#row1 .track'), G.slice(0, half), 0], [$('#row2 .track'), G.slice(half), half]].forEach(([t, list, off]) => {
-    const html = list.map((s, i) => `<button data-i="${off + i}" aria-label="ดูภาพ"><img src="${s}" alt="ภาพการทำงาน I-TEC" loading="lazy"></button>`).join('');
-    t.innerHTML = html + html;
-  });
+  /* ---------- gallery: v2 albums + one ambient row + lightbox ---------- */
+  const CH = [
+    { t: 'การเก็บขน', d: 'ทีมงานสวมชุดป้องกัน ขนถังบรรจุขึ้นรถควบคุมอุณหภูมิจากต้นทาง', n: [14, 1, 13, 16, 19, 21, 25, 26, 28, 30] },
+    { t: 'ถังบรรจุ & การทำความสะอาด', d: 'การดูแลและทำความสะอาดถังบรรจุมูลฝอยติดเชื้อ', n: [33, 11, 31, 32, 38, 41, 42, 46, 47, 50, 52, 59, 60] },
+    { t: 'ทีมงาน', d: 'พนักงานผ่านการฝึกอบรมการป้องกันและระงับการแพร่เชื้อ', n: [35, 10, 56] },
+    { t: 'ศูนย์กำจัด & การอบรม', d: 'เยี่ยมชมระบบเตาเผาอุณหภูมิสูง และจัดอบรมการจัดการขยะติดเชื้อ', n: [4, 8, 3, 9] }
+  ];
+  const src = n => `../assets/gallery-${n}.jpg`;
+  const ALL = CH.flatMap(c => c.n);
+  $('#albums').innerHTML = CH.map((c, i) => `<button class="album rv" style="--d:${i * 0.08}s" data-a="${i}">
+      <span class="stack">${c.n.slice(0, 3).reverse().map(n => `<img src="${src(n)}" alt="" loading="lazy">`).join('')}</span>
+      <span class="meta"><b>${c.t}</b><small>${c.d}</small><em>${c.n.length} ภาพ →</em></span></button>`).join('');
+  $$('.album').forEach(el => io.observe(el));
+  const rowHTML = ALL.map((n, i) => `<button data-i="${i}" aria-label="ดูภาพ"><img src="${src(n)}" alt="ภาพการทำงาน I-TEC" loading="lazy"></button>`).join('');
+  $('#row1 .track').innerHTML = rowHTML + rowHTML;
   const lb = $('#lb'), main = $('.main', lb), cnt = $('.cnt', lb), strip = $('.lb-strip', lb);
-  strip.innerHTML = G.map((s, i) => `<img src="${s}" data-i="${i}" alt="" loading="lazy">`).join('');
-  let cur = 0;
-  const show = i => {
-    cur = (i + G.length) % G.length; main.src = G[cur]; cnt.textContent = `${cur + 1} / ${G.length}`;
+  let set = ALL, cur = 0;
+  const show = (i, list) => {
+    if (list && list !== set) { set = list; strip.innerHTML = set.map((n, k) => `<img src="${src(n)}" data-i="${k}" alt="" loading="lazy">`).join(''); }
+    cur = (i + set.length) % set.length; main.src = src(set[cur]); cnt.textContent = `${cur + 1} / ${set.length}`;
     $$('img', strip).forEach((im, k) => im.classList.toggle('on', k === cur));
     strip.scrollTo({ left: strip.children[cur].offsetLeft - strip.clientWidth / 2 + 38, behavior: 'smooth' });
-    lb.classList.add('open'); document.documentElement.style.overflow = 'hidden';
+    lb.classList.add('open'); document.documentElement.classList.add('lock');
   };
-  const close = () => { lb.classList.remove('open'); document.documentElement.style.overflow = ''; };
-  $('#work').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) show(+b.dataset.i); });
-  $('#openAll').onclick = () => show(0);
+  strip.innerHTML = ALL.map((n, k) => `<img src="${src(n)}" data-i="${k}" alt="" loading="lazy">`).join('');
+  const close = () => { lb.classList.remove('open'); document.documentElement.classList.remove('lock'); };
+  $('#work').addEventListener('click', e => {
+    const b = e.target.closest('button[data-i]'); if (b) return show(+b.dataset.i, ALL);
+    const a = e.target.closest('button[data-a]'); if (a) show(0, CH[+a.dataset.a].n);
+  });
+  $('#openAll').onclick = () => show(0, ALL);
   strip.addEventListener('click', e => { const im = e.target.closest('img'); if (im) show(+im.dataset.i); });
   $('.x', lb).onclick = close; $('.p', lb).onclick = () => show(cur - 1); $('.n', lb).onclick = () => show(cur + 1);
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
@@ -131,32 +141,97 @@
     map: 'M12 0C7.8 0 4.4 3.4 4.4 7.6 4.4 13.3 12 24 12 24s7.6-10.7 7.6-16.4C19.6 3.4 16.2 0 12 0zm0 11.2a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z'
   };
   const svg = k => `<svg viewBox="0 0 24 24"><path d="${IC[k]}"/></svg>`;
-  const CH = [['tel', 'b-tel', 'มือถือ', '061-694-2944 · 084-664-1571', 'tel:0616942944'], ['tel', 'b-tel', 'สำนักงาน', '02-454-8040 · 02-801-5724', 'tel:024548040'],
+  const CHANNELS = [['tel', 'b-tel', 'มือถือ', '061-694-2944 · 084-664-1571', 'tel:0616942944'], ['tel', 'b-tel', 'สำนักงาน', '02-454-8040 · 02-801-5724', 'tel:024548040'],
     ['line', 'b-line', 'LINE', '@itecwaste', 'https://line.me/ti/p/~@itecwaste'], ['fb', 'b-fb', 'Facebook', 'ขยะติดเชื้อ มูลฝอยติดเชื้อ ศูนย์ I-TEC', 'https://www.facebook.com/100057056246153'],
     ['tt', 'b-tt', 'TikTok', '@itec481', 'https://www.tiktok.com/@itec481'], ['mail', 'b-mail', 'อีเมล', 'otrend@hotmail.com', 'mailto:otrend@hotmail.com'],
     ['map', 'b-map', 'ที่ตั้ง · เปิดใน Google Maps', '472/1 ซ.เพชรเกษม 55/2 แขวงหลักสอง เขตบางแค กรุงเทพฯ 10160', 'https://www.google.com/maps/search/?api=1&query=472%2F1+%E0%B8%8B%E0%B8%AD%E0%B8%A2%E0%B9%80%E0%B8%9E%E0%B8%8A%E0%B8%A3%E0%B9%80%E0%B8%81%E0%B8%A9%E0%B8%A1+55%2F2+%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%84']];
-  $('#channels').innerHTML = CH.map(([k, cls, t, v, href]) => `<a class="ch" href="${href}"${href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}><span class="b ${cls}">${svg(k)}</span><span><small>${t}</small><strong>${v}</strong></span></a>`).join('');
-  $$('.btn-line').forEach(b => b.insertAdjacentHTML('afterbegin', svg('line')));
-
+  $("#channels").innerHTML = CHANNELS.map(([k, cls, t, v, href]) => `<a class="ch" href="${href}"${href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}><span class="b ${cls}">${svg(k)}</span><span><small>${t}</small><strong>${v}</strong></span></a>`).join('');
+  
+  // area chips: same behaviour as v2 — the quote form (quote-form.js) picks the province from 'area-picked'
   const AREAS = ['กรุงเทพมหานคร', 'นนทบุรี', 'ปทุมธานี', 'สมุทรปราการ', 'สมุทรสาคร', 'นครปฐม', 'พระนครศรีอยุธยา', 'ฉะเชิงเทรา', 'จังหวัดอื่นๆ'];
-  const box = $('#areas'), sel = $('#areaSel'), note = $('#areaNote');
+  const box = $('#areas'), note = $('#areaNote');
   box.innerHTML = AREAS.map(a => `<button type="button">${a}</button>`).join('');
-  sel.innerHTML = '<option value="">— เลือกจังหวัด —</option>' + AREAS.map(a => `<option>${a}</option>`).join('');
-  const pick = a => {
-    sel.value = a; $$('button', box).forEach(b => b.classList.toggle('on', b.textContent === a));
-    note.innerHTML = a === 'จังหวัดอื่นๆ' ? 'จังหวัดอื่นนอกเหนือจากรายการ กรุณาแจ้งที่อยู่ในฟอร์ม เราจะตรวจสอบเส้นทางให้' : `<b>${a}</b> อยู่ในพื้นที่ให้บริการ — ใส่ในฟอร์มให้แล้ว <a href="#form">ไปกรอกต่อ ↓</a>`;
+  box.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const a = b.textContent;
+    $$('button', box).forEach(x => x.classList.toggle('on', x === b));
+    note.innerHTML = a === 'จังหวัดอื่นๆ' ? 'จังหวัดอื่นนอกเหนือจากรายการ กรุณาแจ้งที่อยู่ในฟอร์ม เราจะตรวจสอบเส้นทางให้'
+      : `<b>${a}</b> อยู่ในพื้นที่ให้บริการ — ใส่ในฟอร์มให้แล้ว <a href="#form">ไปกรอกต่อ ↓</a>`;
+    dispatchEvent(new CustomEvent('area-picked', { detail: a }));
+  });
+
+
+  /* ---------- smooth scroll: inertial wheel on desktop, native momentum on touch ---------- */
+  const root = document.documentElement;
+  const S = { y: scrollY, t: scrollY, set: scrollY, run: false, last: 0 };
+  const maxY = () => root.scrollHeight - innerHeight;
+  const tick = now => {
+    // someone else moved the page (keyboard, scrollbar, focus): hand control back immediately
+    if (Math.abs(scrollY - S.set) > 3) { S.run = false; S.last = 0; S.t = S.y = scrollY; return; }
+    const dt = Math.min((now - (S.last || now)) / 1000, 0.05); S.last = now;
+    S.t = Math.min(S.t, maxY());
+    S.y += (S.t - S.y) * (1 - Math.exp(-dt * 7.5));
+    if (Math.abs(S.t - S.y) < 0.4) { S.y = S.t; S.run = false; }
+    scrollTo(0, S.y); S.set = scrollY;
+    if (S.run) requestAnimationFrame(tick); else S.last = 0;
   };
-  box.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(b.textContent); });
-  sel.addEventListener('change', () => sel.value && pick(sel.value));
-  const form = $('#form'); let via = 'line';
-  $$('[data-via]', form).forEach(b => b.addEventListener('click', () => { via = b.dataset.via; }));
-  form.addEventListener('submit', e => {
+  const go = () => { if (!S.run) { S.run = true; S.y = S.set = scrollY; requestAnimationFrame(tick); } };
+  window.smoothTo = y => { S.t = Math.max(0, Math.min(maxY(), y)); go(); };
+  const fine = matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (fine) addEventListener('wheel', e => {
+    if (e.ctrlKey || root.classList.contains('lock') || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    if (e.target.closest('textarea,select,.lb')) return;
     e.preventDefault();
-    const f = Object.fromEntries(new FormData(form));
-    const text = `ขอใบเสนอราคา\nชื่อ: ${f.name}\nโทร: ${f.tel}\nหน่วยงาน: ${f.org || '-'}\nบริการ: ${f.svc}\nจังหวัด: ${f.area || '-'}\nรายละเอียด: ${f.msg || '-'}`;
-    window.open(via === 'line' ? 'https://line.me/R/oaMessage/@itecwaste/?' + encodeURIComponent(text)
-      : 'mailto:otrend@hotmail.com?subject=' + encodeURIComponent('ขอใบเสนอราคา - ' + f.name) + '&body=' + encodeURIComponent(text), '_blank');
-    form.classList.add('sent');
+    if (!S.run) S.t = scrollY;
+    S.t = Math.max(0, Math.min(maxY(), S.t + e.deltaY * (e.deltaMode === 1 ? 40 : 1)));
+    go();
+  }, { passive: false });
+  // keyboard, scrollbar, find-in-page: follow whatever the browser did
+  addEventListener('scroll', () => { if (!S.run) S.t = S.y = scrollY; }, { passive: true });
+
+  /* ---------- intro curtain → hero entrance ---------- */
+  const intro = $('#intro'), bar = $('#introBar');
+  let p = 0, gl = false, done = false;
+  const t0 = performance.now();
+  addEventListener('holo-ready', () => { gl = true; });
+  const lift = () => {
+    if (done) return; done = true;
+    bar.style.transform = 'scaleX(1)';
+    setTimeout(() => {
+      root.classList.add('go'); intro.classList.add('out');
+      dispatchEvent(new Event('intro-done'));
+      $$('.hero .rv,.hero .words').forEach(el => el.classList.add('in'));
+      setTimeout(() => intro.remove(), 1400);
+    }, 260);
+  };
+  const load = () => {
+    if (done) return;
+    const el = performance.now() - t0, ready = gl || root.classList.contains('no-webgl');
+    p += ((ready ? 1 : Math.min(0.9, el / 2400)) - p) * 0.12;
+    bar.style.transform = `scaleX(${p})`;
+    if ((ready && p > 0.97 && el > 700) || el > 4500) lift(); else requestAnimationFrame(load);
+  };
+  requestAnimationFrame(load);
+
+  /* ---------- scroll-linked: parallax photos, giant running words, chamber glow ---------- */
+  const par = $$('.pic img,.bento .big .ph img,.album .stack');
+  const gr = $('#grTrack'), chamber = $('#chamber');
+  const frame = () => {
+    const h = innerHeight;
+    par.forEach(el => {
+      const r = el.parentElement.getBoundingClientRect(); if (r.bottom < 0 || r.top > h) return;
+      const k = (r.top + r.height / 2 - h / 2) / h;
+      el.style.transform = el.classList.contains('stack') ? `translateY(${k * -18}px)` : `translateY(${k * -6}%) scale(1.14)`;
+    });
+    if (gr) { const r = chamber.getBoundingClientRect(); if (r.bottom > 0 && r.top < h) gr.style.transform = `translateX(${-(h - r.top) * 0.35}px)`; }
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+
+  /* ---------- magnetic buttons (desktop) ---------- */
+  if (fine) $$('.btn').forEach(b => {
+    b.addEventListener('pointermove', e => { const r = b.getBoundingClientRect(); b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px,${(e.clientY - r.top - r.height / 2) * 0.28}px)`; });
+    b.addEventListener('pointerleave', () => { b.style.transform = ''; });
   });
 
   /* ---------- phones: no pinch / double-tap zoom (iOS ignores user-scalable=no) ---------- */

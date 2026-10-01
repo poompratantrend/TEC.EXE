@@ -9,7 +9,7 @@
 <link rel="icon" href="../assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/v3.css?v=1">
+<link rel="stylesheet" href="css/v3.css?v=3">
 </head>
 <body>
 <div class="aura" aria-hidden="true"></div>
@@ -26,11 +26,17 @@
   <button class="burger" aria-label="เมนู"><i></i><i></i></button>
 </nav>
 
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-in"><div class="intro-mark"><img src="../assets/trend-e.png" alt=""></div>
+    <div class="intro-name">I-TEC <span>WASTE SOLUTIONS</span></div>
+    <div class="intro-bar"><i id="introBar"></i></div></div>
+</div>
+
 <main>
   <!-- HERO -->
-  <header class="hero" id="top" data-holo="0 0.18 1.25 0 0">
+  <header class="hero" id="top" data-holo="0 0.18 1.25 0 0" data-shape="halo">
     <div class="wrap">
-      <span class="eyebrow rv"><b>25+ ปี</b> ผู้เชี่ยวชาญกว่า 25 ปี</span>
+      <span class="eyebrow rv"><b>27+ ปี</b> ผู้เชี่ยวชาญกว่า 27 ปี</span>
       <h1 class="words">จัดการ<span class="holo-text">ขยะติดเชื้อ</span> และขยะอันตรายทางการแพทย์ ครบวงจร</h1>
       <p class="lead rv" style="--d:.25s">จัดเก็บ ขนส่ง และกำจัด ด้วยเตาเผาอุณหภูมิสูงปลอดมลพิษ ถูกต้องตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545 และมาตรฐาน ISO 9001:2015</p>
       <div class="cta rv" style="--d:.4s">
@@ -45,15 +51,15 @@
   </header>
 
   <!-- CREDENTIALS -->
-  <div class="creds rv" data-holo="0.62 -0.1 0.7 1.2 0.4">
+  <div class="creds rv" data-holo="0.62 -0.1 0.7 1.2 0.4" data-shape="halo">
     <p>ใบอนุญาต &amp; รางวัล</p>
     <div class="marq"><div class="track" id="credTrack"></div></div>
   </div>
 
   <!-- STATS -->
-  <section style="padding-top:40px" data-holo="0.62 -0.1 0.7 1.2 0.4">
+  <section style="padding-top:40px" data-holo="0.62 -0.1 0.7 1.2 0.4" data-shape="halo">
     <div class="wrap stats">
-      <div class="panel stat rv"><b class="holo-text"><span data-count="25">0</span>+</b><span>ปีประสบการณ์ด้านมูลฝอยติดเชื้อ</span></div>
+      <div class="panel stat rv"><b class="holo-text"><span data-count="27">0</span>+</b><span>ปีประสบการณ์ด้านมูลฝอยติดเชื้อ</span></div>
       <div class="panel stat rv" style="--d:.08s"><b>รายแรก</b><span>ได้รับใบอนุญาตเก็บขนมูลฝอยติดเชื้อในประเทศไทย</span></div>
       <div class="panel stat rv" style="--d:.16s"><b>ISO</b><span>9001:2015 รับรองด้านงานบริการ</span></div>
       <div class="panel stat rv" style="--d:.24s"><b>2018</b><span>รางวัล SME ดีเด่น จากนายกรัฐมนตรี</span></div>
@@ -61,7 +67,7 @@
   </section>
 
   <!-- SERVICES -->
-  <section id="services" data-holo="-0.68 -0.35 0.62 2.4 1">
+  <section id="services" data-holo="-0.62 -0.3 0.62 2.4 1" data-shape="trefoil" data-emblem="0">
     <div class="wrap">
       <div class="sec-title"><span class="kicker rv">บริการของเรา</span><h2 class="words">บริการครบ จบในที่เดียว สำหรับสถานพยาบาลและผู้ประกอบการ</h2><p class="rv">ตั้งแต่ถังบรรจุ จนถึงการเผาทำลาย ทุกขั้นตอนมีเอกสารกำกับ ตรวจสอบย้อนกลับได้</p></div>
       <div class="bento">
@@ -92,8 +98,10 @@
     </div>
   </section>
 
+  <div class="chamber" id="chamber">
+  <div class="giant-run" aria-hidden="true"><div class="gr-track" id="grTrack">จัดเก็บ · ขนส่ง · กำจัด · จัดเก็บ · ขนส่ง · กำจัด · </div></div>
   <!-- PROCESS -->
-  <section id="process" data-holo="0.7 -0.62 0.5 3.6 1.6">
+  <section id="process" data-holo="0.88 -0.62 0.5 -0.6 1.6" data-shape="truck" data-emblem="0" data-night>
     <div class="wrap">
       <div class="sec-title"><span class="kicker rv">กระบวนการ 4 ขั้นตอน</span><h2 class="words">4 ขั้นตอน โปร่งใส ตรวจสอบได้</h2><p class="rv">ทีมงานผ่านการฝึกอบรมการป้องกันและระงับการแพร่เชื้อจากมูลฝอยติดเชื้อ</p></div>
       <div class="steps" id="steps">
@@ -107,7 +115,7 @@
   </section>
 
   <!-- STANDARDS -->
-  <section id="standards" data-holo="-0.7 -0.55 0.55 5 2.2">
+  <section id="standards" data-holo="-0.86 -0.6 0.5 0 2.2" data-shape="shield" data-emblem="0" data-night>
     <div class="wrap">
       <div class="sec-title"><span class="kicker rv">ใบอนุญาต &amp; รางวัล</span><h2 class="words">ทำไมโรงพยาบาลไว้ใจ I-TEC</h2></div>
       <div class="std">
@@ -127,18 +135,22 @@
     </div>
   </section>
 
+  </div>
+
   <!-- WORK -->
-  <section id="work" data-holo="0 -1.4 0.4 6 2.6">
-    <div class="wrap"><div class="sec-title"><span class="kicker rv">ผลงาน</span><h2 class="words">ดูภาพการทำงานจริงของทีมเรา</h2><p class="rv">30 ภาพจากหน้างานจริง</p></div></div>
-    <div class="gal-rows rv"><div class="gal-row" id="row1"><div class="track"></div></div><div class="gal-row rev" id="row2"><div class="track"></div></div></div>
+  <section id="work" data-holo="0 -0.9 0.4 0 2.6" data-shape="wave" data-emblem="0">
+    <div class="wrap"><div class="sec-title"><span class="kicker rv">ผลงาน</span><h2 class="words">ภาพการทำงานจริงของทีม I-TEC</h2><p class="rv">ตั้งแต่การเก็บขนที่ต้นทาง การดูแลความสะอาดถังบรรจุ จนถึงการอบรมและเยี่ยมชมศูนย์กำจัด</p></div>
+      <div class="albums" id="albums"></div>
+    </div>
+    <div class="gal-rows rv"><div class="gal-row" id="row1"><div class="track"></div></div></div>
     <div class="gal-more"><button class="btn btn-glass" id="openAll">ดูทั้งหมด 30 ภาพ</button></div>
   </section>
 
   <!-- ABOUT -->
-  <section id="about" data-holo="0.7 -0.5 0.5 7 3">
+  <section id="about" data-holo="0.62 -0.4 0.55 7 3" data-shape="halo">
     <div class="wrap about">
       <div class="panel txt rv"><span class="kicker" style="font-family:Anuphan;font-weight:600;font-size:.8rem;letter-spacing:.02em;color:var(--ink-3)">เรื่องราวของเรา</span>
-        <h2 class="words">ผู้เชี่ยวชาญกว่า 25 ปี ด้านขยะติดเชื้อและขยะอันตรายทางการแพทย์</h2>
+        <h2 class="words">ผู้เชี่ยวชาญกว่า 27 ปี ด้านขยะติดเชื้อและขยะอันตรายทางการแพทย์</h2>
         <p>การจัดการขยะติดเชื้อและขยะอันตรายทางการแพทย์ในประเทศไทยยังเป็นปัญหาที่ต้องจัดการอย่างต่อเนื่อง ปริมาณมูลฝอยติดเชื้อเพิ่มขึ้น และต้องทำลายเชื้อด้วยระบบเตาเผาอุณหภูมิสูงปลอดมลพิษ</p>
         <p>ศูนย์ I-TEC บริหารจัดการจัดเก็บ ขนส่ง และกำจัด ถูกต้องตามหลักวิชาการและกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545 บริหารองค์กรอย่างเป็นระบบตาม ISO 9001:2015 ควบคุมความเสี่ยง และพัฒนาอย่างต่อเนื่อง</p>
         <div class="co"><img src="../assets/trend-logo-wide.jpg" alt="TREND"><div><b>บริษัท เทร็นด์ อินเตอร์เทรด จำกัด</b><span>TREND INTERTRADE COMPANY LIMITED · โทร. 061-694-2944</span></div></div>
@@ -148,7 +160,7 @@
   </section>
 
   <!-- CTA -->
-  <section style="padding-top:20px" data-holo="0.75 -0.8 0.42 8 3.4">
+  <section style="padding-top:20px" data-holo="0.7 -0.7 0.45 8 3.4" data-shape="halo">
     <div class="wrap"><div class="cta-card holo-card rv">
       <img class="avatar" src="../assets/mascot.png" alt="">
       <div><h2 class="words">ไม่แน่ใจว่าต้องใช้บริการไหน?</h2><p>บอกประเภทขยะและปริมาณ เราช่วยแนะนำให้</p></div>
@@ -157,27 +169,99 @@
   </section>
 
   <!-- CONTACT -->
-  <section id="contact" data-holo="-0.72 -0.7 0.45 9 3.8">
+  <section id="contact" data-holo="-0.72 -0.7 0.45 9 3.8" data-shape="globe" data-emblem="0">
     <div class="wrap">
       <div class="sec-title"><span class="kicker rv">ติดต่อเรา</span><h2 class="words">พร้อมดูแลขยะติดเชื้อของคุณวันนี้</h2><p class="rv">ปรึกษาฟรี ตอบกลับรวดเร็ว ให้บริการกรุงเทพฯ ปริมณฑล และจังหวัดใกล้เคียง</p></div>
-      <div class="contact">
+      <div class="panel areas-panel rv">
+        <h3>พื้นที่บริการ · เลือกจังหวัดของคุณ</h3>
+        <p class="note">กดเลือกจังหวัด ระบบจะใส่ให้ในฟอร์มขอใบเสนอราคาด้านล่างอัตโนมัติ</p>
+        <div class="chips" id="areas"></div><p class="note" id="areaNote"></p>
+      </div>
+      <div class="contact" id="quote">
         <div class="panel side rv">
-          <div><h3 style="font-size:1.1rem;margin-bottom:6px">พื้นที่บริการ · เลือกจังหวัดของคุณ</h3><p class="note" style="margin:0 0 10px">กดเลือกจังหวัด ระบบจะใส่ให้ในฟอร์มขอใบเสนอราคาด้านล่างอัตโนมัติ</p><div class="chips" id="areas"></div><p class="note" id="areaNote"></p></div>
+          <h3>ช่องทางติดต่อ</h3>
           <div style="display:grid;gap:8px" id="channels"></div>
           <div class="qr"><img src="../assets/line-qr.jpg" alt="LINE QR @itecwaste" loading="lazy"><p>สแกนเพื่อแอดไลน์<br><b>@itecwaste</b></p></div>
         </div>
-        <form class="panel form rv" id="form" style="--d:.1s">
-          <h3>ขอใบเสนอราคา</h3>
-          <label>ชื่อผู้ติดต่อ<input name="name" required placeholder="ชื่อ-นามสกุล"></label>
-          <label>เบอร์โทร<input name="tel" required type="tel" placeholder="0xx-xxx-xxxx"></label>
-          <label class="full">หน่วยงาน / สถานพยาบาล<input name="org" placeholder="ชื่อโรงพยาบาล คลินิก หรือบริษัท"></label>
-          <label>ประเภทบริการ<select name="svc"><option>กำจัดขยะติดเชื้อ</option><option>กำจัดขยะอันตราย</option><option>อบรมการจัดการขยะติดเชื้อ</option><option>รับกำจัดผ้าอนามัย</option><option>อุปกรณ์ &amp; ถังบรรจุ</option><option>ทำลายเอกสารสำคัญ</option></select></label>
-          <label>จังหวัด<select name="area" id="areaSel"></select></label>
-          <label class="full">รายละเอียดเพิ่มเติม<textarea name="msg" placeholder="ปริมาณโดยประมาณ ความถี่ในการเก็บ ฯลฯ"></textarea></label>
-          <div class="full send"><button class="btn btn-line" type="submit" data-via="line">ส่งทาง LINE</button><button class="btn btn-ink" type="submit" data-via="mail">ส่งทางอีเมล</button></div>
-          <p class="ok">เปิดแอปเพื่อส่งข้อความแล้ว — กดส่งในแอปเพื่อยืนยัน</p>
-        </form>
+        <form class="panel form qf rv" style="--d:.1s" id="form" novalidate data-gform="https://docs.google.com/forms/d/e/1FAIpQLScwP_vdSIQa1W4WGCOKT7rJD0--Pq5Ez2L9Zi-oalqMyJP95w/formResponse"
+      data-entries='{"fields":{"org":"entry.1025691336","addressFull":"entry.1311699129","name":"entry.1252970410","tel":"entry.1795757430","emailOrDash":"entry.1275544601","freq":"entry.176561681","weightLegacy":"entry.1324727562"},"fixed":{"entry.1517086429":"-"}}'>
+      <h3>ขอใบเสนอราคา</h3>
+      <p class="full qf-lead">กรอกข้อมูลไม่กี่ข้อ ทีมงานจะติดต่อกลับพร้อมราคา ช่องที่มี <span class="req">*</span> ต้องกรอก</p>
+
+      <h4 class="full">หน่วยงาน</h4>
+      <label class="full">ชื่อหน่วยงาน <span class="req">*</span><input name="org" id="qf-org" required placeholder="โรงพยาบาล คลินิก บริษัท หรือสถาบัน"></label>
+      <label class="full">ประเภทหน่วยงาน <span class="req">*</span>
+        <select name="type" id="qf-type" required>
+          <option value="">— เลือก —</option><option>โรงพยาบาล</option><option>คลินิกทั่วไป</option><option>คลินิกทันตกรรม</option><option>คลินิกเสริมความงาม</option>
+          <option>ห้องปฏิบัติการ (แล็บ)</option><option>คลินิกสัตว์</option><option>สถานดูแลผู้สูงอายุ</option><option>บริษัท-โรงงาน</option><option>อื่นๆ</option>
+        </select></label>
+      <label>ชื่อ-สกุล / ตำแหน่ง ผู้ติดต่อ <span class="req">*</span><input name="name" id="qf-name" required placeholder="เช่น สมชาย ใจดี, ผู้จัดการ"></label>
+      <label>เบอร์โทรศัพท์ <span class="req">*</span><input name="tel" id="qf-tel" required type="tel" inputmode="tel" placeholder="0xx-xxx-xxxx"></label>
+      <label class="full">อีเมล<input name="email" id="qf-email" type="email" inputmode="email" placeholder="ถ้ามี"></label>
+
+      <h4 class="full">สถานที่ให้เข้าเก็บ</h4>
+      <label>จังหวัด <span class="req">*</span><select name="province" id="qf-province" required></select></label>
+      <label>เขต / อำเภอ <span class="req">*</span>
+        <select name="district" id="qf-district" required></select>
+        <input name="district_other" id="qf-district-other" placeholder="พิมพ์เขต / อำเภอ" hidden></label>
+      <label class="full" id="qf-province-other-row"><input name="province_other" id="qf-province-other" placeholder="พิมพ์ชื่อจังหวัด" hidden></label>
+      <label class="full">รหัสไปรษณีย์ <span class="req">*</span><input name="postcode" id="qf-postcode" required inputmode="numeric" pattern="\d{5}" minlength="5" maxlength="5" placeholder="10160"></label>
+      <label class="full">ที่อยู่ / จุดสังเกต <span class="req">*</span> <span class="opt">หรือใส่ตำแหน่งด้านล่างแทนก็ได้</span>
+        <textarea name="address" id="qf-address" rows="2" placeholder="เลขที่ ซอย ถนน แขวง/ตำบล หรือจุดสังเกต เช่น ตรงข้ามตลาด…"></textarea></label>
+      <div class="full qf-loc">
+        <label for="qf-location">ตำแหน่งบนแผนที่ <span class="opt">ถ้าสะดวก · วางลิงก์ Google Maps หรือกดปุ่ม</span></label>
+        <div class="qf-loc-row"><input name="location" id="qf-location" placeholder="https://maps.app.goo.gl/…"><button class="btn btn-glass" type="button" id="qf-locate">ใช้ตำแหน่งปัจจุบัน</button></div>
+        <small id="qf-locate-note"></small>
       </div>
+
+      <h4 class="full">ขยะและการเข้าเก็บ</h4>
+      <fieldset class="full qf-chips"><legend>ชนิดขยะ <span class="opt">เลือกได้หลายข้อ</span></legend>
+        <label><input type="checkbox" name="waste" value="ขยะติดเชื้อทั่วไป"><span>ขยะติดเชื้อทั่วไป</span></label>
+        <label><input type="checkbox" name="waste" value="ของมีคม (เข็ม ใบมีด)"><span>ของมีคม (เข็ม ใบมีด)</span></label>
+        <label><input type="checkbox" name="waste" value="ชิ้นเนื้อ-อวัยวะ"><span>ชิ้นเนื้อ-อวัยวะ</span></label>
+        <label><input type="checkbox" name="waste" value="ยาหมดอายุ-สารเคมี"><span>ยาหมดอายุ-สารเคมี</span></label>
+        <label><input type="checkbox" name="waste" value="ผ้าอนามัย"><span>ผ้าอนามัย</span></label>
+        <label><input type="checkbox" name="waste" value="เอกสารสำคัญ"><span>เอกสารสำคัญ</span></label>
+      </fieldset>
+      <label>น้ำหนักขยะ / เดือน <span class="req">*</span>
+        <select name="weight" id="qf-weight" required>
+          <option value="">— เลือก —</option><option>ไม่เกิน 20 กก.</option><option>21–40 กก.</option><option>41–60 กก.</option><option>61–80 กก.</option>
+          <option>81–100 กก.</option><option>101–200 กก.</option><option>มากกว่า 200 กก.</option><option>ยังไม่แน่ใจ</option>
+        </select></label>
+      <label>ให้เข้าเก็บกี่ครั้ง / เดือน <span class="req">*</span>
+        <select name="freq" id="qf-freq" required>
+          <option value="">— เลือก —</option><option>1</option><option>2</option><option>4 (ทุกสัปดาห์)</option><option>8</option><option>มากกว่า 8</option><option>ยังไม่แน่ใจ</option>
+        </select></label>
+      <fieldset class="full qf-chips"><legend>ถัง / ถุงแดง</legend>
+        <label><input type="radio" name="bins" value="ต้องการจาก I-TEC"><span>ต้องการจาก I-TEC</span></label>
+        <label><input type="radio" name="bins" value="มีอยู่แล้ว"><span>มีอยู่แล้ว</span></label>
+      </fieldset>
+      <fieldset class="full qf-chips"><legend>วันที่สะดวกให้เข้าเก็บ <span class="opt">เลือกได้หลายวัน</span></legend>
+        <label><input type="checkbox" name="days" value="จันทร์"><span>จันทร์</span></label>
+        <label><input type="checkbox" name="days" value="อังคาร"><span>อังคาร</span></label>
+        <label><input type="checkbox" name="days" value="พุธ"><span>พุธ</span></label>
+        <label><input type="checkbox" name="days" value="พฤหัส"><span>พฤหัส</span></label>
+        <label><input type="checkbox" name="days" value="ศุกร์"><span>ศุกร์</span></label>
+        <label><input type="checkbox" name="days" value="เสาร์"><span>เสาร์</span></label>
+      </fieldset>
+      <label class="full">รายละเอียดเพิ่มเติม<textarea name="note" id="qf-note" placeholder="ถ้ามี เช่น ช่วงเวลาที่สะดวก จุดจอดรถ"></textarea></label>
+
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="full cta" style="margin:0"><button class="btn btn-ink" type="submit">ส่งแบบฟอร์ม</button></div>
+      <p class="full hint">อยากส่งรูปหรือคุยเพิ่ม แอด LINE <a href="https://line.me/ti/p/~@itecwaste" target="_blank" rel="noopener"><b>@itecwaste</b></a></p>
+      <p class="ok bad" id="qf-status" role="alert" hidden></p>
+
+      <div class="thanks full" id="qf-thanks" tabindex="-1" hidden>
+        <div class="tick" aria-hidden="true">✓</div>
+        <h3>ขอบคุณที่ติดต่อ I-TEC</h3>
+        <p>เราได้รับคำขอใบเสนอราคาของคุณแล้ว ทีมงานจะติดต่อกลับทางโทรศัพท์โดยเร็ว</p>
+        <p class="small">ต้องการด่วน โทร <a href="tel:0616942944"><b>061-694-2944</b></a> · LINE <a href="https://line.me/ti/p/~@itecwaste" target="_blank" rel="noopener"><b>@itecwaste</b></a></p>
+        <button class="btn btn-glass" type="button" id="qf-again">ส่งคำขออีกครั้ง</button>
+      </div>
+    </form>
+      </div>
+      <div class="map rv"><iframe title="แผนที่ ศูนย์ I-TEC" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps?q=472/1+%E0%B8%8B%E0%B8%AD%E0%B8%A2%E0%B9%80%E0%B8%9E%E0%B8%8A%E0%B8%A3%E0%B9%80%E0%B8%81%E0%B8%A9%E0%B8%A1+55/2+%E0%B8%9A%E0%B8%B2%E0%B8%87%E0%B9%81%E0%B8%84+%E0%B8%81%E0%B8%A3%E0%B8%B8%E0%B8%87%E0%B9%80%E0%B8%97%E0%B8%9E&output=embed"></iframe></div>
     </div>
   </section>
 </main>
@@ -200,7 +284,8 @@
   <span class="cnt"></span><div class="lb-strip"></div>
 </div>
 
-<script src="js/app.js?v=1"></script>
-<script src="js/dist/holo.js?v=1"></script>
+<script src="js/app.js?v=3"></script>
+<script src="js/quote-form.js?v=3"></script>
+<script src="js/dist/holo.js?v=3"></script>
 </body>
 </html>
