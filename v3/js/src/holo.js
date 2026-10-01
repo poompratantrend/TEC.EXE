@@ -1,5 +1,5 @@
 // v3 — one holographic biohazard emblem + a particle field that re-forms itself as the story scrolls:
-// halo → emblem dissolves into a particle trefoil → collection truck → standards shield → photo wave → globe.
+// the solid emblem dissolves into a dot-matrix trefoil → collection truck → standards shield → photo wave → map pin.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
@@ -10,6 +10,7 @@ const clamp01 = t => t < 0 ? 0 : t > 1 ? 1 : t;
 const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const smooth = t => t * t * (3 - 2 * t);
 const isMobile = () => innerWidth < 900;
+
 const deg = d => d * Math.PI / 180;
 
 /* ---------- geometry: biohazard trefoil built from real circle intersections ---------- */
@@ -78,14 +79,6 @@ const flat = list => mergeGeometries(list.map(g => (g.index ? g.toNonIndexed() :
   return g;
 }));
 const SHAPES = {
-  halo(N) {                                   // a spiral galaxy of dust around the emblem
-    const o = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-      const arm = i % 3, r = 0.95 + Math.pow(Math.random(), 1.6) * 1.6, a = arm * 2.094 + r * 1.7 + rnd(0.35);
-      o.set([Math.cos(a) * r, Math.sin(a) * r * 0.92, rnd(0.06) * r], i * 3);
-    }
-    return o;
-  },
   trefoil(N) {
     const gs = [0, 1, 2].map(i => bladeGeo().rotateZ(deg(i * 120)));
     return sampleGeo(flat([...gs, ringGeo()]), N);
@@ -128,17 +121,15 @@ const SHAPES = {
     }
     return o;
   },
-  globe(N) {                                   // service area: meridians + parallels + an orbit
-    const o = new Float32Array(N * 3), R = 1.15;
-    for (let i = 0; i < N; i++) {
-      const k = Math.random(); let th, ph, r = R;
-      if (k < 0.34) { th = Math.floor(Math.random() * 12) / 12 * Math.PI * 2; ph = Math.random() * Math.PI; }
-      else if (k < 0.62) { ph = (Math.floor(Math.random() * 7) + 1) / 8 * Math.PI; th = Math.random() * Math.PI * 2; }
-      else if (k < 0.82) { th = Math.random() * Math.PI * 2; ph = Math.acos(rnd(1)); }
-      else { th = Math.random() * Math.PI * 2; ph = Math.PI / 2 + rnd(0.03); r = R * 1.45; }
-      const x = r * Math.sin(ph) * Math.cos(th), y = r * Math.cos(ph), z = r * Math.sin(ph) * Math.sin(th);
-      o.set(k >= 0.82 ? [x, y * 0.3 + z * 0.25, z] : [x, y, z], i * 3);
-    }
+  pin(N) {                                     // service area: a map pin
+    const p = new THREE.Shape();
+    p.moveTo(0, -1.15);
+    p.bezierCurveTo(-0.25, -0.62, -0.78, -0.18, -0.78, 0.3);
+    p.bezierCurveTo(-0.78, 0.78, -0.42, 1.1, 0, 1.1);
+    p.bezierCurveTo(0.42, 1.1, 0.78, 0.78, 0.78, 0.3);
+    p.bezierCurveTo(0.78, -0.18, 0.25, -0.62, 0, -1.15);
+    p.holes.push(new THREE.Path().absarc(0, 0.32, 0.3, 0, Math.PI * 2, true));
+    const o = sampleGeo(flat([new THREE.ExtrudeGeometry(p, { depth: 0.24, bevelEnabled: false, curveSegments: 48 }).translate(0, 0, -0.12)]), N);
     return o;
   }
 };
@@ -167,51 +158,39 @@ export function startHolo(canvas) {
   const emblem = makeTrefoil(holo, skin);
   const rig = new THREE.Group(); rig.add(emblem); scene.add(rig);
 
-  // green glass droplets orbiting the emblem
-  const glass = new THREE.MeshPhysicalMaterial({ color: 0x4ade80, metalness: 0.1, roughness: 0.05, clearcoat: 1, iridescence: 0.5, iridescenceIOR: 1.4, envMapIntensity: 1.4 });
-  const drops = Array.from({ length: 7 }, (_, i) => {
-    const m = new THREE.Mesh(new THREE.SphereGeometry(0.05 + (i % 3) * 0.025, 32, 16), glass);
-    m.userData = { r: 1.05 + (i % 4) * 0.18, s: 0.25 + i * 0.05, o: i * 0.9, tilt: (i % 2 ? 1 : -1) * (0.3 + i * 0.06) };
-    rig.add(m); return m;
-  });
-
   scene.add(new THREE.HemisphereLight(0xffffff, 0xd8f5e3, 0.6));
   const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(3, 4, 5); scene.add(key);
   const tintA = new THREE.PointLight(0x22c55e, 9, 12); tintA.position.set(-3, 1.5, 2.5); scene.add(tintA);
   const tintB = new THREE.PointLight(0xa3e635, 7, 12); tintB.position.set(3, -1.5, 2.5); scene.add(tintB);
 
   /* particles */
-  const N = isMobile() ? 9000 : 16000;
+  const N = isMobile() ? 9000 : 15000;
   const shapes = Object.fromEntries(Object.keys(SHAPES).map(n => [n, SHAPES[n](N)]));
-  const far = new Float32Array(N * 3), jit = new Float32Array(N * 3), delay = new Float32Array(N), seed = new Float32Array(N);
+  const jit = new Float32Array(N * 3), delay = new Float32Array(N), seed = new Float32Array(N);
   for (let i = 0; i < N; i++) {
-    const a = Math.random() * Math.PI * 2, b = Math.acos(rnd(1)), r = 4 + Math.random() * 5;
-    far.set([Math.sin(b) * Math.cos(a) * r, Math.cos(b) * r, Math.sin(b) * Math.sin(a) * r * 0.5], i * 3);
-    jit.set([rnd(0.7), rnd(0.7), rnd(0.7)], i * 3);
+    jit.set([rnd(0.45), rnd(0.45), rnd(0.45)], i * 3);
     delay[i] = Math.random(); seed[i] = Math.random();
   }
-  const pos = new Float32Array(N * 3); pos.set(far);
+  const pos = new Float32Array(N * 3); pos.set(shapes.trefoil);
   const pg = new THREE.BufferGeometry();
   pg.setAttribute('position', new THREE.BufferAttribute(pos, 3).setUsage(THREE.DynamicDrawUsage));
   pg.setAttribute('seed', new THREE.BufferAttribute(seed, 1));
   pg.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 20);
   const pm = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false,
-    uniforms: { uT: { value: 0 }, uPx: { value: dpr }, uSize: { value: 15 }, uDark: { value: new THREE.Vector2(-1, -1) }, uLightA: { value: 0.5 }, uFade: { value: 0 } },
+    uniforms: { uT: { value: 0 }, uPx: { value: dpr }, uSize: { value: 11 }, uLightA: { value: 0.75 }, uFade: { value: 0 } },
     vertexShader: `attribute float seed; uniform float uT; uniform float uPx; uniform float uSize; varying float vS;
       void main(){ vec3 p = position;
-        p += .018 * vec3(sin(uT*1.3 + seed*40.), cos(uT*1.1 + seed*31.), sin(uT*.9 + seed*23.));
+        p += .008 * vec3(sin(uT*1.3 + seed*40.), cos(uT*1.1 + seed*31.), sin(uT*.9 + seed*23.));
         vec4 mv = modelViewMatrix * vec4(p,1.); vS = seed;
-        gl_PointSize = uSize * uPx * (.55 + seed*.9) * (.8 + .2*sin(uT*2. + seed*60.)) / -mv.z;
+        gl_PointSize = uSize * uPx * (.8 + seed*.4) / -mv.z;
         gl_Position = projectionMatrix * mv; }`,
-    fragmentShader: `uniform vec2 uDark; uniform float uLightA; uniform float uFade; varying float vS;
+    fragmentShader: `uniform float uLightA; uniform float uFade; uniform float uPx; varying float vS;
       void main(){ vec2 c = gl_PointCoord - .5; float d = length(c); if (d > .5) discard;
-        float soft = smoothstep(.5, .0, d);
-        float dark = step(uDark.x, gl_FragCoord.y) * step(gl_FragCoord.y, uDark.y);
-        vec3 lightC = mix(vec3(.04,.42,.23), vec3(.13,.6,.3), vS);
-        vec3 darkC = mix(vec3(.29,.87,.5), vec3(.85,.98,.62), vS) + .25*smoothstep(.25,.0,d);
-        float a = mix(uLightA * soft, soft * .85, dark) * uFade;
-        gl_FragColor = vec4(mix(lightC, darkC, dark), a); }`
+        float dot = smoothstep(.5, .32, d);
+        float scan = .78 + .22 * step(.5, fract(gl_FragCoord.y / (3. * uPx)));
+        vec3 col = mix(vec3(.05,.5,.25), vec3(.4,.75,.12), vS);
+        gl_FragColor = vec4(col, uLightA * dot * scan * uFade); }`
   });
   const points = new THREE.Points(pg, pm);
   points.frustumCulled = false;
@@ -232,7 +211,7 @@ export function startHolo(canvas) {
   // so poses AND formations are scrubbed by the scroll, never triggered.
   const parse = el => {
     const [x, y, s, r, h] = el.dataset.holo.split(' ').map(Number);
-    const shape = el.dataset.shape || 'halo';
+    const shape = el.dataset.shape || 'trefoil';
     // formations that must stay readable (truck, shield, wave) hold a 3/4 view instead of spinning
     return { el, x, y, s, r, h: h || 0, shape, e: el.dataset.emblem === '0' ? 0 : 1, w: ['truck', 'shield', 'wave'].includes(shape) ? 0 : 1 };
   };
@@ -246,7 +225,6 @@ export function startHolo(canvas) {
     return i + clamp01((mid - cs[i]) / (cs[i + 1] - cs[i]));
   };
   let u = targetU();
-  const chamber = document.getElementById('chamber');
 
   // intro: nothing assembles until the curtain lifts
   let t0 = null;
@@ -286,36 +264,26 @@ export function startHolo(canvas) {
     });
     skin.uniforms.uT.value = t; skin.uniforms.uA.value = ev;
     holo.iridescenceThicknessRange = [360 + P.h * 40, 560 + P.h * 80];
-    drops.forEach(d => {
-      const q = d.userData, ang = t * q.s + q.o;
-      d.position.set(Math.cos(ang) * q.r, Math.sin(ang) * q.r * Math.cos(q.tilt), Math.sin(ang) * q.r * Math.sin(q.tilt));
-      d.scale.setScalar(Math.max(ev, 0.0001)); d.visible = ev > 0.01;
-    });
-
     // particles: staggered morph between the two formations, bulging outward mid-flight
-    const mk = `${a.shape}|${b.shape}|${f.toFixed(4)}|${intro.toFixed(3)}`;
+    const mk = `${a.shape}|${b.shape}|${f.toFixed(4)}`;
     if (mk !== lastKey) {
       lastKey = mk;
       const A = shapes[a.shape], B = shapes[b.shape], same = a.shape === b.shape;
       for (let i = 0; i < N; i++) {
         const j = i * 3;
         const ti = same ? 0 : smooth(clamp01(f * 1.7 - delay[i] * 0.7)), bul = Math.sin(Math.PI * ti);
-        const ii = smooth(clamp01(intro * 1.6 - delay[i] * 0.6));
-        pos[j] = lerp(far[j], lerp(A[j], B[j], ti) + jit[j] * bul, ii);
-        pos[j + 1] = lerp(far[j + 1], lerp(A[j + 1], B[j + 1], ti) + jit[j + 1] * bul, ii);
-        pos[j + 2] = lerp(far[j + 2], lerp(A[j + 2], B[j + 2], ti) + jit[j + 2] * bul, ii);
+        pos[j] = lerp(A[j], B[j], ti) + jit[j] * bul;
+        pos[j + 1] = lerp(A[j + 1], B[j + 1], ti) + jit[j + 1] * bul;
+        pos[j + 2] = lerp(A[j + 2], B[j + 2], ti) + jit[j + 2] * bul;
       }
       pg.attributes.position.needsUpdate = true;
     }
     pm.uniforms.uT.value = t;
-    pm.uniforms.uFade.value = 0.2 + 0.8 * ie;
-    pm.uniforms.uLightA.value = mob ? 0.38 : 0.5;
-    pm.uniforms.uSize.value = mob ? 13 : 15;
-    // inside the dark chamber (drawing-buffer pixels, origin bottom-left) the particles glow mint
-    if (chamber) {
-      const r = chamber.getBoundingClientRect(), H = innerHeight * dpr;
-      pm.uniforms.uDark.value.set(H - r.bottom * dpr, H - r.top * dpr);
-    }
+    // dots only show while the solid emblem is away, so the hand-over reads as the emblem dissolving into them
+    pm.uniforms.uFade.value = ie * (1 - ev);
+    points.visible = ev < 0.99;
+    pm.uniforms.uLightA.value = mob ? 0.55 : 0.75;
+    pm.uniforms.uSize.value = mob ? 10 : 11;
     tintA.position.x = -3 + Math.sin(t * 0.6) * 1.2; tintB.position.y = -1.5 + Math.cos(t * 0.5);
 
     renderer.render(scene, camera);
