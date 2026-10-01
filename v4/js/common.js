@@ -32,7 +32,7 @@
         <li><a href="mailto:otrend@hotmail.com"><span class="soc soc-mail">${icon('mail')}</span>otrend@hotmail.com</a></li></ul></div>
     </div>
     <div class="bottom"><span>© 2026 itecwastesolutions — ต้นแบบดีไซน์ใหม่</span><span>ISO 9001:2015 · THAI SME-GP</span></div>
-    <p class="credits">โมเดล 3D จาก Sketchfab (CC BY 4.0): ถังขยะ — BLENDERBROCPT · รถ — M GARAGE LTD. · ต้นไม้ — 99.Miles · ถุงขยะ — DJMaesen · โรงพยาบาล — VertexForge · กล่องของมีคม — cig3d · โรงงาน — assetfactory · ท้องฟ้าและหญ้า — Poly Haven (CC0)</p>
+    <p class="credits">โมเดล 3D จาก Sketchfab (CC BY 4.0): ถังขยะ — BLENDERBROCPT · รถ Isuzu Elf — Romanov_13 · ต้นไม้ — 99.Miles · ถุงขยะ — DJMaesen · โรงพยาบาล — VertexForge · กล่องของมีคม — cig3d · โรงงาน — assetfactory · ท้องฟ้าและหญ้า — Poly Haven (CC0)</p>
   </div></footer>`;
 
   document.body.insertAdjacentHTML('afterbegin', header);
