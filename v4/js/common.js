@@ -194,8 +194,8 @@
   }), { threshold: 0.12 });
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
 
-  // in-page moves (services / process explorers): the green pill flows to the chosen chip, first stretching over
-  // both, then letting go of the old one; the card swaps its content with a direction-aware slide
+  // in-page moves (services / process explorers): the green pill slides to the chosen chip; the card fades its
+  // content over and eases to the new height
   window.movePill = (list, i) => {
     const btn = list.querySelectorAll('button')[i]; if (!btn) return;
     let pill = list.querySelector(':scope > .pill');
@@ -209,16 +209,15 @@
       pill = document.createElement('span'); pill.className = 'pill'; list.appendChild(pill); list.classList.add('has-pill');
       addEventListener('resize', () => pill.btn && put(box(pill.btn), true));
     }
-    const to = box(btn), from = pill.btn && box(pill.btn);
-    pill.btn = btn; clearTimeout(pill.t);
-    if (!from) return put(to, true);
-    put({ x: Math.min(from.x, to.x), y: Math.min(from.y, to.y), w: Math.max(from.x + from.w, to.x + to.w) - Math.min(from.x, to.x), h: Math.max(from.y + from.h, to.y + to.h) - Math.min(from.y, to.y) });
-    pill.t = setTimeout(() => put(to), 230);
+    const to = box(btn), first = !pill.btn;
+    pill.btn = btn;
+    if (first) return put(to, true);
+    put(to);
   };
   window.swapPanel = (panel, html, dir = 1) => {
     panel.querySelectorAll(':scope > .out').forEach(o => o.remove());
     const old = panel.querySelector(':scope > .swap, :scope > .fade'), h0 = panel.offsetHeight;
-    if (old) { old.className = 'out'; old.style.setProperty('--dir', dir); setTimeout(() => old.remove(), 360); }
+    if (old) { old.className = 'out'; old.style.setProperty('--dir', dir); setTimeout(() => old.remove(), 220); }
     const box = document.createElement('div'); box.className = old ? 'swap' : 'fade'; box.style.setProperty('--dir', dir); box.innerHTML = html;
     panel.appendChild(box);
     if (!old) return;
