@@ -71,20 +71,20 @@
     addEventListener('load', () => { go(); setTimeout(go, 400); });
   }
 
-  // page transitions: five green slats sweep up over the page one after another with the next page's name on them,
-  // and on the new page they carry on up and away. Transforms only: the browser runs them off the main thread, so
-  // they stay smooth while the next page is busy building its 3D.
+  // page transitions: the I-TEC mark pops up mid-screen and a green disc swells out from behind it with the next
+  // page's name; on the new page the mark flies at you and the green dissolves, so you pass through it into the page.
+  // Transforms and opacity only: the browser runs them off the main thread, smooth while the next page builds its 3D.
   (() => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let slow = 1; try { if (location.hostname === 'localhost') slow = +sessionStorage.getItem('inkSlow') || 1; } catch (err) {}   // dev: slow-motion check
     const nameOf = href => (PAGES.find(([h]) => h === (new URL(href, location.href).pathname.split('/').pop() || 'index.html')) || [])[1] || 'I-TEC';
-    const el = document.createElement('div'); el.className = 'wipe'; el.setAttribute('aria-hidden', 'true');
-    el.innerHTML = '<i></i><i></i><i></i><i></i><i></i><div class="wipe-title"><img src="assets/trend-e.png" alt=""><small>I-TEC WASTE SOLUTIONS</small><b></b></div>';
+    const el = document.createElement('div'); el.className = 'zoomx'; el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = '<span class="disc"></span><span class="mark"><img src="assets/trend-e.png" alt=""></span><span class="zt"><small>I-TEC WASTE SOLUTIONS</small><b></b></span>';
     if (slow > 1) el.style.setProperty('--slow', slow);
     document.body.appendChild(el);
     const title = el.querySelector('b');
-    const set = state => { el.className = 'wipe on ' + state; };
-    const COVER = 700;                                    // ms until the last slat is up (CSS: .48s + 4 × 45ms delay)
+    const set = state => { el.className = 'zoomx on ' + state; };
+    const COVER = 680;                                    // ms until the disc fills the screen (CSS: 80ms + .6s)
 
     const fetched = new Set();                            // warm the next page while the pointer is on its link
     const prefetch = href => { if (fetched.has(href)) return; fetched.add(href); const l = document.createElement('link'); l.rel = 'prefetch'; l.href = href; document.head.appendChild(l); };
@@ -111,7 +111,7 @@
       }, COVER * slow);
     });
 
-    // arriving: the slats already cover the page (head script + CSS); they lift once the 3D has drawn (or soon anyway)
+    // arriving: the green already covers the page (head script + CSS); we fly through once the 3D has drawn (or soon anyway)
     let arrived = false;
     try { arrived = Date.now() - +(sessionStorage.getItem('itecInk') || 0) < 8000; sessionStorage.removeItem('itecInk'); } catch (err) {}
     if (arrived && !reduce) {
@@ -122,7 +122,7 @@
       const open = () => {
         if (opened) return; opened = true;
         set('out');
-        setTimeout(() => { el.className = 'wipe'; }, 900 * slow);
+        setTimeout(() => { el.className = 'zoomx'; }, 900 * slow);
       };
       if (document.body.dataset.scene && document.getElementById('stage')) { addEventListener('itec3d:done', open, { once: true }); setTimeout(open, 900); }
       else requestAnimationFrame(() => requestAnimationFrame(open));
@@ -130,7 +130,7 @@
 
     addEventListener('pageshow', e => {                // back/forward cache: come back to the page, not to the cover
       if (!e.persisted) return;
-      busy = false; window.ITEC3D?.pause(false); el.className = 'wipe';
+      busy = false; window.ITEC3D?.pause(false); el.className = 'zoomx';
     });
   })();
 
