@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v4-37">
+<link rel="stylesheet" href="css/style.css?v=v4-38">
 <script>try{if(Date.now()-(+sessionStorage.getItem("itecInk")||0)<8000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("ink-arrive","ink-cover")}catch(e){}</script>
 </head>
 <body data-scene="process">
@@ -37,7 +37,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v4-37"></script>
+<script src="js/common.js?v=v4-38"></script>
 <script>
 // steps work like the services page: tap / arrows / keys / swipe. The 3D travels continuously to the chosen step.
 (() => {
@@ -53,14 +53,17 @@
   window.processProgress = () => Math.max(0, cur);
   const pick = (i, user) => {
     if (user) auto = false;
-    i = (i + STEPS.length) % STEPS.length; if (i === cur) return; cur = i;
+    i = (i + STEPS.length) % STEPS.length; if (i === cur) return;
+    const dir = cur < 0 || i > cur || (cur === STEPS.length - 1 && i === 0) ? 1 : -1;
+    cur = i;
     list.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    movePill(list, i);
     // keep the chosen chip visible by scrolling only the chip row (scrollIntoView would also move the page)
     const chip = list.children[i];
     if (chip && list.scrollWidth > list.clientWidth) list.scrollTo({ left: chip.offsetLeft - list.clientWidth / 2 + chip.offsetWidth / 2, behavior: 'smooth' });
     const s = STEPS[i];
-    panel.innerHTML = `<div class="fade"><img src="${s.img}" alt=""${s.contain ? ' class="contain"' : ''}><h3>${s.t}</h3><p>${s.d}</p>
-      <div class="cta" style="margin-top:14px"><a class="btn btn-lime" href="contact.html#form">เริ่มใช้บริการ</a></div></div>`;
+    swapPanel(panel, `<img src="${s.img}" alt=""${s.contain ? ' class="contain"' : ''}><h3>${s.t}</h3><p>${s.d}</p>
+      <div class="cta" style="margin-top:14px"><a class="btn btn-lime" href="contact.html#form">เริ่มใช้บริการ</a></div>`, dir);
     document.getElementById('stepCount').textContent = `${i + 1} / ${STEPS.length}`;
   };
   list.addEventListener('click', e => { const b = e.target.closest('button'); if (b) pick(+b.dataset.i, true); });
@@ -77,6 +80,6 @@
   setInterval(() => { if (auto) pick(cur + 1); }, 7000);
 })();
 </script>
-<script src="js/dist/scene.js?v=v4-37"></script>
+<script src="js/dist/scene.js?v=v4-38"></script>
 </body>
 </html>

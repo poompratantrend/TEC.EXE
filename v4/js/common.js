@@ -86,18 +86,18 @@
       float h(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
       float n(vec2 p){ vec2 i = floor(p), f = fract(p); f = f*f*(3.-2.*f);
         return mix(mix(h(i), h(i+vec2(1,0)), f.x), mix(h(i+vec2(0,1)), h(i+vec2(1,1)), f.x), f.y); }
-      float fbm(vec2 p){ float s = 0., a = .5; for (int i = 0; i < 5; i++) { s += a*n(p); p = p*2.02 + vec2(17., 9.); a *= .5; } return s; }
+      float fbm(vec2 p){ float s = 0., a = .5; for (int i = 0; i < 3; i++) { s += a*n(p); p = p*2.02 + vec2(17., 9.); a *= .5; } return s / .875; }
       void main(){
         vec2 uv = gl_FragCoord.xy / uRes.y, o = uO / uRes.y, d = uv - o, R2 = uRes / uRes.y;
         float r = length(d), a = atan(d.y, d.x);
-        vec2 q = uv*2.5 + vec2(fbm(uv*1.7 + uT*.25), fbm(uv*1.7 + vec2(5.2, 1.3) - uT*.2)) * 1.6;   // ink-in-water swirl
+        vec2 q = uv*2.5 + vec2(n(uv*1.7 + uT*.25), n(uv*1.7 + vec2(5.2, 1.3) - uT*.2)) * 1.4;   // ink-in-water swirl
         float w = fbm(q + uT*.15);
         float st = fbm(vec2(a*2.5 + 5., r*3. - uT*1.2));                                           // tendrils shooting outward
         float far = max(max(length(o), length(o - vec2(R2.x, 0.))), max(length(o - vec2(0., 1.)), length(o - R2)));
         float e = r/far + (w - .5)*.45 + (st - .5)*.35;
         float R = mix(-.45, 1.45, uP);
         float f = smoothstep(R + .015, R - .015, e);
-        f = max(f, smoothstep(.70, .72, fbm(uv*7. + vec2(3., uT*.3))) * smoothstep(R + .18, R + .02, e));   // splatter ahead of the front
+        f = max(f, smoothstep(.80, .83, n(uv*9. + vec2(3., uT*.3))) * smoothstep(R + .18, R + .02, e));   // splatter ahead of the front
         float cov = uMode < .5 ? f : 1. - f;
         vec3 deep = vec3(.043, .302, .173), brand = vec3(.059, .541, .294), mint = vec3(.62, .89, .73);
         vec3 col = mix(deep, brand, smoothstep(.35, .75, w));
@@ -129,7 +129,7 @@
         cv.style.webkitMaskImage = cv.style.maskImage = st.mode === 0 ? '' : `radial-gradient(circle ${at}, transparent ${R}, #000 calc(${R} + 1px))`;
         return;
       }
-      const s = Math.min(devicePixelRatio, 1), w = Math.round(innerWidth * s), h = Math.round(innerHeight * s);
+      const s = 0.5, w = Math.round(innerWidth * s), h = Math.round(innerHeight * s);   // half resolution: soft ink edges don't need more, and it stays light
       if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; gl.viewport(0, 0, w, h); }
       gl.uniform2f(U.uRes, w, h); gl.uniform2f(U.uO, st.x * s, h - st.y * s);
       gl.uniform1f(U.uP, st.p); gl.uniform1f(U.uT, performance.now() / 1000); gl.uniform1f(U.uMode, st.mode);
@@ -171,6 +171,7 @@
       const dove = window.ITEC3D?.dive(1000 * slow);
       if (dove) await sleep(380);                        // let the camera pick up speed before the ink bursts out of the bin
       await run(0, dove || pointer || center(), dove ? 700 : 650);
+      window.ITEC3D?.pause();                           // covered: no need to keep drawing the 3D underneath
       try { sessionStorage.setItem('itecInk', String(Date.now())); } catch (err) {}
       location.href = a.href;
     });
@@ -196,7 +197,7 @@
 
     addEventListener('pageshow', e => {                // back/forward cache: come back to the page, not to the ink
       if (!e.persisted) return;
-      busy = false; window.ITEC3D?.reset(); el.classList.remove('on', 'full');
+      busy = false; window.ITEC3D?.reset(); window.ITEC3D?.pause(false); el.classList.remove('on', 'full');
     });
   })();
 
@@ -259,6 +260,39 @@
     });
   }), { threshold: 0.12 });
   document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  // in-page moves (services / process explorers): the green pill flows to the chosen chip, first stretching over
+  // both, then letting go of the old one; the card swaps its content with a direction-aware slide
+  window.movePill = (list, i) => {
+    const btn = list.querySelectorAll('button')[i]; if (!btn) return;
+    let pill = list.querySelector(':scope > .pill');
+    const box = el => ({ x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight });
+    const put = (r, now) => {
+      if (now) pill.style.transition = 'none';
+      pill.style.transform = `translate(${r.x}px,${r.y}px)`; pill.style.width = r.w + 'px'; pill.style.height = r.h + 'px';
+      if (now) { void pill.offsetWidth; pill.style.transition = ''; }
+    };
+    if (!pill) {
+      pill = document.createElement('span'); pill.className = 'pill'; list.appendChild(pill); list.classList.add('has-pill');
+      addEventListener('resize', () => pill.btn && put(box(pill.btn), true));
+    }
+    const to = box(btn), from = pill.btn && box(pill.btn);
+    pill.btn = btn; clearTimeout(pill.t);
+    if (!from) return put(to, true);
+    put({ x: Math.min(from.x, to.x), y: Math.min(from.y, to.y), w: Math.max(from.x + from.w, to.x + to.w) - Math.min(from.x, to.x), h: Math.max(from.y + from.h, to.y + to.h) - Math.min(from.y, to.y) });
+    pill.t = setTimeout(() => put(to), 230);
+  };
+  window.swapPanel = (panel, html, dir = 1) => {
+    panel.querySelectorAll(':scope > .out').forEach(o => o.remove());
+    const old = panel.querySelector(':scope > .swap, :scope > .fade'), h0 = panel.offsetHeight;
+    if (old) { old.className = 'out'; old.style.setProperty('--dir', dir); setTimeout(() => old.remove(), 360); }
+    const box = document.createElement('div'); box.className = old ? 'swap' : 'fade'; box.style.setProperty('--dir', dir); box.innerHTML = html;
+    panel.appendChild(box);
+    if (!old) return;
+    panel.style.height = ''; const h1 = panel.offsetHeight;   // the card grows / shrinks to the new content
+    panel.style.height = h0 + 'px'; void panel.offsetWidth; panel.style.height = h1 + 'px';
+    clearTimeout(panel.t); panel.t = setTimeout(() => { panel.style.height = ''; }, 500);
+  };
 
   // 3D tilt (tilt elements are never .rv, so transitions don't fight)
   window.applyTilt = (root = document) => {
