@@ -9,18 +9,30 @@ html{scroll-behavior:smooth;background:#e6f0e9;overscroll-behavior:none;-webkit-
 @media (max-width:980px){html,body{touch-action:pan-y}.svc-list,.lb .strip,.filters{touch-action:pan-x pan-y}}   /* phones: no pinch-zoom, page keeps its layout */
 body{font-family:"IBM Plex Sans Thai",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;overflow-x:clip;animation:pageIn .45s both;transition:opacity .22s}
 @keyframes pageIn{from{opacity:0}}
-/* page transition ink (js/common.js): .ink-cover holds a solid green cover from the first paint when we arrive through it */
+/* page transition (js/common.js): five slats sweep up, staggered; .ink-cover holds a solid cover from the first paint
+   when we arrive through it, until the slats take over */
 html.ink-arrive body{animation:none}
 html.ink-cover::before{content:"";position:fixed;inset:0;z-index:300;background:#0b4d2c;animation:inkSafety 0s 4s forwards}   /* never stuck if the script fails */
 @keyframes inkSafety{to{visibility:hidden}}
-.ink{position:fixed;inset:0;z-index:300;display:none;pointer-events:none}
-.ink.on{display:block;pointer-events:auto}
-.ink canvas{position:absolute;inset:0;width:100%;height:100%}
-.ink-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;text-align:center;opacity:0;transform:translateY(24px) scale(.94);transition:opacity .3s,transform .5s cubic-bezier(.2,.9,.3,1.2);pointer-events:none}
-.ink.full .ink-title{opacity:1;transform:none}
-.ink-title img{width:64px;height:64px;border-radius:16px;background:#fff;padding:4px;margin-bottom:8px;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
-.ink-title small{font-family:Prompt;font-size:.75rem;letter-spacing:4px;opacity:.75}
-.ink-title b{font-family:Prompt;font-weight:700;font-size:clamp(2.4rem,7vw,5rem);line-height:1.1;letter-spacing:-.5px;text-shadow:0 6px 30px rgba(0,0,0,.25)}
+.wipe{position:fixed;inset:0;z-index:300;display:none;pointer-events:none;--slow:1}
+.wipe.on{display:block;pointer-events:auto}
+.wipe i{position:absolute;top:-1px;bottom:-1px;width:calc(20% + 2px);transform:translateY(105%);will-change:transform;
+  background:linear-gradient(180deg,#3fbf7f 0,#0f8a4b 6px,#0b4d2c 38%,#0b4d2c 62%,#0f8a4b calc(100% - 6px),#3fbf7f 100%)}
+.wipe i:nth-child(1){left:0;--d:0}.wipe i:nth-child(2){left:20%;--d:1}.wipe i:nth-child(3){left:40%;--d:2}.wipe i:nth-child(4){left:60%;--d:3}.wipe i:nth-child(5){left:80%;--d:4}
+.wipe.in i{animation:wipeIn calc(.48s * var(--slow)) cubic-bezier(.76,0,.24,1) calc(var(--d) * 45ms * var(--slow)) both}
+.wipe.full i{transform:none}
+.wipe.out i{animation:wipeOut calc(.55s * var(--slow)) cubic-bezier(.76,0,.24,1) calc(var(--d) * 45ms * var(--slow)) both}
+@keyframes wipeIn{from{transform:translateY(105%)}to{transform:none}}
+@keyframes wipeOut{from{transform:none}to{transform:translateY(-105%)}}
+.wipe-title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;text-align:center;opacity:0;pointer-events:none}
+.wipe.in .wipe-title{animation:titleIn calc(.4s * var(--slow)) cubic-bezier(.2,.9,.3,1.2) calc(.3s * var(--slow)) both}
+.wipe.full .wipe-title{opacity:1}
+.wipe.out .wipe-title{animation:titleOut calc(.22s * var(--slow)) ease-in both}
+@keyframes titleIn{from{opacity:0;transform:translateY(24px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes titleOut{from{opacity:1}to{opacity:0;transform:translateY(-16px)}}
+.wipe-title img{width:64px;height:64px;border-radius:16px;background:#fff;padding:4px;margin-bottom:8px;box-shadow:0 10px 30px -10px rgba(0,0,0,.4)}
+.wipe-title small{font-family:Prompt;font-size:.75rem;letter-spacing:4px;opacity:.75}
+.wipe-title b{font-family:Prompt;font-weight:700;font-size:clamp(2.4rem,7vw,5rem);line-height:1.1;letter-spacing:-.5px;text-shadow:0 6px 30px rgba(0,0,0,.25)}
 h1,h2,h3,h4,.btn,.nav a,.eyebrow,.num,.tag{font-family:"Prompt",sans-serif}
 h1,h2,h3{word-break:normal;overflow-wrap:break-word}   /* no text-wrap:balance: with the Thai no-break units it can hang the layout */
 p,li,b,span,a,label,small{overflow-wrap:break-word}
