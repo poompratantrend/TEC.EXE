@@ -564,3 +564,6 @@ body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.sh
 @media (max-width:860px){.contact-grid.stack .panel-dark{grid-template-columns:1fr}.contact-grid.stack .qr{flex-direction:row;text-align:left;justify-content:flex-start}}
 @media (max-width:620px){.contact-grid.stack .panel-dark{padding:20px}}
 .contact-grid.stack .clist>a:last-child{grid-column:1/-1}
+/* contact: no 3D, so the hero only takes the room its words need and the form comes up sooner */
+.hero.no3d,.hero.no3d.short{min-height:auto!important}
+@media (max-width:980px){.hero.no3d .hero-content{padding-top:120px}}
