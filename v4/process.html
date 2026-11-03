@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v4-48">
+<link rel="stylesheet" href="css/style.css?v=v4-49">
 <script>try{if(Date.now()-(+sessionStorage.getItem("itecInk")||0)<8000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("ink-arrive","ink-cover")}catch(e){}</script>
 </head>
 <body data-scene="process">
@@ -37,7 +37,7 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v4-48"></script>
+<script src="js/common.js?v=v4-49"></script>
 <script>
 // steps work like the services page: tap / arrows / keys / swipe. The 3D travels continuously to the chosen step.
 (() => {
@@ -45,7 +45,7 @@
     { t: 'คัดแยก & บรรจุที่ต้นทาง', d: 'ขยะติดเชื้อจากคลินิกถูกคัดแยกลงถังบรรจุมาตรฐาน พร้อมอบรมบุคลากรให้คัดแยกได้ถูกต้อง แล้วยกขึ้นรถ', img: 'assets/bin-bag.png', contain: true },
     { t: 'เก็บขนด้วยรถควบคุมอุณหภูมิ', d: 'รถเก็บขนควบคุมอุณหภูมิตามกฎหมาย ออกจากคลินิกสู่ศูนย์กำจัด ติดตามการเดินรถแบบเรียลไทม์ด้วย GPS', img: 'assets/gallery-26.jpg' },
     { t: 'เผาทำลายด้วยอุณหภูมิสูง', d: 'ถึงศูนย์กำจัด ขยะติดเชื้อเข้าเตาเผาอุณหภูมิสูงปลอดมลพิษ ตามกฎกระทรวงว่าด้วยการจัดการมูลฝอยติดเชื้อ พ.ศ.2545', img: 'assets/gallery-4.jpg' },
-    { t: 'รายงานผลด้วย E-Manifest', d: 'กำกับการขนส่งด้วยเอกสาร Manifest และระบบ E-Manifest ตรวจสอบย้อนกลับได้ทุกขั้นตอน', img: 'assets/gallery-19.jpg' }
+    { t: 'รายงานผลด้วย E-Manifest', d: 'ทุกครั้งที่เก็บขน บันทึกจำนวนถุงและน้ำหนักขยะติดเชื้อไว้ในระบบ E-Manifest', img: 'assets/gallery-19.jpg' }
   ];
   const list = document.getElementById('stepList'), panel = document.getElementById('stepPanel');
   list.innerHTML = STEPS.map((s, i) => `<button data-i="${i}"><i>0${i + 1}</i>${s.t}</button>`).join('');
@@ -80,6 +80,6 @@
   setInterval(() => { if (auto) pick(cur + 1); }, 7000);
 })();
 </script>
-<script src="js/dist/scene.js?v=v4-48"></script>
+<script src="js/dist/scene.js?v=v4-49"></script>
 </body>
 </html>
