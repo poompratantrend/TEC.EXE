@@ -578,3 +578,27 @@ body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.sh
   .hero .badges.trust span{font-size:.72rem;padding:6px 10px}
   .hero .badges.trust span:nth-of-type(n+2){display:none}   /* phones: the mark and the licence, nothing more */
 }
+
+/* content first: every page opens with its words, the action, the proof and a real photo; the 3D comes further down */
+.intro{padding:128px 0 56px;background:radial-gradient(900px 500px at 80% 20%,#eef6f1,var(--bg) 70%)}
+.intro-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.intro h1{font-size:clamp(2rem,4.4vw,3.4rem);line-height:1.15;margin:14px 0 16px}
+.intro .lead{color:var(--ink-2);font-size:clamp(1rem,1.3vw,1.12rem);max-width:560px}
+.intro .cta{margin-top:26px}
+.intro .badges{margin-top:26px}
+.intro-photo{margin:0;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3;position:relative}
+.intro-photo img{width:100%;height:100%;object-fit:cover}
+.intro-photo figcaption{position:absolute;left:14px;bottom:12px;background:rgba(255,255,255,.92);border-radius:999px;padding:5px 12px;font-size:.8rem;color:var(--ink-2)}
+.intro + .stats{margin-top:0}
+.story3d{min-height:82svh}
+.story3d h2{font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.2;margin:12px 0 12px}
+body>.intro + .stats{background:var(--bg)}
+@media (max-width:980px){
+  .intro{padding:104px 0 32px}
+  .intro-grid{grid-template-columns:1fr;gap:24px}
+  .intro .badges.trust{display:flex}
+  .intro .badges.trust span:nth-of-type(n+2){display:none}
+  .story3d{min-height:100svh}
+}
+.story3d .hero-content{padding:80px 0}
+.story3d h2{text-shadow:0 0 18px rgba(255,255,255,.95)}

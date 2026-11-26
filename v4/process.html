@@ -8,21 +8,20 @@
 <link rel="icon" href="assets/trend-e.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=v4-56">
+<link rel="stylesheet" href="css/style.css?v=v4-57">
 <script>try{if(Date.now()-(+sessionStorage.getItem("itecInk")||0)<8000&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("ink-arrive","ink-cover")}catch(e){}</script>
 </head>
 <body data-scene="process">
 
-<header class="hero">
-  <canvas class="stage" id="stage"></canvas>
-  <div class="wrap explorer">
-    <div>
-      <span class="tag" style="color:var(--lime)">กระบวนการ 4 ขั้นตอน</span>
-      <div class="svc-list" id="stepList"></div>
+<header class="intro">
+  <div class="wrap intro-grid">
+    <div class="intro-text">
+      <h1>กระบวนการ <span class="hl">4 ขั้นตอน</span></h1>
+      <p class="lead">คัดแยกที่ต้นทาง เก็บขนด้วยรถควบคุมอุณหภูมิ เผาทำลายด้วยอุณหภูมิสูง และบันทึกปริมาณขยะด้วย E-Manifest ทุกครั้ง</p>
+      <div class="cta"><a href="contact.html#form" class="btn btn-lime">ขอใบเสนอราคาฟรี</a><a href="#explore" class="btn btn-ghost">ดูแบบ 3D ↓</a></div>
     </div>
-    <div class="svc-panel" id="stepPanel"></div>
+    <figure class="intro-photo"><img src="assets/gallery-13.jpg" alt="พนักงาน I-TEC ที่รถเก็บขน"></figure>
   </div>
-  <div class="svc-arrows"><button data-go="-1" aria-label="ขั้นก่อนหน้า">‹</button><span id="stepCount">1 / 4</span><button data-go="1" aria-label="ขั้นถัดไป">›</button></div>
 </header>
 
 <section style="background:var(--bg)">
@@ -37,7 +36,19 @@
   </div>
 </section>
 
-<script src="js/common.js?v=v4-56"></script>
+<section class="hero explorer3d" id="explore">
+  <canvas class="stage" id="stage"></canvas>
+  <div class="wrap explorer">
+    <div>
+      <span class="tag" style="color:var(--lime)">กระบวนการ 4 ขั้นตอน</span>
+      <div class="svc-list" id="stepList"></div>
+    </div>
+    <div class="svc-panel" id="stepPanel"></div>
+  </div>
+  <div class="svc-arrows"><button data-go="-1" aria-label="ขั้นก่อนหน้า">‹</button><span id="stepCount">1 / 4</span><button data-go="1" aria-label="ขั้นถัดไป">›</button></div>
+</section>
+
+<script src="js/common.js?v=v4-57"></script>
 <script>
 // steps work like the services page: tap / arrows / keys / swipe. The 3D travels continuously to the chosen step.
 (() => {
@@ -80,6 +91,6 @@
   setInterval(() => { if (auto) pick(cur + 1); }, 7000);
 })();
 </script>
-<script src="js/dist/scene.js?v=v4-56"></script>
+<script src="js/dist/scene.js?v=v4-57"></script>
 </body>
 </html>
