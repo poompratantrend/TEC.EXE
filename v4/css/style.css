@@ -567,3 +567,14 @@ body[data-scene=about] .hero.has-model::before,body[data-scene=contact] .hero.sh
 /* contact: no 3D, so the hero only takes the room its words need and the form comes up sooner */
 .hero.no3d,.hero.no3d.short{min-height:auto!important}
 @media (max-width:980px){.hero.no3d .hero-content{padding-top:120px}}
+
+/* hero trust strip: the real ISO mark beside the licence facts, so the proof sits next to the action */
+.badges.trust{align-items:center}
+.badges .iso-mark{height:58px;width:auto;background:#fff;border-radius:10px;padding:4px 6px;border:1px solid var(--line);box-shadow:0 6px 18px -10px rgba(6,40,24,.35)}
+.hero .badges.trust{pointer-events:auto}
+@media (max-width:980px){.badges .iso-mark{height:46px}}
+@media (max-width:980px){
+  .hero .badges.trust{display:flex;margin-top:14px;gap:8px;flex-wrap:nowrap}
+  .hero .badges.trust span{font-size:.72rem;padding:6px 10px}
+  .hero .badges.trust span:nth-of-type(n+2){display:none}   /* phones: the mark and the licence, nothing more */
+}
